@@ -68,8 +68,10 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <LanguageSelector />
           <a
-            href="#contact"
-            onClick={scrollTo('contact')}
+            href="https://wa.me/5521981915373?text=Olá! Vi seu portfólio e gostaria de conversar."
+            
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden rounded-full bg-cream px-5 py-2 text-sm font-medium text-ink transition hover:bg-ember hover:text-cream sm:inline-flex"
           >
             {t('nav.cta')}
