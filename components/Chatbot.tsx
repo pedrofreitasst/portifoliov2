@@ -9,8 +9,64 @@ interface Message {
   content: string;
 }
 
+// Detecta URLs e emails para transformá-los em links clicáveis.
+// Limita o tamanho dos matches pra evitar pegar lixo.
+const LINK_REGEX = /(https?:\/\/[^\s<>"']+|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
+
+/**
+ * Renderiza o conteúdo da mensagem do assistant preservando quebras de linha
+ * (via whitespace-pre-line no container) e transformando URLs/emails em <a>.
+ * Markdown simples (**bold**, *italic*) é renderizado também.
+ */
+function renderMessageContent(content: string) {
+  const segments: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  const regex = new RegExp(LINK_REGEX.source, 'g');
+
+  while ((match = regex.exec(content)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push(formatInline(content.slice(lastIndex, match.index), `t-${match.index}`));
+    }
+    const raw = match[0];
+    const isEmail = raw.includes('@') && !raw.startsWith('http');
+    const href = isEmail ? `mailto:${raw}` : raw;
+    segments.push(
+      <a
+        key={`l-${match.index}`}
+        href={href}
+        target={isEmail ? undefined : '_blank'}
+        rel={isEmail ? undefined : 'noopener noreferrer'}
+        className="underline underline-offset-2 decoration-cream-dim hover:decoration-ember"
+      >
+        {raw}
+      </a>,
+    );
+    lastIndex = match.index + raw.length;
+  }
+  if (lastIndex < content.length) {
+    segments.push(formatInline(content.slice(lastIndex), `t-end`));
+  }
+  return segments;
+}
+
+// Markdown inline minimalista: **bold** e *italic*.
+function formatInline(text: string, key: string): React.ReactNode {
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g);
+  return (
+    <span key={key}>
+      {parts.map((p, i) => {
+        if (/^\*\*[^*]+\*\*$/.test(p)) return <strong key={i}>{p.slice(2, -2)}</strong>;
+        if (/^\*[^*\n]+\*$/.test(p)) return <em key={i}>{p.slice(1, -1)}</em>;
+        return p;
+      })}
+    </span>
+  );
+}
+
 export default function Chatbot() {
   const { t, locale } = useT();
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -54,9 +110,11 @@ export default function Chatbot() {
         body: JSON.stringify({
           messages: next.map((m) => ({ role: m.role, content: m.content })),
           locale,
+          sessionId: sessionId ?? undefined, 
         }),
       });
       const data = await res.json();
+      if (data.sessionId) setSessionId(data.sessionId); 
       const reply =
         data?.reply ??
         'Desculpe, não consegui processar agora. Tente novamente em instantes.';
@@ -164,13 +222,13 @@ export default function Chatbot() {
                   className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 leading-relaxed ${
+                    className={`max-w-[85%] whitespace-pre-line break-words rounded-2xl px-4 py-2.5 leading-relaxed ${
                       m.role === 'user'
                         ? 'bg-ember/90 text-cream'
                         : 'bg-ink-200/70 text-cream'
                     }`}
                   >
-                    {m.content}
+                    {m.role === 'assistant' ? renderMessageContent(m.content) : m.content}
                   </div>
                 </div>
               ))}

@@ -20,7 +20,7 @@ export const projects: Project[] = [
     summary:
       'Fluxo de atendimento desenhado em IBM Watson Assistant, com foco em intenções claras e fallback humanizado.',
     description:
-      'Projeto de redesenho de um assistente de atendimento ao cliente em Watson Assistant. Mapeei as 20 intenções mais frequentes, reescrevi entidades para reduzir ambiguidade e desenhei fallbacks que entregam a conversa para um humano sem fricção.\n\nResultado esperado: redução do tempo médio de resolução e aumento da taxa de contenção (resolução pelo bot sem escalonamento).',
+      'Projeto de redesenho de um assistente de atendimento ao cliente em Watson Assistant. Mapeei as 10 intenções mais frequentes, reescrevi entidades para reduzir ambiguidade e desenhei fallbacks que entregam a conversa para um humano sem fricção.\n\nResultado esperado: redução do tempo médio de resolução e aumento da taxa de contenção (resolução pelo bot sem escalonamento).',
     role: 'Conversational Designer',
     stack: ['IBM Watson Assistant', 'Figma', 'Miro'],
     year: '2026',
