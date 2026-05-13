@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "about": "Sobre mí",
+    "projects": "Proyectos",
+    "contact": "Hablemos",
+    "cta": "Hablemos"
+  },
+  "hero": {
+    "eyebrow": "Pedro Freitas — Diseñador & Ingeniero",
+    "headline_part1": "Entre la palabra",
+    "headline_part2": "y el código.",
+    "subtitle": "Diseño experiencias conversacionales con IA, donde el lenguaje y la tecnología se encuentran para crear diálogos con propósito.",
+    "cta_primary": "Hablemos",
+    "cta_secondary": "Ver el trabajo"
+  },
+  "about": {
+    "eyebrow": "Sobre mí",
+    "title": "Un cruce entre disciplinas.",
+    "paragraph_1": "Soy Pedro Freitas, profesional en transición hacia UX Designer Conversacional e AI Engineer. Mi trayectoria nace de la escucha — entender cómo las personas dicen lo que necesitan — y madura en la construcción: traducir esa escucha en flujos, prompts y sistemas que responden con claridad.",
+    "paragraph_2": "Trabajo en la frontera entre el diseño conversacional y la ingeniería de IA. Diseño asistentes en IBM Watson, prototipo flujos en Figma, escribo prompts cargados de intención y desarrollo las integraciones que sostienen esas experiencias en producción.",
+    "paragraph_3": "Creo que la mejor interfaz conversacional es la que desaparece — cuando la tecnología guarda silencio para que la intención del usuario hable más alto.",
+    "skills_title": "Habilidades",
+    "categories": {
+      "conversational": "UX Conversacional",
+      "ai": "IA Aplicada",
+      "dev": "Desarrollo",
+      "languages": "Idiomas"
+    },
+    "aside": {
+      "based_label": "Ubicado en",
+      "based_value": "Brasil — disponible en remoto",
+      "focus_label": "Foco actual",
+      "focus_value": "UX Conversacional e Ingeniería de IA",
+      "status_label": "Estado",
+      "status_value": "Abierto a nuevas oportunidades"
+    }
+  },
+  "projects": {
+    "eyebrow": "Trabajos seleccionados",
+    "title": "Proyectos en construcción.",
+    "subtitle": "Una selección de experiencias en UX conversacional e ingeniería de IA.",
+    "view_details": "Ver detalles",
+    "close": "Cerrar",
+    "role": "Rol",
+    "stack": "Tecnologías",
+    "year": "Año"
+  },
+  "contact": {
+    "eyebrow": "Siguiente paso",
+    "title": "Conversemos.",
+    "subtitle": "Abierto a colaboraciones, proyectos freelance y oportunidades en equipos que piensan la IA con cuidado.",
+    "email_label": "Correo",
+    "linkedin_label": "LinkedIn",
+    "github_label": "GitHub"
+  },
+  "chatbot": {
+    "title": "Habla con la IA de Pedro",
+    "subtitle": "Pregunta sobre proyectos, experiencia o proceso.",
+    "placeholder": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "greeting": "¡Hola! Soy un asistente entrenado para hablar sobre el trabajo de Pedro. ¿Cómo puedo ayudarte?",
+    "open_label": "Abrir chat",
+    "close_label": "Cerrar chat",
+    "thinking": "Pensando..."
+  },
+  "footer": {
+    "rights": "Construido con cuidado por Pedro Freitas"
+  }
+}

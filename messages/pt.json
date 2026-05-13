@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "about": "Sobre",
+    "projects": "Projetos",
+    "contact": "Fale Comigo",
+    "cta": "Fale Comigo"
+  },
+  "hero": {
+    "eyebrow": "Pedro Freitas — Designer, Engenheiro, Humano",
+    "headline_part1": "Corte o ruído,",
+    "headline_part2": "foque no que importa.",
+    "subtitle": "Projeto experiências conversacionais com IA, onde linguagem e tecnologia se encontram para criar diálogos com propósito.",
+    "cta_primary": "Fale Comigo",
+    "cta_secondary": "Conheça o trabalho"
+  },
+  "about": {
+    "eyebrow": "Sobre mim",
+    "title": "Equilíbrio entre dois mundos.",
+    "paragraph_1": "Olá! Sou Pedro de Freitas, profissional em transição de carreira para UX Designer Conversacional e AI Engineer. Minha trajetória nasce da escuta, entender como pessoas dizem o que precisam, e amadurece na construção: traduzir essa escuta em fluxos, prompts e sistemas que respondem com clareza.",
+    "paragraph_2": "Com background em Comunicação Social, Design Gráfico e Gerenciamento de Operações com clientes internacionais, tenho uma perspectiva singular sobre como atender cada tipo de necessidade. Seja ela técnológica ou humana.",
+    "paragraph_3": "Quase uma década em atendimentos 1:1 com pessoas ao redor do mundo me deu uma perspectiva singular: entender o que alguém realmente precisa,  habilidade que se traduz diretamente em desenhar conversas claras, empáticas e eficientes.",
+    "skills_title": "Habilidades",
+    "categories": {
+      "conversational": "UX Conversacional",
+      "ai": "IA Aplicada",
+      "dev": "Desenvolvimento",
+      "languages": "Idiomas"
+    },
+    "aside": {
+      "based_label": "Baseado em",
+      "based_value": "Rio de Janeiro, Brasil — disponível remoto",
+      "focus_label": "Foco atual",
+      "focus_value": "UX Conversacional & AI Engineering",
+      "status_label": "Status",
+      "status_value": "Aberto a novas oportunidades"
+    }
+  },
+  "projects": {
+    "eyebrow": "Trabalhos selecionados",
+    "title": "Projetos em construção.",
+    "subtitle": "Uma seleção de experiências em UX conversacional e engenharia de IA.",
+    "view_details": "Ver detalhes",
+    "close": "Fechar",
+    "role": "Função",
+    "stack": "Tecnologias",
+    "year": "Ano"
+  },
+  "contact": {
+    "eyebrow": "Próximo passo",
+    "title": "Vamos conversar.",
+    "subtitle": "Estou aberto a colaborações, projetos freelance e oportunidades em times que pensam IA com apreço.",
+    "email_label": "Email",
+    "linkedin_label": "LinkedIn",
+    "github_label": "GitHub"
+  },
+  "chatbot": {
+    "title": "Converse com a IA do Pedro",
+    "subtitle": "Pergunte sobre projetos, experiência ou processo.",
+    "placeholder": "Digite sua mensagem...",
+    "send": "Enviar",
+    "greeting": "Olá! Sou um assistente treinado para falar sobre o trabalho do Pedro. Ainda estou em desenvolvimento!",
+    "open_label": "Abrir chat",
+    "close_label": "Fechar chat",
+    "thinking": "Pensando..."
+  },
+  "footer": {
+    "rights": "Do Brasil para o Mundo, Pedro de Freitas © 2026. Todos os direitos reservados."
+  }
+}

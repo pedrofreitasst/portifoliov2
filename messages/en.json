@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "about": "About",
+    "projects": "Projects",
+    "contact": "Get in touch",
+    "cta": "Get in touch"
+  },
+  "hero": {
+    "eyebrow": "Pedro Freitas — Designer & Engineer",
+    "headline_part1": "Between the word",
+    "headline_part2": "and the code.",
+    "subtitle": "I design conversational experiences with AI, where language and technology meet to create dialogues with purpose.",
+    "cta_primary": "Get in touch",
+    "cta_secondary": "See the work"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "A crossing between disciplines.",
+    "paragraph_1": "I'm Pedro Freitas, a professional in transition to Conversational UX Designer and AI Engineer. My path begins with listening — understanding how people say what they need — and matures in building: translating that listening into flows, prompts, and systems that respond with clarity.",
+    "paragraph_2": "I work at the edge between conversation design and AI engineering. I design assistants in IBM Watson, prototype flows in Figma, write prompts that carry intent, and develop the integrations that sustain these experiences in production.",
+    "paragraph_3": "I believe the best conversational interface is the one that disappears — when the technology steps back so the user's intention can speak louder.",
+    "skills_title": "Skills",
+    "categories": {
+      "conversational": "Conversational UX",
+      "ai": "Applied AI",
+      "dev": "Development",
+      "languages": "Languages"
+    },
+    "aside": {
+      "based_label": "Based in",
+      "based_value": "Brazil — available remote",
+      "focus_label": "Current focus",
+      "focus_value": "Conversational UX & AI Engineering",
+      "status_label": "Status",
+      "status_value": "Open to new opportunities"
+    }
+  },
+  "projects": {
+    "eyebrow": "Selected work",
+    "title": "Projects in motion.",
+    "subtitle": "A selection of experiences in conversational UX and AI engineering.",
+    "view_details": "View details",
+    "close": "Close",
+    "role": "Role",
+    "stack": "Stack",
+    "year": "Year"
+  },
+  "contact": {
+    "eyebrow": "Next step",
+    "title": "Let's talk.",
+    "subtitle": "Open to collaborations, freelance work, and opportunities with teams that approach AI with care.",
+    "email_label": "Email",
+    "linkedin_label": "LinkedIn",
+    "github_label": "GitHub"
+  },
+  "chatbot": {
+    "title": "Chat with Pedro's AI",
+    "subtitle": "Ask about projects, experience, or process.",
+    "placeholder": "Type your message...",
+    "send": "Send",
+    "greeting": "Hi! I'm an assistant trained to talk about Pedro's work. How can I help?",
+    "open_label": "Open chat",
+    "close_label": "Close chat",
+    "thinking": "Thinking..."
+  },
+  "footer": {
+    "rights": "Crafted with care by Pedro Freitas"
+  }
+}

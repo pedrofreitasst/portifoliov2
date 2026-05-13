@@ -1,0 +1,69 @@
+{
+  "nav": {
+    "about": "关于",
+    "projects": "作品",
+    "contact": "联系",
+    "cta": "联系我"
+  },
+  "hero": {
+    "eyebrow": "Pedro Freitas — 设计师与工程师",
+    "headline_part1": "在词语",
+    "headline_part2": "与代码之间。",
+    "subtitle": "我设计基于人工智能的对话体验，让语言与技术相遇，创造有目的的对话。",
+    "cta_primary": "联系我",
+    "cta_secondary": "了解作品"
+  },
+  "about": {
+    "eyebrow": "关于",
+    "title": "跨越学科的旅程。",
+    "paragraph_1": "我是 Pedro Freitas，正在向对话式 UX 设计师与 AI 工程师转型。我的旅程始于倾听——理解人们如何表达需求——并在构建中走向成熟：把倾听转化为流程、提示词和清晰回应的系统。",
+    "paragraph_2": "我工作在对话设计与人工智能工程的交界处。在 IBM Watson 中设计助手，在 Figma 中绘制流程原型，撰写承载意图的提示词，并开发支撑这些体验上线的集成。",
+    "paragraph_3": "我相信最好的对话界面是那种会消失的界面——当技术安静下来，让用户的意图更响亮。",
+    "skills_title": "技能",
+    "categories": {
+      "conversational": "对话式用户体验",
+      "ai": "应用人工智能",
+      "dev": "开发",
+      "languages": "语言"
+    },
+    "aside": {
+      "based_label": "所在地",
+      "based_value": "巴西 — 可远程合作",
+      "focus_label": "当前方向",
+      "focus_value": "对话式 UX 与 AI 工程",
+      "status_label": "状态",
+      "status_value": "对新机会持开放态度"
+    }
+  },
+  "projects": {
+    "eyebrow": "精选作品",
+    "title": "进行中的项目。",
+    "subtitle": "对话式 UX 与人工智能工程的精选案例。",
+    "view_details": "查看详情",
+    "close": "关闭",
+    "role": "角色",
+    "stack": "技术栈",
+    "year": "年份"
+  },
+  "contact": {
+    "eyebrow": "下一步",
+    "title": "聊聊吧。",
+    "subtitle": "欢迎合作、自由项目，以及与那些认真对待人工智能的团队的机会。",
+    "email_label": "邮箱",
+    "linkedin_label": "领英",
+    "github_label": "GitHub"
+  },
+  "chatbot": {
+    "title": "与 Pedro 的 AI 对话",
+    "subtitle": "询问项目、经验或工作流程。",
+    "placeholder": "输入你的消息...",
+    "send": "发送",
+    "greeting": "你好！我是一个训练用于介绍 Pedro 工作的助手。有什么可以帮你？",
+    "open_label": "打开聊天",
+    "close_label": "关闭聊天",
+    "thinking": "思考中..."
+  },
+  "footer": {
+    "rights": "由 Pedro Freitas 用心打造"
+  }
+}
