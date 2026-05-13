@@ -19,7 +19,7 @@ const cormorant = Cormorant_Garamond({
 
 
 export const metadata: Metadata = {
-  title: 'Pedro Freitas — UX Conversacional & AI Engineering',
+  title: 'Pedro de Freitas',
   description:
     'Portfólio de Pedro Freitas, profissional em transição para UX Designer Conversacional e AI Engineer. Projetos, processo e contato.',
   keywords: [
@@ -32,14 +32,14 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Pedro Freitas' }],
   openGraph: {
-    title: 'Pedro Freitas — UX Conversacional & AI Engineering',
+    title: 'Pedro de Freitas',
     description:
       'Portfólio pessoal entre design de conversa e engenharia de IA.',
     type: 'website',
     locale: 'pt_BR',
    
      url: 'https://pedrodefreitas.vercel.app/',
-     images: ['/og-image.jpg'],
+     images: ['/og-image.png'],
   },
   robots: { index: true, follow: true },
 };
