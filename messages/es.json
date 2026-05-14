@@ -2,23 +2,23 @@
   "nav": {
     "about": "Sobre mí",
     "projects": "Proyectos",
-    "contact": "Hablemos",
+    "contact": "Contacto",
     "cta": "Hablemos"
   },
   "hero": {
-    "eyebrow": "Pedro Freitas — Diseñador & Ingeniero",
-    "headline_part1": "Entre la palabra",
-    "headline_part2": "y el código.",
+    "eyebrow": "Pedro de Freitas - Diseñador, Ingeniero, Humano",
+    "headline_part1": "Corta el ruido,",
+    "headline_part2": "enfócate en lo que importa.",
     "subtitle": "Diseño experiencias conversacionales con IA, donde el lenguaje y la tecnología se encuentran para crear diálogos con propósito.",
-    "cta_primary": "Hablemos",
-    "cta_secondary": "Ver el trabajo"
+    "cta_primary": "Contacto",
+    "cta_secondary": "Conoce el trabajo"
   },
   "about": {
     "eyebrow": "Sobre mí",
-    "title": "Un cruce entre disciplinas.",
-    "paragraph_1": "Soy Pedro Freitas, profesional en transición hacia UX Designer Conversacional e AI Engineer. Mi trayectoria nace de la escucha — entender cómo las personas dicen lo que necesitan — y madura en la construcción: traducir esa escucha en flujos, prompts y sistemas que responden con claridad.",
-    "paragraph_2": "Trabajo en la frontera entre el diseño conversacional y la ingeniería de IA. Diseño asistentes en IBM Watson, prototipo flujos en Figma, escribo prompts cargados de intención y desarrollo las integraciones que sostienen esas experiencias en producción.",
-    "paragraph_3": "Creo que la mejor interfaz conversacional es la que desaparece — cuando la tecnología guarda silencio para que la intención del usuario hable más alto.",
+    "title": "Equilibrio entre dos mundos.",
+    "paragraph_1": "¡Hola! Soy Pedro de Freitas, profesional en transición de carrera hacia UX Designer Conversacional y AI Engineer. Mi trayectoria nace de la escucha, entender cómo las personas dicen lo que necesitan, y madura en la construcción: traducir esa escucha en flujos, prompts y sistemas que responden con claridad.",
+    "paragraph_2": "Con background en Comunicación Social, Diseño Gráfico y Gestión de Operaciones con clientes internacionales, tengo una visión diferenciada sobre cómo atender cada tipo de necesidad. Sea ella tecnológica o humana.",
+    "paragraph_3": "Casi una década de atención 1:1 con personas alrededor del mundo me dio una perspectiva singular: entender lo que alguien realmente necesita, habilidad que se traduce directamente en diseñar conversaciones claras, empáticas y eficientes.",
     "skills_title": "Habilidades",
     "categories": {
       "conversational": "UX Conversacional",
@@ -28,9 +28,9 @@
     },
     "aside": {
       "based_label": "Ubicado en",
-      "based_value": "Brasil — disponible en remoto",
+      "based_value": "Río de Janeiro, Brasil - disponible en remoto",
       "focus_label": "Foco actual",
-      "focus_value": "UX Conversacional e Ingeniería de IA",
+      "focus_value": "UX Conversacional & AI Engineering",
       "status_label": "Estado",
       "status_value": "Abierto a nuevas oportunidades"
     }
@@ -48,7 +48,7 @@
   "contact": {
     "eyebrow": "Siguiente paso",
     "title": "Conversemos.",
-    "subtitle": "Abierto a colaboraciones, proyectos freelance y oportunidades en equipos que piensan la IA con cuidado.",
+    "subtitle": "Estoy abierto a colaboraciones, proyectos freelance y oportunidades en equipos que piensan la IA con cariño.",
     "email_label": "Correo",
     "linkedin_label": "LinkedIn",
     "github_label": "GitHub"
@@ -58,12 +58,12 @@
     "subtitle": "Pregunta sobre proyectos, experiencia o proceso.",
     "placeholder": "Escribe tu mensaje...",
     "send": "Enviar",
-    "greeting": "¡Hola! Soy un asistente entrenado para hablar sobre el trabajo de Pedro. ¿Cómo puedo ayudarte?",
+    "greeting": "¡Hola! ¡Soy el Chatbot de Pedro!\n    o(￣▽￣)ブ ¡Estoy aquí para responder preguntas y compartir información sobre él!\n ¡Todavía estoy en desarrollo, pero creo que puedo ayudarte!",
     "open_label": "Abrir chat",
     "close_label": "Cerrar chat",
     "thinking": "Pensando..."
   },
   "footer": {
-    "rights": "Construido con cuidado por Pedro Freitas"
+    "rights": "De Brasil para el Mundo, Pedro de Freitas © 2026. Todos los derechos reservados."
   }
 }

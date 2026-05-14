@@ -6,19 +6,19 @@
     "cta": "联系我"
   },
   "hero": {
-    "eyebrow": "Pedro Freitas — 设计师与工程师",
-    "headline_part1": "在词语",
-    "headline_part2": "与代码之间。",
+    "eyebrow": "Pedro de Freitas - 设计师，工程师，人类",
+    "headline_part1": "屏蔽噪音，",
+    "headline_part2": "专注于真正重要的事。",
     "subtitle": "我设计基于人工智能的对话体验，让语言与技术相遇，创造有目的的对话。",
-    "cta_primary": "联系我",
+    "cta_primary": "联系",
     "cta_secondary": "了解作品"
   },
   "about": {
-    "eyebrow": "关于",
-    "title": "跨越学科的旅程。",
-    "paragraph_1": "我是 Pedro Freitas，正在向对话式 UX 设计师与 AI 工程师转型。我的旅程始于倾听——理解人们如何表达需求——并在构建中走向成熟：把倾听转化为流程、提示词和清晰回应的系统。",
-    "paragraph_2": "我工作在对话设计与人工智能工程的交界处。在 IBM Watson 中设计助手，在 Figma 中绘制流程原型，撰写承载意图的提示词，并开发支撑这些体验上线的集成。",
-    "paragraph_3": "我相信最好的对话界面是那种会消失的界面——当技术安静下来，让用户的意图更响亮。",
+    "eyebrow": "关于我",
+    "title": "两个世界之间的平衡。",
+    "paragraph_1": "你好！我是 Pedro de Freitas，正在向对话式 UX 设计师与 AI 工程师转型。我的旅程始于倾听，理解人们如何表达自己的需求，并在构建中走向成熟：把倾听转化为流程、提示词和清晰回应的系统。",
+    "paragraph_2": "我拥有传播学、平面设计以及与国际客户合作的运营管理背景，对于如何回应每一种需求，无论是技术性的还是人性的，我都有独到的视角。",
+    "paragraph_3": "近十年与世界各地的人进行 1:1 服务的经验，给了我独特的视角：真正理解一个人需要什么，这种能力直接转化为设计清晰、富有同理心且高效的对话。",
     "skills_title": "技能",
     "categories": {
       "conversational": "对话式用户体验",
@@ -28,7 +28,7 @@
     },
     "aside": {
       "based_label": "所在地",
-      "based_value": "巴西 — 可远程合作",
+      "based_value": "巴西里约热内卢 - 可远程合作",
       "focus_label": "当前方向",
       "focus_value": "对话式 UX 与 AI 工程",
       "status_label": "状态",
@@ -48,22 +48,22 @@
   "contact": {
     "eyebrow": "下一步",
     "title": "聊聊吧。",
-    "subtitle": "欢迎合作、自由项目，以及与那些认真对待人工智能的团队的机会。",
+    "subtitle": "欢迎合作、自由项目，以及与认真对待人工智能的团队携手的机会。",
     "email_label": "邮箱",
     "linkedin_label": "领英",
     "github_label": "GitHub"
   },
   "chatbot": {
-    "title": "与 Pedro 的 AI 对话",
+    "title": "和 Pedro 的 AI 聊天",
     "subtitle": "询问项目、经验或工作流程。",
     "placeholder": "输入你的消息...",
     "send": "发送",
-    "greeting": "你好！我是一个训练用于介绍 Pedro 工作的助手。有什么可以帮你？",
+    "greeting": "你好！我是 Pedro 的聊天机器人！\n    o(￣▽￣)ブ 我在这里回答问题，分享他的信息！\n 我还在开发中，但我应该能帮到你！",
     "open_label": "打开聊天",
     "close_label": "关闭聊天",
     "thinking": "思考中..."
   },
   "footer": {
-    "rights": "由 Pedro Freitas 用心打造"
+    "rights": "从巴西走向世界，Pedro de Freitas © 2026。版权所有。"
   }
 }

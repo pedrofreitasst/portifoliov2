@@ -44,13 +44,7 @@ interface WatsonResult {
   isAnythingElse: boolean;
 }
 
-/**
- * Normaliza texto vindo do Watson Actions:
- *  - <br />, <br/>, <br>           → \n
- *  - Múltiplas quebras seguidas    → no máx 2
- *  - Trim
- * Markdown (**bold**, *italic*, [link](url)) é tratado no cliente via renderer.
- */
+
 function normalizeWatsonText(text: string): string {
   return text
     .replace(/<br\s*\/?>/gi, '\n')
@@ -58,15 +52,7 @@ function normalizeWatsonText(text: string): string {
     .trim();
 }
 
-/**
- * Endpoint STATELESS do Watson v2 — funciona com modelo Actions (novo) e
- * Dialog clássico. Não precisa criar sessão (evita o 404 comum quando o
- * Assistant ID na verdade era um Environment ID).
- *
- * Para WATSON_ASSISTANT_ID, no painel "View API details" do Watson:
- *   - Modelo Actions: use o "Draft environment ID" ou "Live environment ID"
- *   - Modelo Dialog clássico: use o "Assistant ID"
- */
+
 async function askWatson(
   token: string,
   userMessage: string,
@@ -88,31 +74,23 @@ async function askWatson(
   const output = data.output ?? {};
   const intents: { intent: string; confidence: number }[] = output.intents ?? [];
   const genericResponses: { response_type: string; text?: string }[] = output.generic ?? [];
-  // O modelo Actions sinaliza fallback via output.actions[].name === 'system_fallback'.
-  // O modelo Dialog clássico sinaliza via confidence baixa em intents.
+
   const actions: { name?: string; type?: string }[] = output.actions ?? [];
 
   const topIntent = intents[0]?.intent ?? null;
   const confidence = intents[0]?.confidence ?? 0;
 
-  // Concatena todos os blocos de texto (Watson às vezes manda vários),
-  // separados por uma linha em branco, e normaliza tags de formatação.
+
   const textResponses = genericResponses.filter((r) => r.response_type === 'text');
   const rawText = textResponses.map((r) => r.text ?? '').filter(Boolean).join('\n\n');
   const responseText = rawText ? normalizeWatsonText(rawText) : null;
 
-  // Detecção robusta de fallback — funciona com Dialog clássico E modelo Actions:
-  //   1. Sem texto de resposta → Watson não tinha o que dizer
-  //   2. Modelo Actions disparou explicitamente system_fallback
-  //   3. Modelo Dialog clássico: há intents detectadas MAS a confiança é baixa
-  //      (importante: se não houver intents — modelo Actions —, não rejeita por isso)
   const hitFallbackAction = actions.some((a) => a.name === 'system_fallback');
   const lowConfidenceDialog =
     intents.length > 0 && confidence < WATSON_CONFIDENCE_THRESHOLD;
   const isAnythingElse = !responseText || hitFallbackAction || lowConfidenceDialog;
 
-  // Log de diagnóstico — útil enquanto está afinando o assistant.
-  // Remova ou troque por um logger estruturado em produção.
+
   console.log('[api/chat] Watson:', {
     hasText: !!responseText,
     topIntent,
@@ -125,7 +103,7 @@ async function askWatson(
 }
 
 
-// Anthropic Claude — resposta de fallback / perguntas abertas
+
 
 
 async function askClaude(
@@ -157,7 +135,7 @@ async function askClaude(
 }
 
 
-// Respostas mock 
+
 
 
 function mockReply(messages: ChatMessage[], locale: string): string {
@@ -166,13 +144,13 @@ function mockReply(messages: ChatMessage[], locale: string): string {
   const pool: Record<string, Record<string, string>> = {
     pt: {
       project: 'O Pedro vem trabalhando em assistentes no IBM Watson e com APIs de LLM. Quer falar por email? pedrofreitasst@gmail.com',
-      contact: 'Você pode falar com o Pedro por email, LinkedIn ou GitHub — links na seção "Fale Comigo".',
+      contact: 'Você pode falar com o Pedro por email, LinkedIn ou GitHub, links na seção "Fale Comigo".',
       experience: 'Pedro está em transição para UX Conversacional e AI Engineering, com base técnica em TypeScript, Next.js e Node.js.',
       default: 'Posso falar sobre projetos, experiência ou processo. O que te interessa?',
     },
     en: {
       project: 'Pedro has been working on Watson assistants and LLM API integrations. Want to connect via email? pedrofreitasst@gmail.com',
-      contact: 'You can reach Pedro via email, LinkedIn or GitHub — all links are in the "Contact" section.',
+      contact: 'You can reach Pedro via email, LinkedIn or GitHub, all links are in the "Contact" section.',
       experience: 'Pedro is transitioning into Conversational UX and AI Engineering, with a technical background in TypeScript, Next.js and Node.js.',
       default: "I can talk about Pedro's projects, experience or process. What would you like to know?",
     },
@@ -186,7 +164,7 @@ function mockReply(messages: ChatMessage[], locale: string): string {
 }
 
 
-// Handler principal
+
 
 
 export async function POST(req: Request) {
@@ -203,7 +181,7 @@ export async function POST(req: Request) {
     const hasWatson = !!(process.env.WATSON_API_KEY && process.env.WATSON_SERVICE_URL && process.env.WATSON_ASSISTANT_ID);
     const hasClaude = !!process.env.ANTHROPIC_API_KEY;
 
-    // Modo mock — nenhuma API configurada
+
     if (!hasWatson && !hasClaude) {
       await new Promise((r) => setTimeout(r, 600));
       return NextResponse.json({ reply: mockReply(messages, locale) });
@@ -213,7 +191,7 @@ export async function POST(req: Request) {
     let watsonConfidence = 0;
     let watsonErrorMessage: string | null = null;
 
-    // Passo 1: Watson (se configurado) — chamada STATELESS, sem session.
+
     if (hasWatson) {
       try {
         console.log('[api/chat] Step 1/2: obtendo token IAM...');
@@ -227,7 +205,7 @@ export async function POST(req: Request) {
         watsonIntent = watsonResult.topIntent;
         watsonConfidence = watsonResult.confidence;
 
-        // Watson respondeu com confiança suficiente
+
         if (!watsonResult.isAnythingElse && watsonResult.text) {
           return NextResponse.json({
             reply: watsonResult.text,
@@ -237,28 +215,25 @@ export async function POST(req: Request) {
           });
         }
       } catch (err) {
-        // Watson falhou — continua para Claude como fallback silencioso
+
         watsonErrorMessage = err instanceof Error ? err.message : String(err);
         console.error('[api/chat] Watson error (falling back to Claude):', watsonErrorMessage);
       }
     }
 
-    // Passo 2: Claude (fallback ou modo solo)
+
     if (hasClaude) {
       const reply = await askClaude(messages, watsonIntent);
       return NextResponse.json({
         reply,
         source: 'claude',
-        // Útil para depuração — pode remover em produção
+
         watsonIntent,
         watsonConfidence,
       });
     }
 
-    // Fallback final se Claude também não estiver configurado.
-    // Se você ver este log, significa que o Watson não respondeu com confiança
-    // suficiente (ou o assistant não foi reconhecido) E a chave Anthropic não
-    // está disponível — então o chat caiu pra resposta mock.
+
     console.warn('[api/chat] Caindo em mock', {
       hasWatson,
       hasClaude,
@@ -272,8 +247,7 @@ export async function POST(req: Request) {
       source: 'mock',
       watsonIntent,
       watsonConfidence,
-      // Erro do Watson exposto em dev — facilita debug pelo Network tab.
-      // Em produção, retire este campo.
+
       watsonError: watsonErrorMessage,
     });
   } catch (err) {
