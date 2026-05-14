@@ -58,7 +58,7 @@
     "subtitle": "Ask about projects, experience or process.",
     "placeholder": "Type your message...",
     "send": "Send",
-    "greeting": "Hi! I'm Pedro's chatbot!\n    o(￣▽￣)ブ I'm here to answer questions and share info about him!\n I'm still in development, but I think I can help you!",
+    "greeting": "Hi! I'm Pedro's chatbot!\n    o(￣▽￣)ブ I'm here to answer questions and share info about him!\n I'm still in development, but I think I can help you! \n At the moment, I can only reply in Brazilian Portuguese, sorry! (´。＿。｀)",
     "open_label": "Open chat",
     "close_label": "Close chat",
     "thinking": "Thinking..."

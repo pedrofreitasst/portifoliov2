@@ -9,15 +9,10 @@ interface Message {
   content: string;
 }
 
-// Detecta URLs e emails para transformá-los em links clicáveis.
-// Limita o tamanho dos matches pra evitar pegar lixo.
+
 const LINK_REGEX = /(https?:\/\/[^\s<>"']+|[\w.+-]+@[\w-]+\.[\w.-]+)/g;
 
-/**
- * Renderiza o conteúdo da mensagem do assistant preservando quebras de linha
- * (via whitespace-pre-line no container) e transformando URLs/emails em <a>.
- * Markdown simples (**bold**, *italic*) é renderizado também.
- */
+
 function renderMessageContent(content: string) {
   const segments: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -50,7 +45,7 @@ function renderMessageContent(content: string) {
   return segments;
 }
 
-// Markdown inline minimalista: **bold** e *italic*.
+
 function formatInline(text: string, key: string): React.ReactNode {
   const parts = text.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*)/g);
   return (
