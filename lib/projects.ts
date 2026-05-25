@@ -40,15 +40,18 @@ export const projects: Project[] = [
 
   },
   {
-    id: 'placeholder-3',
-    title: 'Projeto em desenvolvimento',
-    tag: 'Em breve',
+    id: 'ibm-skillsbuild-quiz',
+    title: 'Quiz mobile do IBM SkillsBuild · Redesign',
+    tag: 'UX/UI, UI Design',
     summary:
-      'Espaço reservado para um próximo projeto.',
+      'Um problema de UX que escondia uma falha de integridade da certificação.',
     description:
-      'Este é um placeholder. ',
-    role: '—',
-    stack: ['—'],
-    year: '—',
+      'Case study completo de redesign mobile-first para a tela de quiz do IBM SkillsBuild. Diagnóstico de três tipos de falhas estruturais durante uso diário da plataforma, incluindo uma falha de design que comprometia a integridade das certificações emitidas.\n\nA solução proposta mantém o sistema visual existente (paleta cobalto IBM, tipografia Plex, geometria Carbon Design System) e reorganiza a interação aplicando princípios de mobile-first, Lei de Fitts, e forcing function como proteção contra fraude.',
+    image:
+      'https://mir-s3-cdn-cf.behance.net/project_modules/fs/bb7a6d249974015.6a14304858c56.png',
+    role: 'UI/UX Designer',
+    stack: ['Figma'],
+    year: '2026',
+    link: 'https://www.behance.net/pedrohfreitas',
   },
 ];

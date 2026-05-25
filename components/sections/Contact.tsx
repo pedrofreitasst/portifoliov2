@@ -8,6 +8,7 @@ const CONTACT = {
   email: 'pedrofreitasst@gmail.com',
   linkedin: 'https://www.linkedin.com/in/pedro-de-freitas-a776711a1',
   github: 'https://github.com/pedrofreitasst',
+  behance: 'https://www.behance.net/pedrohfreitas',
 };
 
 const fadeUp = {
@@ -55,6 +56,11 @@ export default function Contact() {
       label: t('contact.github_label'),
       value: 'github.com/pedrofreitasst',
       href: CONTACT.github,
+    },
+    {
+      label: t('contact.behance_label'),
+      value: 'behance.net/pedrohfreitas',
+      href: CONTACT.behance,
     },
   ];
 

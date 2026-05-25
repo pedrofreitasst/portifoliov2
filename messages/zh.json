@@ -51,7 +51,8 @@
     "subtitle": "欢迎合作、自由项目，以及与认真对待人工智能的团队携手的机会。",
     "email_label": "邮箱",
     "linkedin_label": "领英",
-    "github_label": "GitHub"
+    "github_label": "GitHub",
+    "behance_label": "Behance"
   },
   "chatbot": {
     "title": "和 Pedro 的 AI 聊天",
