@@ -35,6 +35,7 @@ export const projects: Project[] = [
     description:
       'Construção de uma camada de retrieval-augmented generation sobre uma base de documentos técnicos. Implementei chunking semântico, busca vetorial e prompts estruturados para respostas com citações verificáveis.\n\nFoco em precisão — o assistente só responde quando há base documental suficiente; do contrário, indica essa limitação ao usuário.',
     role: 'AI Engineer',
+    
     stack: ['Next.js', 'TypeScript', 'Anthropic API', 'Embeddings'],
     year: '2026',
 
@@ -52,6 +53,21 @@ export const projects: Project[] = [
     role: 'UI/UX Designer',
     stack: ['Figma'],
     year: '2026',
-    link: 'https://www.behance.net/pedrohfreitas',
+    link: 'https://www.behance.net/gallery/249974015/Quiz-mobile-do-IBM-SkillsBuild-Redesign',
+  },
+  {
+    id: 'apotheosis',
+    title: 'Apotheosis · The Calming Energy Drink',
+    tag: 'Branding, Direção de Arte, ',
+    summary:
+      'A identidade de um produto autocontraditório: um energético que vende calma.',
+    description:
+      'Projeto pessoal de branding e direção de arte para um energético de sabor relaxante, uma contradição sustentada de propósito do conceito até a lata. A marca recusa o vocabulário visual da categoria (néon, raios, velocidade) e busca referências em farmácia antiga, escrita medieval e pintura neoclássica, com obras de domínio público no lugar de logo e ilustração.\n\nO sistema se mantém coeso em três variantes (Camomila, Flor de Cânhamo, Maracujá), cada uma com paleta e pintura próprias sobre a mesma arquitetura de rótulo. Tipografia em Zaslia e EB Garamond, paleta dessaturada com acento dourado, e copy de marca que leva o absurdo a sério.',
+    image:
+      '/projects/Mockup.png',
+    role: 'UI/UX Designer',
+    stack: ['Figma', 'Adobe Photoshop'],
+    year: '2026',
+    link: 'https://www.behance.net/gallery/250671229/Apotheosis-Calming-Energy-Drink',
   },
 ];
