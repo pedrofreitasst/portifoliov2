@@ -1,10 +1,8 @@
+import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
 
-
-const WATSON_CONFIDENCE_THRESHOLD = 0.7;
-
-
-const CLAUDE_SYSTEM_PROMPT = `Você é um assistente conversacional integrado ao portfólio de Pedro Freitas — UX Designer Conversacional e AI Engineer.
+// System prompt com a sua persona refinada para o portfólio
+const GEMINI_SYSTEM_PROMPT = `Você é um assistente conversacional integrado ao portfólio de Pedro Freitas — UX Designer Conversacional e AI Engineer.
 
 Responda perguntas sobre:
 - Trajetória: transição de carreira, experiência em design de conversa e engenharia de IA
@@ -20,127 +18,13 @@ type Role = 'user' | 'assistant';
 type ChatMessage = { role: Role; content: string };
 type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
 
+// Inicializa o cliente do Gemini
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY ?? '' });
 
-
-async function getWatsonToken(): Promise<string> {
-  const apiKey = encodeURIComponent(process.env.WATSON_API_KEY ?? '');
-  const res = await fetch('https://iam.cloud.ibm.com/identity/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${apiKey}`,
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Watson IAM error ${res.status}: ${text}`);
-  }
-  const data = await res.json();
-  return data.access_token as string;
-}
-
-interface WatsonResult {
-  text: string | null;
-  confidence: number;
-  topIntent: string | null;
-  isAnythingElse: boolean;
-}
-
-
-function normalizeWatsonText(text: string): string {
-  return text
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-
-async function askWatson(
-  token: string,
-  userMessage: string,
-): Promise<WatsonResult> {
-  const url = `${process.env.WATSON_SERVICE_URL}/v2/assistants/${process.env.WATSON_ASSISTANT_ID}/message?version=2024-08-25`;
-  console.log('[api/chat] Watson URL:', url);
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ input: { message_type: 'text', text: userMessage } }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Watson message error ${res.status}: ${text}`);
-  }
-  const data = await res.json();
-
-  const output = data.output ?? {};
-  const intents: { intent: string; confidence: number }[] = output.intents ?? [];
-  const genericResponses: { response_type: string; text?: string }[] = output.generic ?? [];
-
-  const actions: { name?: string; type?: string }[] = output.actions ?? [];
-
-  const topIntent = intents[0]?.intent ?? null;
-  const confidence = intents[0]?.confidence ?? 0;
-
-
-  const textResponses = genericResponses.filter((r) => r.response_type === 'text');
-  const rawText = textResponses.map((r) => r.text ?? '').filter(Boolean).join('\n\n');
-  const responseText = rawText ? normalizeWatsonText(rawText) : null;
-
-  const hitFallbackAction = actions.some((a) => a.name === 'system_fallback');
-  const lowConfidenceDialog =
-    intents.length > 0 && confidence < WATSON_CONFIDENCE_THRESHOLD;
-  const isAnythingElse = !responseText || hitFallbackAction || lowConfidenceDialog;
-
-
-  console.log('[api/chat] Watson:', {
-    hasText: !!responseText,
-    topIntent,
-    confidence,
-    hitFallbackAction,
-    isAnythingElse,
-  });
-
-  return { text: responseText, confidence, topIntent, isAnythingElse };
-}
-
-
-
-
-
-async function askClaude(
-  messages: ChatMessage[],
-  watsonIntent: string | null,
-): Promise<string> {
-  const systemWithContext = watsonIntent
-    ? `${CLAUDE_SYSTEM_PROMPT}\n\nContexto: o Watson detectou a intenção "${watsonIntent}" mas não tinha resposta suficientemente confiante para essa pergunta.`
-    : CLAUDE_SYSTEM_PROMPT;
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY ?? '',
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 512,
-      system: systemWithContext,
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
-    }),
-  });
-  if (!res.ok) throw new Error(`Anthropic error ${res.status}`);
-  const data = await res.json();
-  const block = (data.content ?? []).find((b: { type: string }) => b.type === 'text');
-  return (block as { text: string } | undefined)?.text ?? 'Desculpe, não consegui processar agora.';
-}
-
-
-
-
-
+// Banco de dados simulado para fallbacks internacionais
 function mockReply(messages: ChatMessage[], locale: string): string {
   const last = messages[messages.length - 1]?.content.toLowerCase() ?? '';
-
+  
   const pool: Record<string, Record<string, string>> = {
     pt: {
       project: 'O Pedro vem trabalhando em assistentes no IBM Watson e com APIs de LLM. Quer falar por email? pedrofreitasst@gmail.com',
@@ -154,18 +38,28 @@ function mockReply(messages: ChatMessage[], locale: string): string {
       experience: 'Pedro is transitioning into Conversational UX and AI Engineering, with a technical background in TypeScript, Next.js and Node.js.',
       default: "I can talk about Pedro's projects, experience or process. What would you like to know?",
     },
+    es: {
+      project: 'Pedro ha estado trabajando en asistentes de Watson e integraciones de API de LLM. ¿Quieres contactar por correo? pedrofreitasst@gmail.com',
+      contact: 'Puedes contactar con Pedro por correo electrónico, LinkedIn o GitHub, todos los enlaces están en la sección "Contacto".',
+      experience: 'Pedro está haciendo la transición a UX Conversacional y AI Engineering, con experiencia técnica en TypeScript, Next.js e Node.js.',
+      default: 'Puedo hablar sobre los proyectos, la experiencia o el proceso de Pedro. ¿Qué te gustaría saber?',
+    },
+    zh: {
+      project: 'Pedro 一直在研究 Watson 助手和 LLM API 集成。想通过电子邮件联系吗？ pedrofreitasst@gmail.com',
+      contact: '您可以通过电子邮件、LinkedIn 或 GitHub 联系 Pedro，所有链接都在“联系”部分。',
+      experience: 'Pedro 正在转型为对话式 UX 和 AI 工程，具有 TypeScript、Next.js 和 Node.js 的技术背景。',
+      default: '我可以谈谈 Pedro 的项目、经验或流程。你想知道什么？',
+    }
   };
 
-  const p = pool[locale] ?? pool.pt;
-  if (/projeto|project|watson|rag|llm/.test(last)) return p.project;
-  if (/contato|contact|email|fal/.test(last)) return p.contact;
-  if (/experiên|background|trajet/.test(last)) return p.experience;
+  const currentLocale = locale.startsWith('zh') ? 'zh' : locale;
+  const p = pool[currentLocale] ?? pool.pt;
+  
+  if (/projeto|project|proyecto|项目|watson|rag|llm/.test(last)) return p.project;
+  if (/contato|contact|contacto|联系|email|fal/.test(last)) return p.contact;
+  if (/experiên|background|trajet|experiencia|经验/.test(last)) return p.experience;
   return p.default;
 }
-
-
-
-
 
 export async function POST(req: Request) {
   try {
@@ -178,80 +72,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ reply: 'Mensagem vazia.' }, { status: 400 });
     }
 
-    const hasWatson = !!(process.env.WATSON_API_KEY && process.env.WATSON_SERVICE_URL && process.env.WATSON_ASSISTANT_ID);
-    const hasClaude = !!process.env.ANTHROPIC_API_KEY;
+    const hasGemini = !!process.env.GEMINI_API_KEY;
 
-
-    if (!hasWatson && !hasClaude) {
+    if (!hasGemini) {
+      console.warn('[api/chat] Chave GEMINI_API_KEY ausente. Caindo no mock.');
       await new Promise((r) => setTimeout(r, 600));
-      return NextResponse.json({ reply: mockReply(messages, locale) });
+      return NextResponse.json({ reply: mockReply(messages, locale), source: 'mock' });
     }
 
-    let watsonIntent: string | null = null;
-    let watsonConfidence = 0;
-    let watsonErrorMessage: string | null = null;
+    try {
+      // Mapeia o histórico para o formato da SDK do Gemini ('user' ou 'model')
+      const formattedContents = messages.map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }]
+      }));
 
-
-    if (hasWatson) {
-      try {
-        console.log('[api/chat] Step 1/2: obtendo token IAM...');
-        const token = await getWatsonToken();
-        console.log('[api/chat] Step 1/2: token obtido ✓');
-
-        console.log('[api/chat] Step 2/2: enviando mensagem ao assistant...');
-        const watsonResult = await askWatson(token, userMessage);
-        console.log('[api/chat] Step 2/2: resposta recebida ✓');
-
-        watsonIntent = watsonResult.topIntent;
-        watsonConfidence = watsonResult.confidence;
-
-
-        if (!watsonResult.isAnythingElse && watsonResult.text) {
-          return NextResponse.json({
-            reply: watsonResult.text,
-            source: 'watson',
-            intent: watsonIntent,
-            confidence: watsonConfidence,
-          });
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: formattedContents,
+        config: {
+          systemInstruction: GEMINI_SYSTEM_PROMPT,
+          temperature: 0.7, 
         }
-      } catch (err) {
+      });
 
-        watsonErrorMessage = err instanceof Error ? err.message : String(err);
-        console.error('[api/chat] Watson error (falling back to Claude):', watsonErrorMessage);
-      }
-    }
+      const replyText = response.text ?? 'Desculpe, não consegui formular uma resposta.';
 
-
-    if (hasClaude) {
-      const reply = await askClaude(messages, watsonIntent);
       return NextResponse.json({
-        reply,
-        source: 'claude',
+        reply: replyText,
+        source: 'gemini',
+        sessionId: body.sessionId // Retorna o ID enviado para o front não quebrar regras de estado
+      });
 
-        watsonIntent,
-        watsonConfidence,
+    } catch (geminiError) {
+      console.error('[api/chat] Erro na API do Gemini:', geminiError);
+      return NextResponse.json({
+        reply: mockReply(messages, locale),
+        source: 'mock',
+        error: String(geminiError),
+        sessionId: body.sessionId
       });
     }
 
-
-    console.warn('[api/chat] Caindo em mock', {
-      hasWatson,
-      hasClaude,
-      watsonIntent,
-      watsonConfidence,
-      watsonErrorMessage,
-    });
-    await new Promise((r) => setTimeout(r, 600));
-    return NextResponse.json({
-      reply: mockReply(messages, locale),
-      source: 'mock',
-      watsonIntent,
-      watsonConfidence,
-
-      watsonError: watsonErrorMessage,
-    });
   } catch (err) {
-    console.error('[api/chat] erro:', err);
+    console.error('[api/chat] Erro crítico interno:', err);
     return NextResponse.json(
       { reply: 'Erro interno. Tente novamente em instantes.' },
       { status: 500 },
