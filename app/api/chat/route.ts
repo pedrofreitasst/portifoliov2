@@ -35,7 +35,6 @@ function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
 }
 
 export async function POST(req: Request) {
-  // Variável declarada fora do escopo do try para estar disponível no catch caso necessário
   let currentMessages: ChatMessage[] = [];
   let currentLocale = 'pt';
 
@@ -44,19 +43,30 @@ export async function POST(req: Request) {
     currentMessages = body.messages || [];
     currentLocale = body.locale || 'pt';
 
-    // 1. Validação de segurança caso a chave não esteja acessível
     if (!process.env.GEMINI_API_KEY) {
-      console.warn("GEMINI_API_KEY não configurada no ambiente.");
+      console.warn("GEMINI_API_KEY não configurada.");
       return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
     }
 
-    // 2. Mapeamento de Roles: O SDK do Gemini exige 'model' no lugar de 'assistant'
-    const contents = currentMessages.map(msg => ({
+    // 1. TRATAMENTO DE HISTÓRICO: Remove saudações/mensagens iniciais do bot para não quebrar a ordem do Gemini
+    // Encontra o índice da primeira mensagem real que o usuário enviou
+    const firstUserIndex = currentMessages.findIndex(msg => msg.role === 'user');
+    
+    // Se não achar nenhuma mensagem de usuário (o que é raro), envia apenas o input atual
+    const validHistory = firstUserIndex !== -1 ? currentMessages.slice(firstUserIndex) : [];
+
+    // 2. Mapeia para o formato exato esperado pelo SDK novo
+    const contents = validHistory.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content }]
+      parts: [{ text: msg.content || '' }]
     }));
 
-    // 3. Chamada oficial à API do Gemini usando o modelo estável recomendado
+    // Se o array de conteúdos terminar vazio por algum motivo, não manda histórico
+    if (contents.length === 0) {
+      return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
+    }
+
+    // 3. Chamada à API
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: contents,
@@ -70,8 +80,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ text: replyText });
 
   } catch (error) {
-    console.error("Erro detectado na rota do Gemini:", error);
-    // Retorna o mock respeitando a tipagem correta de array exigida pelo TypeScript
+    console.error("Erro crítico na chamada do Gemini:", error);
     return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
   }
 }
