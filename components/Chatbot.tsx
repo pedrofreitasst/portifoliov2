@@ -111,7 +111,7 @@ export default function Chatbot() {
       const data = await res.json();
       if (data.sessionId) setSessionId(data.sessionId); 
       const reply =
-        data?.reply ??
+        data?.text ??
         'Desculpe, não consegui processar agora. Tente novamente em instantes.';
       setMessages((m) => [...m, { role: 'assistant', content: reply }]);
     } catch {
