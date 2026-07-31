@@ -59,7 +59,7 @@
     "subtitle": "询问项目、经验或工作流程。",
     "placeholder": "输入你的消息...",
     "send": "发送",
-    "greeting": "你好！我是 Pedro 的聊天机器人！\n ┬┴┬┴┤･ω･)ﾉ 我遇到了维护问题；我的 IBM 云账户不知何故被取消了，而且 Anthropic API 也出了问题。我正在寻找替代方案！",
+    "greeting": "你好！我是 Pedro 的聊天机器人！\n    o(￣▽￣)ブ 我在这里回答问题，分享他的信息！",
     "open_label": "打开聊天",
     "close_label": "关闭聊天",
     "thinking": "思考中..."
