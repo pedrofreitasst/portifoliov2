@@ -122,26 +122,26 @@ export async function POST(req: Request) {
 
     let replyText: string | null = null;
 
-    // ==========================================
-    // TENTA GROQ PRIMEIRO
-    // ==========================================
-    if (process.env.GROQ_API_KEY) {
-      try {
-        console.log('🟢 Tentando Groq...');
-        const response = await groq.chat.completions.create({
-          messages: messages, // Agora com a tipagem correta!
-          model: 'mixtral-8x7b-32768',
-          temperature: 0.7,
-          max_tokens: 500,
-        });
-        replyText = response.choices[0]?.message?.content || null;
-        if (replyText) {
-          console.log('✅ Groq funcionou!');
-        }
-      } catch (error) {
-        console.warn('⚠️ Groq falhou:', error);
-      }
+// ==========================================
+// TENTA GROQ PRIMEIRO
+// ==========================================
+if (process.env.GROQ_API_KEY) {
+  try {
+    console.log('🟢 Tentando Groq...');
+    const response = await groq.chat.completions.create({
+      messages: messages,
+      model: 'llama-3.3-70b-versatile', // ✅ Modelo atualizado!
+      temperature: 0.7,
+      max_tokens: 500,
+    });
+    replyText = response.choices[0]?.message?.content || null;
+    if (replyText) {
+      console.log('✅ Groq funcionou!');
     }
+  } catch (error) {
+    console.warn('⚠️ Groq falhou:', error);
+  }
+}
 
     // ==========================================
     // SE GROQ FALHOU, TENTA OPENROUTER
