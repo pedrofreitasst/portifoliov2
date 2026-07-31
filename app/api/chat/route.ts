@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     // 3. Chamada à API
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       contents: contents,
       config: {
         systemInstruction: GEMINI_SYSTEM_PROMPT,
