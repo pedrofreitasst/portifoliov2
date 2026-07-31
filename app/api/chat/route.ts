@@ -66,10 +66,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
     }
 
-    // 3. Chamada à API
-    // 3. Chamada à API com o modelo atualizado para 2026
+   // 3. Alterado para 1.5-flash para contornar a restrição de cota zero
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash', // Atualizado de 2.5-flash para 2.0-flash
+      model: 'gemini-1.5-flash', 
       contents: contents,
       config: {
         systemInstruction: GEMINI_SYSTEM_PROMPT,
