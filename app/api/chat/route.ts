@@ -1,7 +1,16 @@
-import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
+import Groq from 'groq-sdk';
 
-// System prompt com a sua persona refinada para o portfólio
+// ============================================
+// 1. DEFINIÇÕES DE TIPO
+// ============================================
+type Role = 'user' | 'assistant';
+type ChatMessage = { role: Role; content: string };
+type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
+
+// ============================================
+// 2. SYSTEM PROMPT
+// ============================================
 const GEMINI_SYSTEM_PROMPT = `Você é um assistente conversacional integrado ao portfólio de Pedro Freitas — UX Designer Conversacional e AI Engineer.
 
 Responda perguntas sobre:
@@ -14,14 +23,9 @@ Responda perguntas sobre:
 Tom: profissional, direto e conversacional. Se não tiver a informação, indique o email de contato.
 Responda no idioma da mensagem do usuário.`;
 
-type Role = 'user' | 'assistant';
-type ChatMessage = { role: Role; content: string };
-type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
-
-// Inicializa o cliente oficial do Gemini com a chave configurada na Vercel
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-// Função Fallback (Mock) para consistência multilíngue caso a API falhe ou falte a Key
+// ============================================
+// 3. FUNÇÃO MOCK
+// ============================================
 function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
   const pool: Record<string, { default: string }> = {
     pt: { default: "Posso falar sobre projetos, experiência ou processo. O que te interessa?" },
@@ -34,6 +38,50 @@ function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
   return currentPool.default;
 }
 
+// ============================================
+// 4. INICIALIZA OS CLIENTES
+// ============================================
+const groq = new Groq({ 
+  apiKey: process.env.GROQ_API_KEY 
+});
+
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
+// ============================================
+// 5. FUNÇÃO PARA OPENROUTER (FALLBACK)
+// ============================================
+async function callOpenRouter(messages: any[], locale: string) {
+  if (!OPENROUTER_API_KEY) return null;
+  
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'HTTP-Referer': 'https://pedrodefreitas.vercel.app',
+        'X-Title': 'Portfolio Pedro Freitas',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.0-flash-exp:free',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch (error) {
+    console.error('Erro no OpenRouter:', error);
+    return null;
+  }
+}
+
+// ============================================
+// 6. FUNÇÃO PRINCIPAL (POST)
+// ============================================
 export async function POST(req: Request) {
   let currentMessages: ChatMessage[] = [];
   let currentLocale = 'pt';
@@ -43,44 +91,87 @@ export async function POST(req: Request) {
     currentMessages = body.messages || [];
     currentLocale = body.locale || 'pt';
 
-    if (!process.env.GEMINI_API_KEY) {
-      console.warn("GEMINI_API_KEY não configurada.");
+    // Verifica se tem mensagens
+    if (currentMessages.length === 0) {
       return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
     }
 
-    // 1. TRATAMENTO DE HISTÓRICO: Remove saudações/mensagens iniciais do bot para não quebrar a ordem do Gemini
-    // Encontra o índice da primeira mensagem real que o usuário enviou
+    // Tratamento de histórico: encontra a primeira mensagem do usuário
     const firstUserIndex = currentMessages.findIndex(msg => msg.role === 'user');
-    
-    // Se não achar nenhuma mensagem de usuário (o que é raro), envia apenas o input atual
-    const validHistory = firstUserIndex !== -1 ? currentMessages.slice(firstUserIndex) : [];
+    const validHistory = firstUserIndex !== -1 ? currentMessages.slice(firstUserIndex) : currentMessages;
 
-    // 2. Mapeia para o formato exato esperado pelo SDK novo
-    const contents = validHistory.map(msg => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content || '' }]
-    }));
-
-    // Se o array de conteúdos terminar vazio por algum motivo, não manda histórico
-    if (contents.length === 0) {
+    if (validHistory.length === 0) {
       return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
     }
 
-// 3. Chamada à API ajustada para o modelo estável compatível com a nova chave
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash', // Retorne para o 2.0-flash
-      contents: contents,
-      config: {
-        systemInstruction: GEMINI_SYSTEM_PROMPT,
-        temperature: 0.7,
-      }
-    });
+    // ==========================================
+    // PREPARA AS MENSAGENS COM A TIPAGEM CORRETA
+    // ==========================================
+    // Usamos 'as const' para garantir que os papéis são literais e 
+    // fazemos um cast para o tipo que o Groq espera
+    const messages: Groq.Chat.ChatCompletionMessageParam[] = [
+      { 
+        role: 'system' as const, 
+        content: GEMINI_SYSTEM_PROMPT 
+      },
+      ...validHistory.map((msg): Groq.Chat.ChatCompletionMessageParam => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content
+      }))
+    ];
 
-    const replyText = response.text || mockReply(currentMessages, currentLocale);
+    let replyText: string | null = null;
+
+    // ==========================================
+    // TENTA GROQ PRIMEIRO
+    // ==========================================
+    if (process.env.GROQ_API_KEY) {
+      try {
+        console.log('🟢 Tentando Groq...');
+        const response = await groq.chat.completions.create({
+          messages: messages, // Agora com a tipagem correta!
+          model: 'mixtral-8x7b-32768',
+          temperature: 0.7,
+          max_tokens: 500,
+        });
+        replyText = response.choices[0]?.message?.content || null;
+        if (replyText) {
+          console.log('✅ Groq funcionou!');
+        }
+      } catch (error) {
+        console.warn('⚠️ Groq falhou:', error);
+      }
+    }
+
+    // ==========================================
+    // SE GROQ FALHOU, TENTA OPENROUTER
+    // ==========================================
+    if (!replyText && OPENROUTER_API_KEY) {
+      try {
+        console.log('🟡 Tentando OpenRouter (fallback)...');
+        replyText = await callOpenRouter(messages, currentLocale);
+        if (replyText) {
+          console.log('✅ OpenRouter funcionou!');
+        }
+      } catch (error) {
+        console.warn('⚠️ OpenRouter falhou:', error);
+      }
+    }
+
+    // ==========================================
+    // SE TUDO FALHOU, USA O MOCK
+    // ==========================================
+    replyText = replyText || mockReply(currentMessages, currentLocale);
+    
+    if (!replyText) {
+      console.warn('🔴 Todas as APIs falharam, usando mock');
+      replyText = mockReply(currentMessages, currentLocale);
+    }
+
     return NextResponse.json({ text: replyText });
 
   } catch (error) {
-    console.error("Erro crítico na chamada do Gemini:", error);
+    console.error("❌ Erro crítico:", error);
     return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
   }
 }
