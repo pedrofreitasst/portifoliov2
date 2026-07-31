@@ -66,9 +66,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ text: mockReply(currentMessages, currentLocale) });
     }
 
-  // 3. Voltando para o modelo padrão compatível com o novo SDK
+// 3. Chamada à API ajustada para o modelo estável compatível com a nova chave
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash', 
+      model: 'gemini-2.0-flash', // Retorne para o 2.0-flash
       contents: contents,
       config: {
         systemInstruction: GEMINI_SYSTEM_PROMPT,
