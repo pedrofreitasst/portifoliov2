@@ -1,7 +1,7 @@
 // app/api/chat/route.ts
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
-import { saveChatLog } from '@/lib/chatLogger'; // 🔥 NOVO
+import { saveChatLog } from '@/lib/chatLogger';
 
 // ============================================
 // 1. SYSTEM PROMPT (versão melhorada)
@@ -17,7 +17,7 @@ Sobre a trajetória de Pedro:
 Habilidades principais:
 - Design: Figma, UX Writing, Design System, Prototipação, Acessibilidade
 - Desenvolvimento: TypeScript, React, Next.js, Node.js, MongoDB, Git
-- IA: IBM Watson Assistant, Prompt Engineering, APIs de LLMs (Groq, OpenRouter, Gemini e Anthropic)
+- IA: IBM Watson Assistant, Prompt Engineering, APIs de LLMs (Groq, OpenRouter, Gemini)
 
 Projetos relevantes:
 - Portfólio pessoal com chatbot integrado e arquitetura multi-fallback (Groq + OpenRouter)
@@ -25,7 +25,7 @@ Projetos relevantes:
 - App full-stack com Node.js, Express e MongoDB
 - Projetos de branding e identidade visual (ex: Apotheosis)
 
-Pedro tem 7 certificações IBM em IA aplicada, inglês fluente e aprendendo mandarim.
+Pedro tem 7 certificações IBM em IA aplicada e inglês fluente.
 
 ---
 
@@ -58,9 +58,20 @@ type ChatMessage = { role: Role; content: string };
 type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
 
 // ============================================
-// 3. INICIALIZA GROQ
+// 3. FUNÇÃO LAZY PARA GROQ
 // ============================================
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+function getGroqClient() {
+  if (!process.env.GROQ_API_KEY) {
+    console.log('ℹ️ GROQ_API_KEY não configurada, Groq não será usado');
+    return null;
+  }
+  try {
+    return new Groq({ apiKey: process.env.GROQ_API_KEY });
+  } catch (error) {
+    console.warn('⚠️ Erro ao inicializar Groq:', error);
+    return null;
+  }
+}
 
 // ============================================
 // 4. FUNÇÃO MOCK (FALLBACK)
@@ -81,7 +92,7 @@ function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
 // 5. FUNÇÃO PRINCIPAL (POST)
 // ============================================
 export async function POST(req: Request) {
-  const startTime = Date.now(); // 🔥 NOVO: para medir tempo de resposta
+  const startTime = Date.now();
   let currentMessages: ChatMessage[] = [];
   let currentLocale = 'pt';
   let sessionId: string | null = null;
@@ -96,28 +107,46 @@ export async function POST(req: Request) {
     currentLocale = body.locale || 'pt';
     sessionId = body.sessionId || crypto.randomUUID();
 
-    // Verifica se a chave API está configurada
-    if (!process.env.GROQ_API_KEY) {
-      console.warn("GROQ_API_KEY não configurada. Usando mock.");
-      providerUsed = 'mock';
+    // FORÇA MOCK EM DESENVOLVIMENTO LOCAL (para testar logs)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 Modo desenvolvimento: usando mock para testar logs');
       replyText = mockReply(currentMessages, currentLocale);
+      providerUsed = 'mock';
       success = true;
       
-      // 🔥 SALVA LOG (mesmo em fallback)
       const responseTimeMs = Date.now() - startTime;
-      saveChatLog({
+      await saveChatLog({
         sessionId: sessionId || 'unknown',
         userMessage: currentMessages[currentMessages.length - 1]?.content || '',
         botReply: replyText,
         providerUsed,
         responseTimeMs,
         success,
-        errorMessage,
         locale: currentLocale,
-        userAgent: req.headers.get('user-agent') || undefined,
-      }).catch(() => {});
+      });
+      
+      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
+    }
 
-      return NextResponse.json({ text: replyText, sessionId, provider: providerUsed });
+    // Verifica se a chave API está configurada
+    if (!process.env.GROQ_API_KEY) {
+      console.warn("GROQ_API_KEY não configurada. Usando mock.");
+      replyText = mockReply(currentMessages, currentLocale);
+      providerUsed = 'mock';
+      success = true;
+      
+      const responseTimeMs = Date.now() - startTime;
+      await saveChatLog({
+        sessionId: sessionId || 'unknown',
+        userMessage: currentMessages[currentMessages.length - 1]?.content || '',
+        botReply: replyText,
+        providerUsed,
+        responseTimeMs,
+        success,
+        locale: currentLocale,
+      });
+      
+      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
     }
 
     // Tratamento de histórico
@@ -125,25 +154,22 @@ export async function POST(req: Request) {
     const validHistory = firstUserIndex !== -1 ? currentMessages.slice(firstUserIndex) : currentMessages;
 
     if (validHistory.length === 0) {
-      providerUsed = 'mock';
       replyText = mockReply(currentMessages, currentLocale);
+      providerUsed = 'mock';
       success = true;
-
-      // 🔥 SALVA LOG
+      
       const responseTimeMs = Date.now() - startTime;
-      saveChatLog({
+      await saveChatLog({
         sessionId: sessionId || 'unknown',
         userMessage: currentMessages[currentMessages.length - 1]?.content || '',
         botReply: replyText,
         providerUsed,
         responseTimeMs,
         success,
-        errorMessage,
         locale: currentLocale,
-        userAgent: req.headers.get('user-agent') || undefined,
-      }).catch(() => {});
-
-      return NextResponse.json({ text: replyText, sessionId, provider: providerUsed });
+      });
+      
+      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
     }
 
     // Prepara mensagens para a API
@@ -156,12 +182,13 @@ export async function POST(req: Request) {
     ];
 
     // ==========================================
-    // TENTA GROQ PRIMEIRO
+    // TENTA GROQ PRIMEIRO (usando cliente lazy)
     // ==========================================
-    if (process.env.GROQ_API_KEY) {
+    const groqClient = getGroqClient();
+    if (groqClient) {
       try {
         providerUsed = 'groq';
-        const response = await groq.chat.completions.create({
+        const response = await groqClient.chat.completions.create({
           messages: messages,
           model: 'llama-3.3-70b-versatile',
           temperature: 0.7,
@@ -209,9 +236,9 @@ export async function POST(req: Request) {
       success = true;
     }
 
-    // 🔥 SALVA O LOG (ASSÍNCRONO, NÃO BLOQUEIA RESPOSTA)
+    // 🔥 SALVA O LOG ANTES DE RETORNAR
     const responseTimeMs = Date.now() - startTime;
-    saveChatLog({
+    await saveChatLog({
       sessionId: sessionId || 'unknown',
       userMessage: currentMessages[currentMessages.length - 1]?.content || '',
       botReply: replyText,
@@ -220,8 +247,7 @@ export async function POST(req: Request) {
       success,
       errorMessage,
       locale: currentLocale,
-      userAgent: req.headers.get('user-agent') || undefined,
-    }).catch(() => {});
+    });
 
     return NextResponse.json({ 
       text: replyText, 
@@ -236,9 +262,9 @@ export async function POST(req: Request) {
     
     console.error('❌ Erro crítico na chamada do chat:', error);
 
-    // 🔥 SALVA LOG DE ERRO
+    // 🔥 SALVA LOG DE ERRO ANTES DE RETORNAR
     const responseTimeMs = Date.now() - startTime;
-    saveChatLog({
+    await saveChatLog({
       sessionId: sessionId || 'unknown',
       userMessage: currentMessages[currentMessages.length - 1]?.content || '',
       botReply: replyText,
@@ -247,8 +273,7 @@ export async function POST(req: Request) {
       success: false,
       errorMessage,
       locale: currentLocale,
-      userAgent: req.headers.get('user-agent') || undefined,
-    }).catch(() => {});
+    });
 
     return NextResponse.json({ text: replyText });
   }
