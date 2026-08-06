@@ -1,5 +1,9 @@
 // lib/mongodb.ts
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+// 🔥 Carrega o .env.local explicitamente
+dotenv.config({ path: '.env.local.example' });
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -9,18 +13,17 @@ if (!MONGODB_URI) {
   );
 }
 
-// 🛡️ Tipagem explícita para o cache global
+console.log('🔍 MONGODB_URI carregada:', MONGODB_URI.substring(0, 20) + '...');
+
 interface MongooseCache {
   conn: mongoose.Connection | null;
   promise: Promise<typeof mongoose> | null;
 }
 
-// 🔧 Extensão segura do objeto global
 declare global {
   var mongoose: MongooseCache;
 }
 
-// Inicializa o cache global
 let cached = global.mongoose;
 
 if (!cached) {
@@ -28,18 +31,16 @@ if (!cached) {
 }
 
 export async function connectToDatabase(): Promise<typeof mongoose> {
-  // Se já existe conexão ativa, reutiliza
   if (cached.conn) {
-    console.log('🔌 Reutilizando conexão existente com MongoDB');
+    console.log('🔌 Reutilizando conexão existente');
     return cached.conn as unknown as typeof mongoose;
   }
 
-  // Se não tem promise em andamento, cria uma nova
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      maxPoolSize: 10, // Máximo de conexões simultâneas
-      serverSelectionTimeoutMS: 5000, // Timeout de 5 segundos
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
     };
 
     console.log('🔄 Conectando ao MongoDB Atlas...');
@@ -47,18 +48,16 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
     cached.promise = mongoose
       .connect(MONGODB_URI, opts)
       .then((mongooseInstance) => {
-        console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
+        console.log('✅ Conectado ao MongoDB Atlas!');
         return mongooseInstance;
       })
       .catch((error) => {
-        console.error('❌ Erro ao conectar ao MongoDB:', error);
-        // Reseta a promise para permitir novas tentativas
+        console.error('❌ Erro ao conectar:', error);
         cached.promise = null;
         throw error;
       });
   }
 
-  // Aguarda a conexão
   try {
     const mongooseInstance = await cached.promise;
     cached.conn = mongooseInstance.connection;

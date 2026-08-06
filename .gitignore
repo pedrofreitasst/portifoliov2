@@ -17,6 +17,7 @@ coverage/
 # variáveis de ambiente — NUNCA commitar chaves de API
 .env
 .env.local
+.env.local.example
 .env*.local
 
 # logs
