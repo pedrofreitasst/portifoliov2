@@ -18,6 +18,7 @@ Habilidades principais:
 - Design: Figma, UX Writing, Design System, Prototipação, Acessibilidade
 - Desenvolvimento: TypeScript, React, Next.js, Node.js, MongoDB, Git
 - IA: IBM Watson Assistant, Prompt Engineering, APIs de LLMs (Groq, OpenRouter, Gemini)
+- Analise de Dados: MongoDB, Google Analytics
 
 Projetos relevantes:
 - Portfólio pessoal com chatbot integrado e arquitetura multi-fallback (Groq + OpenRouter)
@@ -26,7 +27,7 @@ Projetos relevantes:
 - Projetos de branding e identidade visual (ex: Apotheosis)
 
 
-Pedro tem 7 certificações IBM em IA aplicada e inglês fluente.
+Pedro tem 7 certificações IBM em IA aplicada, Certificado atualizado de Análise de Dados pelo Google Analytics e inglês fluente.
 
 ---
 
