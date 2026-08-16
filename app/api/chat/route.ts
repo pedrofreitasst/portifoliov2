@@ -194,7 +194,7 @@ export async function POST(req: Request) {
         providerUsed = 'groq';
         const response = await groqClient.chat.completions.create({
           messages: messages,
-          model: 'llama-3.3-70b-versatile',
+          model: 'qwen3.6-27b',
           temperature: 0.7,
           max_tokens: 500,
         });
