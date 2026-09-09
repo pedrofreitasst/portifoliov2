@@ -7,8 +7,9 @@ import { useT } from '@/lib/i18n';
 const CONTACT = {
   email: 'pedrofreitasst@gmail.com',
   linkedin: 'https://www.linkedin.com/in/pedro-de-freitas-a776711a1',
-  github: 'https://github.com/pedrofreitasst',
+  github: 'https://github.com/pedrofreitasstTESTE',
   behance: 'https://www.behance.net/pedrohfreitas',
+  dribble: ''
 };
 
 const fadeUp = {
