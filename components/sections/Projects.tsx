@@ -1,61 +1,59 @@
-'use client';
+import Link from 'next/link';
+import Reveal from '@/components/Reveal';
+import ProjectThumb from '@/components/ProjectThumb';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import ProjectCard from '@/components/ui/ProjectCard';
-import ProjectModal from '@/components/ui/ProjectModal';
-import { projects, type Project } from '@/lib/projects';
-import { useT } from '@/lib/i18n';
-
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.8, ease: 'easeOut' as const },
-};
+const PROJECTS = [
+  {
+    slug: 'skillsbuild',
+    title: 'IBM SkillsBuild',
+    description:
+      'A mobile-first redesign that uncovered a flaw in the certification process.',
+    image: '/projects/skillsbuild.png',
+  },
+  {
+    slug: 'chatbot',
+    title: 'Portfolio',
+    description:
+      'Live hero chat with multi-provider fallback and data analytics. A product demo and case study in one.',
+    image: '/projects/chatbot.png',
+  },
+  {
+    slug: 'apotheosis',
+    title: 'Apotheosis',
+    description: 'Branding exploration of a relaxant flavored energy drink.',
+    image: '/projects/apotheosis.png',
+  },
+  {
+    slug: 'personal',
+    title: 'Personal Work',
+    description:
+      'Designs, posters, creative coding, personal pieces from now and other eras.',
+    image: '/projects/personal.png',
+  },
+] as const;
 
 export default function Projects() {
-  const { t } = useT();
-  const [active, setActive] = useState<Project | null>(null);
-
   return (
-    <section id="projects" className="relative w-full border-t border-ink-200/40 bg-ink py-32 lg:py-40">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.span
-          {...fadeUp}
-          className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-cream-dim"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden />
-          {t('projects.eyebrow')}
-        </motion.span>
-        <motion.h2
-          {...fadeUp}
-          transition={{ ...fadeUp.transition, delay: 0.1 }}
-          className="font-serif text-display-sm text-cream"
-        >
-          {t('projects.title')}
-        </motion.h2>
-        <motion.p
-          {...fadeUp}
-          transition={{ ...fadeUp.transition, delay: 0.2 }}
-          className="mt-6 max-w-2xl text-base leading-relaxed text-cream-muted"
-        >
-          {t('projects.subtitle')}
-        </motion.p>
-
-        <motion.div
-          {...fadeUp}
-          transition={{ ...fadeUp.transition, delay: 0.25 }}
-          className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-        >
-          
-          {projects.map((p) => (
-            <ProjectCard key={p.id} project={p} onOpen={() => setActive(p)} />
-          ))}
-        </motion.div>
+    <section id="works" className="bg-white pb-20 pt-10 text-black md:pb-28 md:pt-8">
+      <div className="mx-auto flex max-w-5xl flex-col gap-16 px-6 md:gap-24 lg:px-12">
+        {PROJECTS.map((project, i) => (
+          <Reveal
+            key={project.slug}
+            immediate={i === 0}
+            delay={i === 0 ? 0.12 : (i - 1) * 0.05}
+          >
+            <Link href={`/case/${project.slug}`} className="group block">
+              <ProjectThumb src={project.image} priority={i === 0} />
+              <h3 className="link-underline-group mt-5 font-display text-title font-bold md:text-section">
+                {project.title}
+              </h3>
+              <p className="mt-2 max-w-2xl font-body text-body font-normal text-black/60">
+                {project.description}
+              </p>
+            </Link>
+          </Reveal>
+        ))}
       </div>
-
-      <ProjectModal project={active} onClose={() => setActive(null)} />
     </section>
   );
 }

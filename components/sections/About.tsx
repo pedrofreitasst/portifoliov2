@@ -1,158 +1,211 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import SkillBar from '@/components/ui/SkillBar';
-import { useT } from '@/lib/i18n';
+import { useRef, useState } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
+import Reveal from '@/components/Reveal';
 
+const SKILL_GROUPS = [
+  {
+    title: 'Product & UX',
+    items: ['UX Strategy', 'Research', 'Prototyping', 'User flows'],
+  },
+  {
+    title: 'Conversational & AI',
+    items: ['Conversation design', 'Prompt Engineering', 'RAG / Agents'],
+  },
+  {
+    title: 'Design & Build',
+    items: ['Figma', 'Next.js / TypeScript', 'Node.js'],
+  },
+] as const;
 
-const skillGroups = [
-  {
-    key: 'conversational',
-    items: [
-      { name: 'IBM Watson Assistant', level: 88 },
-      { name: 'Figma', level: 80 },
-      { name: 'Fluxos Conversacionais', level: 80 },
-      { name: 'UX Writing', level: 85 },
-    ],
-  },
-  {
-    key: 'ai',
-    items: [
-      { name: 'Prompt Engineering', level: 90 },
-      { name: 'APIs LLMs', level: 82 },
-      { name: 'RAG', level: 75 },
-      { name: 'Agents', level: 72 },
-    ],
-  },
-  {
-    key: 'dev',
-    items: [
-      { name: 'TypeScript', level: 80 },
-      { name: 'React / Next.js', level: 78 },
-      { name: 'Node.js', level: 75 },
-      { name: 'MongoDB', level: 68 },
-    ],
-  },
-  {
-    key: 'languages',
-    items: [
-      { name: 'Português — Nativo', level: 100 },
-      { name: 'Inglês', level: 90 },
-      { name: 'Espanhol', level: 70 },
-      { name: 'Mandarim — em estudo', level: 30 },
-    ],
-  },
-];
-
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.8, ease: 'easeOut' as const },
+const CONTACT = {
+  email: 'pedrofreitasst@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/pedro-de-freitas-a776711a1',
+  github: 'https://github.com/pedrofreitasst',
+  behance: 'https://www.behance.net/pedrohfreitas',
 };
 
+const footLink =
+  'link-underline bg-transparent p-0 font-display text-nav font-medium tracking-normal text-white appearance-none';
+
+/**
+ * Final full-viewport panel: About + Skills + contact/footer fused.
+ * Storm SVG pinned toward the base with a fade-to-black so upper dots
+ * dissolve into void instead of competing with the copy.
+ */
 export default function About() {
-  const { t } = useT();
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const [copied, setCopied] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  const yContent = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [220, -220]);
+  const yBg = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-80, 80]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.12, 0.88, 1],
+    reduce ? [1, 1, 1, 1] : [0.55, 1, 1, 0.7],
+  );
+
+  const copyEmail = () => {
+    const done = () => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(CONTACT.email).then(done).catch(done);
+    } else {
+      done();
+    }
+  };
 
   return (
-    <section id="about" className="relative w-full bg-ink py-32 lg:py-40">
-      <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.span
-          {...fadeUp}
-          className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.35em] text-cream-dim"
-        >
-          <span className="h-1.5 w-1.5 rounded-full bg-ember" aria-hidden />
-          {t('about.eyebrow')}
-        </motion.span>
+    <section
+      ref={ref}
+      id="about"
+      data-fx="storm-bg"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#08080A] text-white"
+    >
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] will-change-transform md:inset-[-8%] md:bottom-auto md:h-auto"
+        aria-hidden
+        style={{ y: yBg }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/about-storm.svg"
+          alt=""
+          className={
+            'h-full w-full object-cover object-bottom md:object-center ' +
+            (reduce ? 'opacity-80' : '')
+          }
+        />
+      </motion.div>
 
-        <motion.h2
-          {...fadeUp}
-          transition={{ ...fadeUp.transition, delay: 0.1 }}
-          className="max-w-4xl font-serif text-display-sm text-cream"
-        >
-          {t('about.title')}
-        </motion.h2>
+      <div
+        className="pointer-events-none absolute inset-0 md:hidden"
+        aria-hidden
+        style={{
+          background:
+            'linear-gradient(to bottom, #08080A 0%, #08080A 58%, rgba(8,8,10,0.92) 68%, rgba(8,8,10,0.55) 80%, rgba(8,8,10,0.2) 90%, transparent 97%)',
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 hidden md:block"
+        aria-hidden
+        style={{
+          background:
+            'linear-gradient(to bottom, rgba(8,8,10,0.82) 0%, rgba(8,8,10,0.55) 42%, rgba(8,8,10,0.28) 72%, rgba(8,8,10,0.35) 100%)',
+        }}
+      />
 
-        {/* Texto corrido — 3 parágrafos */}
-        <div className="mt-16 grid gap-12 lg:grid-cols-12">
-          <motion.div
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="space-y-6 lg:col-span-7"
-          >
-            <p className="text-base leading-relaxed text-cream-muted md:text-lg">
-              {}
-              {t('about.paragraph_1')}
-            </p>
-            <p className="text-base leading-relaxed text-cream-muted md:text-lg">
-              {t('about.paragraph_2')}
-            </p>
-            <p className="text-base leading-relaxed text-cream-muted md:text-lg">
-              {t('about.paragraph_3')}
-            </p>
-          </motion.div>
-
-          {/* Bloco lateral discreto — pode ser usado pra metadata */}
-          <motion.aside
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.3 }}
-            className="space-y-6 border-l border-ink-200 pl-6 lg:col-span-4 lg:col-start-9"
-          >
-            {}
-            <div>
-              <p className="mb-1 text-[10px] uppercase tracking-[0.3em] text-cream-dim">
-                {t('about.aside.based_label')}
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-6 pb-10 pt-24 md:pt-28 lg:px-12">
+        <motion.div style={{ y: yContent, opacity }} className="w-full will-change-transform">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
+            <Reveal className="lg:col-span-7">
+              <p className="mb-4 font-display text-meta font-medium uppercase tracking-[0.22em] text-white/45">
+                About
               </p>
-              <p className="text-sm text-cream">{t('about.aside.based_value')}</p>
-            </div>
-            <div>
-              <p className="mb-1 text-[10px] uppercase tracking-[0.3em] text-cream-dim">
-                {t('about.aside.focus_label')}
-              </p>
-              <p className="text-sm text-cream">{t('about.aside.focus_value')}</p>
-            </div>
-            <div>
-              <p className="mb-1 text-[10px] uppercase tracking-[0.3em] text-cream-dim">
-                {t('about.aside.status_label')}
-              </p>
-              <p className="text-sm text-cream">{t('about.aside.status_value')}</p>
-            </div>
-          </motion.aside>
-        </div>
-
-        {/* Skills */}
-        <motion.div
-          {...fadeUp}
-          transition={{ ...fadeUp.transition, delay: 0.2 }}
-          className="mt-24 border-t border-ink-200 pt-16"
-        >
-          <h3 className="mb-12 text-xs uppercase tracking-[0.35em] text-cream-dim">
-            {t('about.skills_title')}
-          </h3>
-
-          <div className="grid gap-12 md:grid-cols-2">
-            {skillGroups.map((group, groupIdx) => (
-              <div key={group.key}>
-                <h4 className="mb-6 flex items-baseline gap-3 font-serif text-xl italic text-cream">
-                  <span className="text-[10px] font-sans not-italic uppercase tracking-[0.3em] text-ember">
-                    0{groupIdx + 1}
-                  </span>
-                  {t(`about.categories.${group.key}`)}
-                </h4>
-                <div className="space-y-5">
-                  {group.items.map((item, i) => (
-                    <SkillBar
-                      key={item.name}
-                      name={item.name}
-                      level={item.level}
-                      delay={groupIdx * 100 + i * 80}
-                    />
-                  ))}
-                </div>
+              <h2 className="font-display text-display-sm font-bold text-white md:text-[clamp(2.5rem,4.5vw,3.25rem)]">
+                The &apos;I&apos; of The Storm
+              </h2>
+              <div className="mt-6 space-y-5 font-body text-body font-normal text-white/70 md:mt-8">
+                <p>
+                  Hey there! I&apos;m Pedro, also known as Sani online. I&apos;m a UX/UI Designer
+                  with a Social Communications background and nearly 10 years working with
+                  international clients. That taught me to find a way through address any need. 
+                  Whether technological or human.
+                </p>
+                <p>
+                  I&apos;ve always been passionate about art, tech, and people. Discovering UX made me realize
+                  they could all live in one place. I&apos;ve been experimenting with code since 2014
+                  and making art since 2016, with selected pieces shown in a 2017 college
+                  exhibition.
+                </p>
+                <p>
+                  High-pressure work taught me to teach myself whatever the job needs: tools,
+                  languages, soft skills. What drives me is figuring out how things work. That put
+                  me here: a designer who codes, a coder who designs. We&apos;re multitudes, and
+                  I&apos;m proud of that. Who else can say they&apos;re a communicative UX designer
+                  who can also do backend?
+                </p>
               </div>
-            ))}
+            </Reveal>
+
+            <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.06}>
+              <h3 className="font-display text-meta font-medium uppercase tracking-[0.22em] text-white/45">
+                Skills
+              </h3>
+              <div className="mt-6 space-y-8">
+                {SKILL_GROUPS.map((group) => (
+                  <div key={group.title}>
+                    <p className="font-display text-nav font-medium tracking-normal text-white">
+                      {group.title}
+                    </p>
+                    <ul className="mt-3 space-y-2.5 font-body text-body text-white/75">
+                      {group.items.map((item) => (
+                        <li
+                          key={item}
+                          className="border-b border-white/12 pb-2.5 last:border-b-0 last:pb-0"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
           </div>
         </motion.div>
+      </div>
+
+      <div
+        id="contact"
+        className="relative z-10 mt-auto border-t border-white/10 bg-black/20 backdrop-blur-[6px]"
+      >
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
+          <p className="font-display text-nav font-medium tracking-normal text-white/90">
+            © {new Date().getFullYear()} — Pedro de Freitas.
+          </p>
+          <nav
+            aria-label="Contact"
+            className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8"
+          >
+            <button type="button" onClick={copyEmail} className={footLink} aria-live="polite">
+              {copied ? 'Copied!' : 'E-mail'}
+            </button>
+            <a
+              href={CONTACT.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={footLink}
+            >
+              Linkedin
+            </a>
+            <a
+              href={CONTACT.behance}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={footLink}
+            >
+              Behance
+            </a>
+            <a href={CONTACT.github} target="_blank" rel="noopener noreferrer" className={footLink}>
+              Github
+            </a>
+          </nav>
+        </div>
       </div>
     </section>
   );

@@ -1,82 +1,84 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import LanguageSelector from './LanguageSelector';
-import { useT } from '@/lib/i18n';
+import { usePathname } from 'next/navigation';
+import Logo from './Logo';
 
 export default function Header() {
-  const { t } = useT();
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const [overDark, setOverDark] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    const about = document.getElementById('about');
+    if (!about) {
+      setOverDark(false);
+      return;
+    }
 
-  const scrollTo = (id: string) => (e: React.MouseEvent) => {
-    e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const io = new IntersectionObserver(
+      ([entry]) => setOverDark(entry.isIntersecting),
+      {
+        // Header band over About → dark glass (same family as contact bar)
+        rootMargin: '-4% 0px -60% 0px',
+        threshold: 0,
+      },
+    );
+    io.observe(about);
+    return () => io.disconnect();
+  }, [pathname]);
+
+  // Native #contact hash (refresh / other-page link) also pins footer to bottom
+  useEffect(() => {
+    if (pathname !== '/') return;
+    if (window.location.hash !== '#contact') return;
+    const id = window.requestAnimationFrame(() => {
+      document.getElementById('contact')?.scrollIntoView({ block: 'end' });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [pathname]);
+
+  const go = (id: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      // #contact is the fused footer inside About — align to viewport bottom
+      // so the bar doesn't "float" mid-storm (block:start would pin it to the top).
+      const block = id === 'contact' ? 'end' : 'start';
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block });
+    }
   };
+
+  const linkTone = overDark ? 'text-white' : 'text-black';
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ${
-        scrolled
-          ? 'border-b border-ink-200/40 bg-ink/70 backdrop-blur-md'
-          : 'border-b border-transparent bg-transparent'
-      }`}
+      className={
+        'fixed inset-x-0 top-0 z-40 border-b backdrop-blur-[6px] backdrop-saturate-125 transition-[background-color,border-color,color] duration-300 ease-out ' +
+        (overDark
+          ? // Same glass language as the About contact bar
+            'border-white/10 bg-black/20 supports-[backdrop-filter]:bg-black/15'
+          : // Thin clear frost — avoid milky white/40 slab
+            'border-black/5 bg-white/20 supports-[backdrop-filter]:bg-white/12')
+      }
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-12">
-        {/* Logo */}
-        <a
-          href="#hero"
-          onClick={scrollTo('hero')}
-          className="font-serif text-xl tracking-tight text-cream transition hover:text-ember"
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-12">
+        <Logo className="[&_img]:h-8 [&_img]:w-8" />
+        <nav
+          aria-label="Primary"
+          className={
+            'flex items-center gap-5 font-display text-nav font-medium tracking-normal transition-colors duration-300 sm:gap-7 ' +
+            linkTone
+          }
         >
-          <span className="italic">Pedro de</span>{' '}
-          <span className="font-medium">Freitas</span>
-        </a>
-
-        {/* Nav central — desktop */}
-        <nav aria-label="Navegação principal" className="hidden items-center gap-10 md:flex">
-          <a
-            href="#about"
-            onClick={scrollTo('about')}
-            className="text-sm tracking-wide text-cream-muted transition hover:text-cream"
-          >
-            {t('nav.about')}
+          <a href="/#works" onClick={go('works')} className="link-underline bg-transparent">
+            Works
           </a>
-          <a
-            href="#projects"
-            onClick={scrollTo('projects')}
-            className="text-sm tracking-wide text-cream-muted transition hover:text-cream"
-          >
-            {t('nav.projects')}
+          <a href="/#about" onClick={go('about')} className="link-underline bg-transparent">
+            Info
           </a>
-          <a
-            href="#contact"
-            onClick={scrollTo('contact')}
-            className="text-sm tracking-wide text-cream-muted transition hover:text-cream"
-          >
-            {t('nav.contact')}
+          <a href="/resume.pdf" className="link-underline bg-transparent">
+            Resume
           </a>
         </nav>
-
-        {/* Lado direito */}
-        <div className="flex items-center gap-3">
-          <LanguageSelector />
-          <a
-            href="https://wa.me/5521981915373?text=Olá! Vi seu portfólio e gostaria de conversar."
-            
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden rounded-full bg-cream px-5 py-2 text-sm font-medium text-ink transition hover:bg-ember hover:text-cream sm:inline-flex"
-          >
-            {t('nav.cta')}
-          </a>
-        </div>
       </div>
     </header>
   );

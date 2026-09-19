@@ -1,45 +1,45 @@
 import type { Metadata } from 'next';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
+import { Darker_Grotesque, Jost } from 'next/font/google';
 import { LanguageProvider } from '@/lib/i18n';
+import Header from '@/components/Header';
+import Contact from '@/components/sections/Contact';
 import './globals.css';
 
-const inter = Inter({
+const darkerGrotesque = Darker_Grotesque({
   subsets: ['latin'],
-  variable: '--font-sans',
+  weight: ['400', '500', '700'],
+  variable: '--font-display',
   display: 'swap',
 });
 
-const cormorant = Cormorant_Garamond({
+const jost = Jost({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-serif',
+  weight: ['400', '500'],
+  variable: '--font-body',
   display: 'swap',
 });
-
 
 export const metadata: Metadata = {
-  title: 'Pedro de Freitas',
+  title: 'Pedro de Freitas — UX/UI Designer who codes',
   description:
-    'Portfólio de Pedro Freitas, profissional em transição para UX Designer Conversacional e AI Engineer. Projetos, processo e contato.',
+    'Design Engineer portfolio. Conversational UX, interfaces, and front-end — removing friction without sacrificing aesthetics.',
   keywords: [
-    'UX Conversacional',
-    'AI Engineering',
+    'UX/UI Designer',
+    'Design Engineer',
+    'Conversational UX',
     'Prompt Engineering',
-    'IBM Watson',
+    'Next.js',
     'Pedro Freitas',
-    'Portfólio',
   ],
   authors: [{ name: 'Pedro Freitas' }],
   openGraph: {
-    title: 'Pedro de Freitas',
+    title: 'Pedro de Freitas — UX/UI Designer who codes',
     description:
-      'Portfólio pessoal entre design de conversa e engenharia de IA.',
+      'Design Engineer portfolio. Conversational UX, interfaces, and front-end.',
     type: 'website',
-    locale: 'pt_BR',
-   
-     url: 'https://pedrodefreitas.vercel.app/',
-     images: ['/og-image.png'],
+    locale: 'en_US',
+    url: 'https://pedrodefreitas.vercel.app/',
+    images: ['/og-image.png'],
   },
   robots: { index: true, follow: true },
 };
@@ -50,9 +50,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${cormorant.variable}`}>
-      <body className="bg-ink text-cream">
-        <LanguageProvider>{children}</LanguageProvider>
+    <html
+      lang="en"
+      className={`${darkerGrotesque.variable} ${jost.variable} ${darkerGrotesque.className}`}
+    >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;700&family=Jost:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className={`${jost.className} bg-white text-black antialiased`}>
+        <LanguageProvider>
+          <Header />
+          {children}
+          <Contact />
+        </LanguageProvider>
       </body>
     </html>
   );
