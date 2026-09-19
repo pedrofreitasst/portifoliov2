@@ -83,7 +83,7 @@ function getGroqClient() {
 function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
   const pool: Record<string, { default: string }> = {
     pt: { default: "Posso falar sobre projetos, experiência ou processo. O que te interessa?" },
-    en: { default: "Thanks for asking! If you're seeing this it means something API related failed. Try a chip below, or check back soon while I untangle these wires." },
+    en: { default: "Thanks for asking! If you're seeing this it means something API related failed. Try an option above, or check back soon while I untangle these wires." },
     es: { default: "Puedo hablar sobre proyectos, experiencia o proceso. ¿Qué te interessa?" },
     zh: { default: "我可以聊聊项目、经验或流程。你对什么感兴趣？" }
   };
