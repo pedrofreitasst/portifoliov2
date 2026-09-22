@@ -61,6 +61,10 @@ type Role = 'user' | 'assistant';
 type ChatMessage = { role: Role; content: string };
 type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
 
+// IDs válidos (Groq docs / OpenRouter free list — set/2026)
+const GROQ_MODEL = 'llama-3.1-8b-instant';
+const OPENROUTER_MODEL = 'qwen/qwen3.8-27b:free';
+
 // ============================================
 // 3. FUNÇÃO LAZY PARA GROQ
 // ============================================
@@ -75,6 +79,40 @@ function getGroqClient() {
     console.warn('⚠️ Erro ao inicializar Groq:', error);
     return null;
   }
+}
+
+async function tryOpenRouter(messages: { role: string; content: string }[]) {
+  if (!process.env.OPENROUTER_API_KEY) {
+    throw new Error('OPENROUTER_API_KEY não configurada');
+  }
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'HTTP-Referer': 'https://pedrodefreitas.vercel.app',
+      'X-Title': 'Portfolio Pedro Freitas',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: OPENROUTER_MODEL,
+      messages,
+      temperature: 0.7,
+      max_tokens: 500,
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    const detail = data?.error?.message || JSON.stringify(data).slice(0, 300);
+    throw new Error(`OpenRouter HTTP ${response.status}: ${detail}`);
+  }
+
+  const text = data.choices?.[0]?.message?.content?.trim() || '';
+  if (!text) {
+    throw new Error('OpenRouter retornou resposta vazia');
+  }
+  return text;
 }
 
 // ============================================
@@ -111,48 +149,6 @@ export async function POST(req: Request) {
     currentLocale = body.locale || 'pt';
     sessionId = body.sessionId || crypto.randomUUID();
 
-    // FORÇA MOCK EM DESENVOLVIMENTO LOCAL (para testar logs)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔧 Modo desenvolvimento: usando mock para testar logs');
-      replyText = mockReply(currentMessages, currentLocale);
-      providerUsed = 'mock';
-      success = true;
-      
-      const responseTimeMs = Date.now() - startTime;
-      await saveChatLog({
-        sessionId: sessionId || 'unknown',
-        userMessage: currentMessages[currentMessages.length - 1]?.content || '',
-        botReply: replyText,
-        providerUsed,
-        responseTimeMs,
-        success,
-        locale: currentLocale,
-      });
-      
-      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
-    }
-
-    // Verifica se a chave API está configurada
-    if (!process.env.GROQ_API_KEY) {
-      console.warn("GROQ_API_KEY não configurada. Usando mock.");
-      replyText = mockReply(currentMessages, currentLocale);
-      providerUsed = 'mock';
-      success = true;
-      
-      const responseTimeMs = Date.now() - startTime;
-      await saveChatLog({
-        sessionId: sessionId || 'unknown',
-        userMessage: currentMessages[currentMessages.length - 1]?.content || '',
-        botReply: replyText,
-        providerUsed,
-        responseTimeMs,
-        success,
-        locale: currentLocale,
-      });
-      
-      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
-    }
-
     // Tratamento de histórico
     const firstUserIndex = currentMessages.findIndex(msg => msg.role === 'user');
     const validHistory = firstUserIndex !== -1 ? currentMessages.slice(firstUserIndex) : currentMessages;
@@ -161,7 +157,8 @@ export async function POST(req: Request) {
       replyText = mockReply(currentMessages, currentLocale);
       providerUsed = 'mock';
       success = true;
-      
+      errorMessage = 'empty_history';
+
       const responseTimeMs = Date.now() - startTime;
       await saveChatLog({
         sessionId: sessionId || 'unknown',
@@ -170,9 +167,10 @@ export async function POST(req: Request) {
         providerUsed,
         responseTimeMs,
         success,
+        errorMessage,
         locale: currentLocale,
       });
-      
+
       return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
     }
 
@@ -186,50 +184,47 @@ export async function POST(req: Request) {
     ];
 
     // ==========================================
-    // TENTA GROQ PRIMEIRO (usando cliente lazy)
+    // TENTA GROQ PRIMEIRO
     // ==========================================
     const groqClient = getGroqClient();
     if (groqClient) {
       try {
-        providerUsed = 'groq';
         const response = await groqClient.chat.completions.create({
           messages: messages,
-          model: 'qwen3.6-27b',
+          model: GROQ_MODEL,
           temperature: 0.7,
           max_tokens: 500,
         });
-        replyText = response.choices[0]?.message?.content || '';
-        success = true;
-        console.log('✅ Groq funcionou!');
-      } catch (error) {
-        console.warn('⚠️ Groq falhou:', error);
-        // Fallback para OpenRouter (se configurado)
-        if (process.env.OPENROUTER_API_KEY) {
-          try {
-            providerUsed = 'openrouter';
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                'HTTP-Referer': 'https://pedrodefreitas.vercel.app',
-                'X-Title': 'Portfolio Pedro Freitas',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                model: 'google/gemini-2.0-flash-exp:free',
-                messages: messages,
-                temperature: 0.7,
-                max_tokens: 500,
-              }),
-            });
-            const data = await response.json();
-            replyText = data.choices?.[0]?.message?.content || '';
-            success = true;
-            console.log('✅ OpenRouter funcionou!');
-          } catch (openRouterError) {
-            console.warn('⚠️ OpenRouter falhou:', openRouterError);
-          }
+        replyText = response.choices[0]?.message?.content?.trim() || '';
+        if (replyText) {
+          providerUsed = 'groq';
+          success = true;
+          console.log('✅ Groq funcionou!');
+        } else {
+          throw new Error('Groq retornou resposta vazia');
         }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        console.warn('⚠️ Groq falhou:', msg);
+        errorMessage = `groq: ${msg}`;
+      }
+    } else {
+      errorMessage = 'GROQ_API_KEY ausente';
+    }
+
+    // ==========================================
+    // FALLBACK OPENROUTER
+    // ==========================================
+    if (!replyText) {
+      try {
+        replyText = await tryOpenRouter(messages);
+        providerUsed = 'openrouter';
+        success = true;
+        console.log('✅ OpenRouter funcionou!');
+      } catch (openRouterError) {
+        const msg = openRouterError instanceof Error ? openRouterError.message : String(openRouterError);
+        console.warn('⚠️ OpenRouter falhou:', msg);
+        errorMessage = errorMessage ? `${errorMessage} | openrouter: ${msg}` : `openrouter: ${msg}`;
       }
     }
 
@@ -240,7 +235,6 @@ export async function POST(req: Request) {
       success = true;
     }
 
-    // 🔥 SALVA O LOG ANTES DE RETORNAR
     const responseTimeMs = Date.now() - startTime;
     await saveChatLog({
       sessionId: sessionId || 'unknown',
@@ -253,20 +247,19 @@ export async function POST(req: Request) {
       locale: currentLocale,
     });
 
-    return NextResponse.json({ 
-      text: replyText, 
+    return NextResponse.json({
+      text: replyText,
       sessionId,
-      provider: providerUsed 
+      provider: providerUsed,
     });
 
   } catch (error) {
     success = false;
     errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     replyText = mockReply(currentMessages, currentLocale);
-    
+
     console.error('❌ Erro crítico na chamada do chat:', error);
 
-    // 🔥 SALVA LOG DE ERRO ANTES DE RETORNAR
     const responseTimeMs = Date.now() - startTime;
     await saveChatLog({
       sessionId: sessionId || 'unknown',
@@ -279,6 +272,6 @@ export async function POST(req: Request) {
       locale: currentLocale,
     });
 
-    return NextResponse.json({ text: replyText });
+    return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
   }
 }
