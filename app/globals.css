@@ -82,9 +82,6 @@ body {
   box-shadow: none;
 }
 
-[data-fx='storm-bg'] {
-  position: relative;
-}
 
 /*
   Name roller — sits on the same baseline as surrounding H1 glyphs.

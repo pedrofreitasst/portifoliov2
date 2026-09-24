@@ -1,12 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
+import { useState } from 'react';
 import Reveal from '@/components/Reveal';
 
 const SKILL_GROUPS = [
@@ -36,26 +30,9 @@ const footLink =
 
 /**
  * Final full-viewport panel: About + Skills + contact/footer fused.
- * Storm SVG pinned toward the base with a fade-to-black so upper dots
- * dissolve into void instead of competing with the copy.
  */
 export default function About() {
-  const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
   const [copied, setCopied] = useState(false);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-
-  const yContent = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [220, -220]);
-  const yBg = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-80, 80]);
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.12, 0.88, 1],
-    reduce ? [1, 1, 1, 1] : [0.55, 1, 1, 0.7],
-  );
 
   const copyEmail = () => {
     const done = () => {
@@ -71,46 +48,11 @@ export default function About() {
 
   return (
     <section
-      ref={ref}
       id="about"
-      data-fx="storm-bg"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#08080A] text-white"
     >
-      <motion.div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[48%] will-change-transform md:inset-[-8%] md:bottom-auto md:h-auto"
-        aria-hidden
-        style={{ y: yBg }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/about-storm.svg"
-          alt=""
-          className={
-            'h-full w-full object-cover object-bottom md:object-center ' +
-            (reduce ? 'opacity-80' : '')
-          }
-        />
-      </motion.div>
-
-      <div
-        className="pointer-events-none absolute inset-0 md:hidden"
-        aria-hidden
-        style={{
-          background:
-            'linear-gradient(to bottom, #08080A 0%, #08080A 58%, rgba(8,8,10,0.92) 68%, rgba(8,8,10,0.55) 80%, rgba(8,8,10,0.2) 90%, transparent 97%)',
-        }}
-      />
-      <div
-        className="pointer-events-none absolute inset-0 hidden md:block"
-        aria-hidden
-        style={{
-          background:
-            'linear-gradient(to bottom, rgba(8,8,10,0.82) 0%, rgba(8,8,10,0.55) 42%, rgba(8,8,10,0.28) 72%, rgba(8,8,10,0.35) 100%)',
-        }}
-      />
-
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-6 pb-10 pt-24 md:pt-28 lg:px-12">
-        <motion.div style={{ y: yContent, opacity }} className="w-full will-change-transform">
+        <div className="w-full">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
             <Reveal className="lg:col-span-7">
               <p className="mb-4 font-display text-meta font-medium uppercase tracking-[0.22em] text-white/45">
@@ -123,7 +65,7 @@ export default function About() {
                 <p>
                   Hey there! I&apos;m Pedro, also known as Sani online. I&apos;m a UX/UI Designer
                   with a Social Communications background and nearly 10 years working with
-                  international clients. That taught me to find a way through address any need. 
+                  international clients. That taught me to find a way through address any need.
                   Whether technological or human.
                 </p>
                 <p>
@@ -167,7 +109,7 @@ export default function About() {
               </div>
             </Reveal>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       <div
@@ -176,7 +118,7 @@ export default function About() {
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
           <p className="font-display text-nav font-medium tracking-normal text-white/90">
-            © {new Date().getFullYear()} — Pedro de Freitas.
+            {'\u00A9'} {new Date().getFullYear()} {'\u2014'} Pedro de Freitas.
           </p>
           <nav
             aria-label="Contact"
