@@ -69,7 +69,7 @@ const OPENROUTER_MODEL = 'qwen/qwen3.8-27b:free';
 // ============================================
 function getGroqClient() {
   if (!process.env.GROQ_API_KEY) {
-    console.log('ℹ️ GROQ_API_KEY não configurada, Groq não será usado');
+    console.log('ℹ️ GROQ_API_KEY missing — Groq skipped; set it in .env.local / Vercel env');
     return null;
   }
   try {
@@ -82,7 +82,7 @@ function getGroqClient() {
 
 async function tryOpenRouter(messages: { role: string; content: string }[]) {
   if (!process.env.OPENROUTER_API_KEY) {
-    throw new Error('OPENROUTER_API_KEY não configurada');
+    throw new Error('OPENROUTER_API_KEY missing — set it in .env.local / Vercel env');
   }
 
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -98,6 +98,8 @@ async function tryOpenRouter(messages: { role: string; content: string }[]) {
       messages,
       temperature: 0.7,
       max_tokens: 500,
+      // Qwen3+ often burns max_tokens on reasoning; disable so content is non-empty
+      reasoning: { enabled: false },
     }),
   });
 
@@ -170,7 +172,12 @@ export async function POST(req: Request) {
         locale: currentLocale,
       });
 
-      return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
+      return NextResponse.json({
+      text: replyText,
+      sessionId,
+      provider: 'mock',
+      ...(errorMessage ? { fallbackReason: String(errorMessage).slice(0, 240) } : {}),
+    });
     }
 
     // Prepara mensagens para a API
@@ -208,7 +215,7 @@ export async function POST(req: Request) {
         errorMessage = `groq: ${msg}`;
       }
     } else {
-      errorMessage = 'GROQ_API_KEY ausente';
+      errorMessage = 'GROQ_API_KEY missing — set it in .env.local / Vercel env';
     }
 
     // ==========================================
@@ -250,6 +257,9 @@ export async function POST(req: Request) {
       text: replyText,
       sessionId,
       provider: providerUsed,
+      ...(providerUsed === 'mock' && errorMessage
+        ? { fallbackReason: errorMessage.slice(0, 240) }
+        : {}),
     });
 
   } catch (error) {
@@ -271,6 +281,11 @@ export async function POST(req: Request) {
       locale: currentLocale,
     });
 
-    return NextResponse.json({ text: replyText, sessionId, provider: 'mock' });
+    return NextResponse.json({
+      text: replyText,
+      sessionId,
+      provider: 'mock',
+      ...(errorMessage ? { fallbackReason: String(errorMessage).slice(0, 240) } : {}),
+    });
   }
 }

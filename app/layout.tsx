@@ -62,6 +62,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${jost.className} bg-white text-black antialiased`}>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         <Header />
         {children}
         <Contact />

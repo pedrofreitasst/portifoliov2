@@ -6,9 +6,11 @@ import { useState } from 'react';
 /** Thumbnail with gray fallback if the file is not in public/projects yet. */
 export default function ProjectThumb({
   src,
+  alt,
   priority = false,
 }: {
   src: string;
+  alt: string;
   priority?: boolean;
 }) {
   const [ok, setOk] = useState(true);
@@ -22,7 +24,7 @@ export default function ProjectThumb({
       {ok && (
         <Image
           src={src}
-          alt=""
+          alt={alt}
           fill
           sizes="(max-width: 1024px) 100vw, 64rem"
           className="object-cover transition duration-300 group-hover:scale-[1.015]"

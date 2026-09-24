@@ -65,10 +65,16 @@ body {
   color: #ffffff;
 }
 
-*:focus-visible {
-  outline: 2px solid #111111;
-  outline-offset: 2px;
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid #B76203;
+  outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Keep the field ring on the wrapper so the input stays visually integrated. */
+.hero-mac-field:focus-within {
+  outline: 2px solid #B76203;
+  outline-offset: 3px;
 }
 
 /* Hero Mac bar: focus lives on the whole field, not the inner input */
@@ -184,6 +190,25 @@ body {
 }
 
 
+/* First keyboard stop: bypass fixed navigation and jump to page content. */
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+  transform: translateY(-200%);
+  background: #ffffff;
+  color: #111111;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #B76203;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: transform 160ms ease;
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* Hover underline for nav / footer / card titles */
 .link-underline {
   text-decoration-line: none;
@@ -260,5 +285,22 @@ body {
   .hero-mac-dot {
     animation: none;
     opacity: 1;
+  }
+}
+
+/* Keep keyboard navigation and skip-link movement calm for motion-sensitive users. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
   }
 }

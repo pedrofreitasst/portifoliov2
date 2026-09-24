@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import ProjectThumb from '@/components/ProjectThumb';
 
@@ -9,6 +9,7 @@ const PROJECTS = [
     description:
       'A mobile-first redesign that uncovered a flaw in the certification process.',
     image: '/projects/skillsbuild.png',
+    imageAlt: 'IBM SkillsBuild quiz redesign mockup',
   },
   {
     slug: 'chatbot',
@@ -16,6 +17,7 @@ const PROJECTS = [
     description:
       'Live hero chat with multi-provider fallback and data analytics. A product demo and case study in one.',
     image: '/projects/chatbot.png',
+    imageAlt: 'Portfolio live hero chat product demo',
   },
   {
     slug: 'personal',
@@ -23,6 +25,7 @@ const PROJECTS = [
     description:
       'Designs, posters, creative coding, personal pieces from now and other eras.',
     image: '/projects/personal.png',
+    imageAlt: 'Personal work collage of designs, posters, and creative coding',
   },
 ] as const;
 
@@ -37,7 +40,11 @@ export default function Projects() {
             delay={i === 0 ? 0.12 : (i - 1) * 0.05}
           >
             <Link href={`/case/${project.slug}`} className="group block">
-              <ProjectThumb src={project.image} priority={i === 0} />
+              <ProjectThumb
+                src={project.image}
+                alt={project.imageAlt}
+                priority={i === 0}
+              />
               <h3 className="link-underline-group mt-5 font-display text-title font-bold md:text-section">
                 {project.title}
               </h3>

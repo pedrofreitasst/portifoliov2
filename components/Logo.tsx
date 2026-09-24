@@ -15,6 +15,7 @@ export default function Logo({ className = '' }: { className?: string }) {
         width={32}
         height={32}
         priority
+        aria-hidden={true}
         className="h-8 w-8 rounded-full object-cover"
       />
     </Link>

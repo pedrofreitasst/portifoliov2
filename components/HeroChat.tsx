@@ -115,7 +115,7 @@ export default function HeroChat() {
           <div className="relative min-w-0 flex-1">
             {showCaret && (
               <span
-                className="pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 items-center gap-2 font-display text-body text-black/45"
+                className="pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 items-center gap-2 font-display text-body text-black/65"
                 aria-hidden
               >
                 <span className="hero-mac-caret" />
@@ -175,14 +175,14 @@ export default function HeroChat() {
               key={m.role + '-' + i}
               className={'mb-3 last:mb-0 ' + (m.role === 'user' ? 'text-black' : 'text-black/75')}
             >
-              <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-black/40">
+              <p className="mb-1 text-xs uppercase tracking-[0.18em] text-black/60">
                 {m.role === 'user' ? 'You' : 'Pedro'}
               </p>
               <p className="whitespace-pre-wrap font-body text-body font-normal">{m.content}</p>
             </div>
           ))}
           {loading && (
-            <p className="flex items-center gap-1 font-body text-body text-black/40" aria-label="Thinking">
+            <p className="flex items-center gap-1 font-body text-body text-black/60" aria-label="Thinking">
               <span className="hero-mac-dot" />
               <span className="hero-mac-dot hero-mac-dot--2" />
               <span className="hero-mac-dot hero-mac-dot--3" />

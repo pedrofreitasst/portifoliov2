@@ -5,9 +5,9 @@ const CHAPTER = 'font-display text-meta font-medium uppercase tracking-[0.22em] 
 
 export default function CasePage() {
   return (
-    <main className="min-h-[70vh] bg-white px-6 pb-24 pt-32 text-black lg:px-12">
+    <main id="main" className="min-h-[70vh] bg-white px-6 pb-24 pt-32 text-black lg:px-12">
       <article className="mx-auto max-w-3xl">
-        <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/45">
+        <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
           Case study
         </p>
         <h1 className="mt-3 font-display text-display-sm font-bold tracking-normal text-black md:text-[clamp(2.25rem,4vw,3rem)]">
@@ -308,8 +308,8 @@ export default function CasePage() {
 
         {/* More chapters land here as Pedro sends them */}
 
-        <p className="mt-16 font-body text-body text-black/45">
-          <Link href="/#works" className="link-underline bg-transparent text-black/55">
+        <p className="mt-16 font-body text-body text-black/65">
+          <Link href="/#works" className="link-underline bg-transparent text-black/70">
             ← Back to Works
           </Link>
         </p>

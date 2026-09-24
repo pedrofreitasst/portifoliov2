@@ -17,7 +17,7 @@ export default function Hero() {
             I&apos;m a UX/UI Designer who codes. With 10 years of communications experience, I
             remove friction from your day-to-day without sacrificing aesthetics.
           </p>
-          <p className="mt-4 max-w-xl font-body text-body font-normal text-black/55">
+          <p className="mt-4 max-w-xl font-body text-body font-normal text-black/70">
             Made for you, with love.
           </p>
         </Reveal>

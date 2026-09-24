@@ -4,7 +4,7 @@ import About from '@/components/sections/About';
 
 export default function HomePage() {
   return (
-    <main>
+    <main id="main">
       <Hero />
       <Projects />
       <About />

@@ -55,7 +55,7 @@ export default function About() {
         <div className="w-full">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
             <Reveal className="lg:col-span-7">
-              <p className="mb-4 font-display text-meta font-medium uppercase tracking-[0.22em] text-white/45">
+              <p className="mb-4 font-display text-meta font-medium uppercase tracking-[0.22em] text-white/65">
                 About
               </p>
               <h2 className="font-display text-display-sm font-bold text-white md:text-[clamp(2.5rem,4.5vw,3.25rem)]">
@@ -85,7 +85,7 @@ export default function About() {
             </Reveal>
 
             <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.06}>
-              <h3 className="font-display text-meta font-medium uppercase tracking-[0.22em] text-white/45">
+              <h3 className="font-display text-meta font-medium uppercase tracking-[0.22em] text-white/65">
                 Skills
               </h3>
               <div className="mt-6 space-y-8">
