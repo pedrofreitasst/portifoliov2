@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const CHAPTER = 'font-display text-meta font-medium uppercase tracking-[0.22em] text-[#0F62FE]';
+const BODY = 'mt-5 space-y-5 font-body text-body font-normal text-black/70';
 
 export default function CasePage() {
   return (
@@ -17,16 +18,40 @@ export default function CasePage() {
           A UX problem that hid an integrity flaw.
         </p>
 
+        <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
+          <li>Role: Independent UX/UI redesign</li>
+          <li>Scope: Mobile quiz, 390×844</li>
+          <li>Tools: Figma, IBM Plex, Carbon</li>
+        </ul>
+
+        <h2 className={`mt-10 ${CHAPTER}`}>At a glance</h2>
+        <dl className="mt-4 space-y-4 border-l-2 border-[#0F62FE] pl-5 font-body text-body font-normal text-black/70">
+          <div>
+            <dt className="font-medium text-black">Problem</dt>
+            <dd>
+              On mobile, the quiz hides its Submit button below the fold, and multi-answer questions
+              have no selection limit, which lets users probe for correct answers.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium text-black">Decisions</dt>
+            <dd>
+              An inline &quot;proceed&quot; action on the selected option, a hard selection limit, and
+              a closed state system built on IBM&apos;s own design language.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium text-black">Disclosure</dt>
+            <dd>I reported the integrity flaw to IBM before publishing.</dd>
+          </div>
+        </dl>
+
         <section className="mt-14">
           <h2 className={CHAPTER}>Context</h2>
           <p className="mt-5 font-body text-body font-normal text-black/70">
-            I have been transitioning into the technology sector (focusing on UX/UI, conversational
-            design, and AI) for a few months now. To strengthen my technical foundation, I have
-            pursued certifications on various platforms, including, most recently, IBM SkillsBuild.
-            While using the platform on mobile for day-to-day tasks, I encountered issues ranging
-            from merely &quot;annoying&quot; to those that actually compromised the validity of the
-            certification itself. This case study documents what I found and how I decided to
-            resolve the most critical issue.
+            I use IBM SkillsBuild on my phone (Android, Chrome) to earn certifications. Along the way
+            I ran into issues ranging from merely annoying to ones that undermine the certification
+            itself. This case documents what I found and how I redesigned the most critical screen.
           </p>
           <figure className="mt-8">
             <div className="relative mx-auto aspect-[9/19] w-full max-w-sm overflow-hidden border border-black/10 bg-[#f4f4f4]">
@@ -44,34 +69,19 @@ export default function CasePage() {
 
         <section className="mt-16">
           <h2 className={CHAPTER}>The Problem</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              While using IBM SkillsBuild daily on my mobile phone, I identified three types of
-              recurring structural flaws and documented them in my analysis (detailed below). The
-              most serious issue is simple yet critical: on the quiz screen, the &quot;SUBMIT&quot;
-              button remains below the mobile browser&apos;s visible area, even when using the
-              site&apos;s full-screen function. Users literally lack a convenient way to submit their
-              answers. Other issues include desktop-oriented layouts scaled for mobile without
-              rethinking the hierarchy, and interactive course content (games, simulations) that
-              becomes unreadable in portrait mode, a problem that persists even when rotating the
-              screen, leaving text nearly illegible.
+              The most visible flaw is simple: on the quiz screen, the SUBMIT button sits below the
+              mobile browser&apos;s visible area, even in the site&apos;s full-screen mode. There is no
+              convenient way to submit an answer. The rest of the experience follows the same
+              pattern, with desktop layouts shrunk for mobile without rethinking the hierarchy and
+              interactive content that stays illegible in portrait or landscape.
             </p>
             <p>
-              SkillsBuild issues certifications that students use to demonstrate technical
-              competence during hiring processes. Functional flaws in assessment workflows go beyond
-              mere aesthetic issues; they compromise the educational experience at a critical
-              moment, when students need to demonstrate what they have learned, and can lead users
-              to abandon the course. On a platform focused on AI Literacy, AI-Enabled Customer
-              Service, and Responsible AI, this friction feels particularly jarring.
-            </p>
-            <p>
-              There is also a more serious issue I discovered while taking assessments myself: in
-              multiple-choice questions requiring the selection of more than one correct option, the
-              platform imposes no limit on the number of selections. This allows users to obtain
-              feedback on correct answers in a way that compromises the integrity of the quiz and,
-              by extension, the certification itself. It is a system design flaw with real
-              implications for the value of the credential, potentially affecting thousands of daily
-              users.
+              The more serious flaw sits in questions that ask for more than one answer: the platform
+              doesn&apos;t limit how many options you can select. That lets users extract feedback on
+              the correct answers, which compromises the quiz and, by extension, a credential people
+              use in hiring. On a platform that teaches Responsible AI, that gap stands out.
             </p>
           </div>
           <figure className="mt-8">
@@ -89,57 +99,32 @@ export default function CasePage() {
 
         <section className="mt-16">
           <h2 className={CHAPTER}>Responsible Disclosure</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              Before publishing this case study, I communicated my findings, specifically regarding
-              the quiz&apos;s integrity, directly to IBM SkillsBuild via email. A prior attempt using
-              the official support channel revealed another issue: customer service is handled
-              entirely by a Watson chatbot that, when unable to resolve a request, simply redirects
-              the user to a new instance of itself, with no documented path to reach a human
-              representative.
-            </p>
-            <p>
-              This case study focuses on a design proposal rather than merely exposing flaws. The
-              decisions here are based on the principle that functional issues warrant a documented
-              solution, not a detailed account of the exploitation method.
-            </p>
-            <p>
-              The starting point for the redesign was treating mobile as the system&apos;s most
-              constrained viewport while ensuring alignment with the desktop version. I began by
-              considering the smallest available space (390×844), where constraints force essential
-              decisions regarding hierarchy, and designed the system to scale up to tablet and
-              desktop without requiring parallel variants. I considered using a cobalt blue block as
-              the dominant background, visually striking on mobile and resonant with IBM&apos;s
-              visual heritage, but ultimately discarded the idea; using a saturated color for the
-              full-screen background locks the redesign into a single use case, whereas a light
-              background with color accents offers a scalable solution.
+              Before publishing, I reported the integrity flaw to IBM SkillsBuild by email. The
+              official support channel turned out to be a finding of its own: a Watson chatbot that,
+              when it can&apos;t resolve a request, sends you to a new instance of itself, with no path
+              to a human. This case focuses on the design fix, not on how to exploit the flaw.
             </p>
           </div>
         </section>
 
         <section className="mt-16">
           <h2 className={CHAPTER}>Respecting the system rather than reinventing it</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              The redesign deliberately retains IBM&apos;s cobalt palette, the Plex typeface family,
-              and the structural geometry of the Carbon Design System. The strategic decision: the
-              issue with SkillsBuild is a matter of responsive execution. Redesigning the brand would
-              mean solving the wrong problem and would discard three decades of IBM&apos;s investment
-              in a recognizable visual system.
+              SkillsBuild&apos;s problem is responsive execution, not brand. So the redesign keeps
+              IBM&apos;s cobalt palette, the Plex type family, and the structural geometry of the Carbon
+              Design System. Redesigning the brand would solve the wrong problem.
             </p>
             <p>
-              The aesthetic direction draws inspiration from Paul Rand, the designer responsible for
-              IBM&apos;s modern identity in the 1950s and 60s. Rand used solid color blocks as a
-              structural element rather than merely an aesthetic one; here, cobalt blue appears as a
-              functional accent (indicating selection states, primary actions, or progress). The use
-              of a monospaced font for answer options references classic IBM technical documentation,
-              manuals, blueprints, and terminal interfaces, creating a typographic contrast between
-              context (sans-serif, prose) and data (monospace, enumerated options).
-            </p>
-            <p>
-              The visual outcome aligns closely enough with the original that the transition feels
-              natural to the user, yet diverges sufficiently to resolve structural issues. It is not
-              about reinventing the wheel; it is about solving a problem.
+              I started from the most constrained viewport (390×844), where the lack of space forces
+              the hierarchy decisions, and built the system to scale up to tablet and desktop without
+              parallel variants. I considered a full cobalt background, a nod to Paul Rand&apos;s color
+              blocks, but dropped it: a saturated full-screen color locks the design into one use
+              case, while a light background with cobalt accents scales. Cobalt now marks function
+              only (selection, primary action, progress), and a monospaced face for the answer
+              options, borrowed from IBM&apos;s technical manuals, separates data from prose.
             </p>
           </div>
           <figure className="mt-8">
@@ -157,22 +142,19 @@ export default function CasePage() {
 
         <section className="mt-16">
           <h2 className={CHAPTER}>Selection and submission</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              The original design separates &quot;selecting an answer&quot; and &quot;submitting an
-              answer&quot; into two distinct actions: the choice itself and confirmation via a SUBMIT
-              button. On mobile viewports, this creates two issues: the button falls below the fold
-              when questions are long, and it introduces physical distance between the object the
-              user just tapped (the option) and the action to proceed (the button in the footer).
+              The original splits choosing an answer and confirming it into two actions, with SUBMIT
+              in the footer. On mobile, long questions push that button below the fold, and it puts
+              physical distance between the option you just tapped and the action that moves you
+              forward.
             </p>
             <p>
-              The solution was to integrate the &quot;proceed&quot; action directly into the selected
-              element. An arrow replaces the &quot;+&quot; symbol, providing feedback that aligns
-              perfectly with the user&apos;s intended flow (e.g., one of two, three of three). This
-              directly applies Fitts&apos;s Law: the time required to reach a target is a function of
-              distance and size. By reducing the distance the finger must travel to the next action,
-              the transition becomes immediate within the natural reading flow, which ends at the
-              bottom-right corner of the option.
+              The redesign moves the proceed action into the selected option itself: an arrow
+              replaces the &quot;+&quot; symbol on the latest selection, while a counter (1 OF 2
+              CHOSEN) tracks progress. This applies Fitts&apos;s Law, which says the time to reach a
+              target depends on its distance and size. The next action now sits where the eye and
+              thumb already are, at the bottom-right corner of the option.
             </p>
           </div>
           <figure className="mt-8">
@@ -190,22 +172,17 @@ export default function CasePage() {
 
         <section className="mt-16">
           <h2 className={CHAPTER}>Selection limit as an integrity safeguard</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              For questions requiring multiple answers, the redesign imposes a strict limit: users
-              cannot select more options than requested. Tapping additional, unselected options once
-              the limit has been reached triggers transient feedback: the indicator pill shifts to an
-              error state accompanied by a micro-animation, displays an error message for a few
-              seconds, and then fades back to its neutral state. To change an answer, the user
-              deselects an existing option; the &quot;next&quot; arrow automatically shifts to the
-              latest valid selection.
+              For multi-answer questions, users can&apos;t select more options than requested. Tapping
+              another option at the limit triggers brief feedback: the counter pill switches to an
+              error state with a micro-animation and a short message, then fades back. To change an
+              answer, you deselect one, and the arrow moves to the latest valid selection.
             </p>
             <p>
-              This acts as a &quot;forcing function&quot;, a constraint that prevents errors from
-              occurring rather than merely flagging them after the fact, as quiz integrity is part of
-              the implicit agreement between the platform and the user. Allowing the limit to be
-              exceeded (even with a warning) creates an opportunity for exploration that compromises
-              the validity of the assessment.
+              This is a forcing function: it prevents the error instead of flagging it afterward.
+              Quiz integrity is part of the implicit agreement between platform and learner, and
+              allowing the limit to be exceeded, even with a warning, reopens the exploit.
             </p>
           </div>
           <figure className="mt-8">
@@ -223,90 +200,38 @@ export default function CasePage() {
 
         <section className="mt-16">
           <h2 className={CHAPTER}>States as a system</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              Redesign operates in three visible states: no selection, partial selection, full
-              selection. Each state is defined by a consistent set of visual elements rather than
-              arbitrary changes between screens.
+              The screen has three states: no selection, partial selection, and full selection. Each
+              option keeps two fixed anchors, a structural marker at the top left and a reserved slot
+              at the right that the arrow fills only when you can move forward. Users know where to
+              look for feedback without rescanning the screen.
             </p>
             <p>
-              Each option maintains two geometric anchor points: a structural marker in the upper
-              left corner (present in the neutral state) and a reserved area in the right corner
-              (occupied by the arrow only in the forward state). This spatial consistency creates
-              predictability: the user knows where to look for state feedback without having to
-              &quot;rescan&quot; the entire screen. The glyph scale is coordinated to form a visual
-              family that is recognizable at different points in the flow.
-            </p>
-            <p>
-              The transition between states also uses the same chromatic vocabulary at different
-              scales: the progress indicator pill (0 OF 2 CHOSEN → 1 OF 2 CHOSEN → 2 OF 2 CHOSEN) is
-              a small cobalt blue block; the selected option is the same blue applied in a larger
-              volume. There is no selection color separate from the instruction color; a single color
-              language carries meaning at different hierarchical levels.
-            </p>
-            <p>
-              The result is a closed system: every visual element has a structural function, every
-              change in state is predictable, and every decision can be justified based on the same
-              rules.
-            </p>
-          </div>
-        </section>
-
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Future Considerations</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
-            <p>
-              This case focuses on three states of a specific screen: the multiple-choice quiz in the
-              mobile viewport. Decisions deliberately left out of this scope: the adaptation of the
-              system to tablet and desktop (preserving mobile-first principles without becoming
-              mobile-only), the animated prototyping of transitions between states via Smart Animate
-              (the interaction described here gains additional clarity when demonstrated in motion),
-              and the error state frame triggered when trying to exceed the selection limit. Each of
-              these is a direct extension of the current system and follows the same visual
-              vocabulary, which would only require execution time.
+              Color works the same way at different scales. The counter pill (0 OF 2, 1 OF 2, 2 OF 2
+              CHOSEN) is a small cobalt block, and the selected option is the same blue over a larger
+              area. One color language carries meaning at every level, so every change of state is
+              predictable and every decision follows the same rules.
             </p>
           </div>
         </section>
 
         <section className="mt-16">
           <h2 className={CHAPTER}>Reflection</h2>
-          <div className="mt-5 space-y-5 font-body text-body font-normal text-black/70">
+          <div className={BODY}>
             <p>
-              This was the first UX case study that I documented from start to finish. I recently
-              made a career transition, and part of the apprehension was exactly this: knowing
-              whether I would be able to articulate design decisions in the vocabulary of the area.
-              The process answered the question. Identify problem, consider alternatives, discard for
-              the right reasons, anticipate counter-arguments, defend choices; This structure of
-              thought had already been part of my work in communication and graphic design for over
-              a decade. UX gave me the vocabulary to name what I was already doing instinctively.
+              Out of scope for this case: the tablet and desktop adaptation, an animated prototype of
+              the state transitions, and the error-state frame. Each one extends the same visual
+              vocabulary.
             </p>
             <p>
-              Another thing that became clear: a case study is about demonstrating how you think
-              through mockups and arguments; the final frames are evidence, and the argument lives in
-              the text. A designer who delivers a beautiful screen without defending decisions
-              delivers half the work.
+              I spent over a decade in communication and graphic design before moving into UX.
+              Writing this case showed me the thinking was already there: identify the problem, weigh
+              alternatives, discard them for the right reasons, and defend the choice. UX gave me the
+              vocabulary to name what I was already doing.
             </p>
           </div>
         </section>
-
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Tools and references</h2>
-          <ul className="mt-5 list-none space-y-2 font-body text-body font-normal text-black/70">
-            <li>Design and prototyping: Figma.</li>
-            <li>Typography: IBM Plex Sans and IBM Plex Mono.</li>
-            <li>Palette: IBM cobalt (#0F62FE) and Carbon Design System ash.</li>
-            <li>
-              Visual inspiration: modern IBM identity (Paul Rand, 50s-60s) and contemporary Carbon
-              Design System.
-            </li>
-            <li>
-              Problem documentation: real screenshots captured during daily use of the SkillsBuild
-              platform on Android (Chrome mobile).
-            </li>
-          </ul>
-        </section>
-
-        {/* More chapters land here as Pedro sends them */}
 
         <p className="mt-16 font-body text-body text-black/65">
           <Link href="/#works" className="link-underline bg-transparent text-black/70">
