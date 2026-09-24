@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Darker_Grotesque, Jost } from 'next/font/google';
-import { LanguageProvider } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Contact from '@/components/sections/Contact';
 import './globals.css';
@@ -63,11 +62,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${jost.className} bg-white text-black antialiased`}>
-        <LanguageProvider>
-          <Header />
-          {children}
-          <Contact />
-        </LanguageProvider>
+        <Header />
+        {children}
+        <Contact />
       </body>
     </html>
   );

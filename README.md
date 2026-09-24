@@ -1,26 +1,18 @@
-# Pedro Freitas — Portfólio
+# Pedro de Freitas — Portfolio
 
-Portfólio pessoal de **Pedro Freitas**, profissional em transição para **UX Designer Conversacional** e **AI Engineer**.
+English-only personal portfolio. Design Engineer / conversational UX.
 
-Construído com Next.js 14 (App Router), TypeScript, Tailwind CSS e estrutura pronta para integrar a API da IBM + Anthropic no chatbot flutuante.
+**Stack:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion.
 
-# APIs Modificadas
+**Chat:** Hero chat via `/api/chat` — Groq first, OpenRouter fallback, then mock. Conversations can be logged to MongoDB Atlas.
 
-Por problemas relacionados ao serviço IBM Cloud houve uma troca de API para Groq e OpenRouter como backup.
+**Cases:** `/case/skillsbuild`, `/case/chatbot`, `/case/personal`.
 
-# Análise de Dados do Chatbot
+## Scripts
 
-O chatbot possui um sistema de logging que armazena no MongoDB Atlas:
-- Mensagens do usuário e respostas do bot
-- Provedor usado (Groq, OpenRouter, Mock)
-- Tempo de resposta
-- Taxa de sucesso/erro
-- Idioma da conversa
+- `npm run dev` — local server
+- `npm run build` — production build
+- `npm run start` — serve production build
+- `npm run lint` — ESLint
 
-Esses dados permitem monitorar:
-- Quais provedores são mais rápidos
-- Taxa de falhas por provedor
-- Horários de pico de uso
-- Idiomas mais usados
-
-Construído com: MongoDB Atlas, Mongoose, Next.js API Routes
+Copy `.env.local.example` to `.env.local` and fill in keys as needed.

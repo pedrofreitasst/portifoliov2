@@ -6,7 +6,7 @@ import { saveChatLog } from '@/lib/chatLogger';
 // ============================================
 // 1. SYSTEM PROMPT (versão melhorada)
 // ============================================
-const GEMINI_SYSTEM_PROMPT = `Você é o assistente conversacional do portfólio de Pedro Freitas.
+const SYSTEM_PROMPT = `Você é o assistente conversacional do portfólio de Pedro Freitas.
 
 Pedro é um profissional em transição para a área de tecnologia, com formação em Comunicação Social e Publicidade. Atua como UX Designer Conversacional e AI Engineer, combinando design de interfaces com desenvolvimento front-end e integração de IA.
 
@@ -24,7 +24,6 @@ Projetos relevantes:
 - Portfólio pessoal com chatbot integrado e arquitetura multi-fallback (Groq + OpenRouter)
 - Case study de redesign do IBM SkillsBuild com responsible disclosure
 - App full-stack com Node.js, Express e MongoDB
-- Projetos de branding e identidade visual (ex: Apotheosis)
 
 
 Pedro tem 7 certificações IBM em IA aplicada, Certificado atualizado de Análise de Dados pelo Google Analytics e inglês fluente.
@@ -118,7 +117,7 @@ async function tryOpenRouter(messages: { role: string; content: string }[]) {
 // ============================================
 // 4. FUNÇÃO MOCK (FALLBACK)
 // ============================================
-function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
+function mockReply(messages: ChatMessage[], locale: string = 'en'): string {
   const pool: Record<string, { default: string }> = {
     pt: { default: "Posso falar sobre projetos, experiência ou processo. O que te interessa?" },
     en: { default: "Thanks for asking! If you're seeing this it means something API related failed. Try an option above, or check back soon while I untangle these wires." },
@@ -136,7 +135,7 @@ function mockReply(messages: ChatMessage[], locale: string = 'pt'): string {
 export async function POST(req: Request) {
   const startTime = Date.now();
   let currentMessages: ChatMessage[] = [];
-  let currentLocale = 'pt';
+  let currentLocale = 'en';
   let sessionId: string | null = null;
   let providerUsed: 'groq' | 'openrouter' | 'mock' = 'mock';
   let success = false;
@@ -146,7 +145,7 @@ export async function POST(req: Request) {
   try {
     const body: ChatBody = await req.json();
     currentMessages = body.messages || [];
-    currentLocale = body.locale || 'pt';
+    currentLocale = body.locale || 'en';
     sessionId = body.sessionId || crypto.randomUUID();
 
     // Tratamento de histórico
@@ -176,7 +175,7 @@ export async function POST(req: Request) {
 
     // Prepara mensagens para a API
     const messages = [
-      { role: 'system' as const, content: GEMINI_SYSTEM_PROMPT },
+      { role: 'system' as const, content: SYSTEM_PROMPT },
       ...validHistory.map((msg): { role: 'user' | 'assistant'; content: string } => ({
         role: msg.role as 'user' | 'assistant',
         content: msg.content

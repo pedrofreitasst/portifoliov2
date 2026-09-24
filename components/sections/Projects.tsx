@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import Reveal from '@/components/Reveal';
 import ProjectThumb from '@/components/ProjectThumb';
 
@@ -16,12 +16,6 @@ const PROJECTS = [
     description:
       'Live hero chat with multi-provider fallback and data analytics. A product demo and case study in one.',
     image: '/projects/chatbot.png',
-  },
-  {
-    slug: 'apotheosis',
-    title: 'Apotheosis',
-    description: 'Branding exploration of a relaxant flavored energy drink.',
-    image: '/projects/apotheosis.png',
   },
   {
     slug: 'personal',

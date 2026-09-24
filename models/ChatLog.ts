@@ -18,7 +18,7 @@ const ChatLogSchema = new mongoose.Schema(
     },
     providerUsed: { 
       type: String, 
-      enum: ['groq', 'openrouter', 'mock', 'gemini'], 
+      enum: ['groq', 'openrouter', 'mock'], 
       required: true 
     },
     responseTimeMs: { 
@@ -35,13 +35,13 @@ const ChatLogSchema = new mongoose.Schema(
     },
     locale: { 
       type: String, 
-      default: 'pt' 
+      default: 'en' 
     },
     userAgent: { 
       type: String, 
       default: null 
     },
-    // Hash anônimo do IP para evitar PII
+    // Hash anÃ´nimo do IP para evitar PII
     ipHash: { 
       type: String, 
       default: null 
@@ -52,7 +52,7 @@ const ChatLogSchema = new mongoose.Schema(
   }
 );
 
-// Índices para consultas rápidas
+// Ãndices para consultas rÃ¡pidas
 ChatLogSchema.index({ createdAt: -1 });
 ChatLogSchema.index({ providerUsed: 1, createdAt: -1 });
 ChatLogSchema.index({ success: 1, createdAt: -1 });

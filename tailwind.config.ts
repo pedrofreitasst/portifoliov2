@@ -13,25 +13,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: {
-          DEFAULT: '#0A0A0B',
-          50: '#16161A',
-          100: '#131316',
-          200: '#1F1F23',
-        },
-        cream: {
-          DEFAULT: '#F2EFEA',
-          muted: '#B5B2AC',
-          dim: '#6E6B66',
-        },
-        stone: {
-          DEFAULT: '#7A766F',
-          dark: '#4A4742',
-        },
-        ember: {
-          DEFAULT: '#D93A1F',
-          dim: '#A02D17',
-        },
         page: {
           white: '#FFFFFF',
           black: '#000000',

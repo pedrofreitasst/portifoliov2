@@ -1,19 +1,5 @@
 // lib/mongodb.ts
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-// 🔥 Carrega o .env.local explicitamente
-dotenv.config({ path: '.env.local.example' });
-
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-if (!MONGODB_URI) {
-  throw new Error(
-    '❌ Por favor, defina a variável MONGODB_URI no arquivo .env.local'
-  );
-}
-
-console.log('🔍 MONGODB_URI carregada:', MONGODB_URI.substring(0, 20) + '...');
 
 interface MongooseCache {
   conn: mongoose.Connection | null;
@@ -21,6 +7,7 @@ interface MongooseCache {
 }
 
 declare global {
+  // eslint-disable-next-line no-var
   var mongoose: MongooseCache;
 }
 
@@ -30,9 +17,20 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
+/**
+ * Connect lazily. Do NOT throw at module load — Next.js imports API
+ * routes during `next build`, and env vars may be absent locally.
+ * Chat logging already catches failures and never breaks the response.
+ */
 export async function connectToDatabase(): Promise<typeof mongoose> {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error(
+      'Please define the MONGODB_URI environment variable in .env.local'
+    );
+  }
+
   if (cached.conn) {
-    console.log('🔌 Reutilizando conexão existente');
     return cached.conn as unknown as typeof mongoose;
   }
 
@@ -43,16 +41,10 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
       serverSelectionTimeoutMS: 5000,
     };
 
-    console.log('🔄 Conectando ao MongoDB Atlas...');
-
     cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
-      .then((mongooseInstance) => {
-        console.log('✅ Conectado ao MongoDB Atlas!');
-        return mongooseInstance;
-      })
+      .connect(uri, opts)
+      .then((mongooseInstance) => mongooseInstance)
       .catch((error) => {
-        console.error('❌ Erro ao conectar:', error);
         cached.promise = null;
         throw error;
       });
