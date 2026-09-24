@@ -60,9 +60,9 @@ type Role = 'user' | 'assistant';
 type ChatMessage = { role: Role; content: string };
 type ChatBody = { messages: ChatMessage[]; locale?: string; sessionId?: string };
 
-// IDs válidos (Groq docs / OpenRouter free list — set/2026)
-const GROQ_MODEL = 'llama-3.1-8b-instant';
-const OPENROUTER_MODEL = 'qwen/qwen3.8-27b:free';
+// Groq: playground default openai/gpt-oss-120b (llama-3.1-8b-instant EOL free/dev 2026-08-16); OpenRouter: openrouter/free
+const GROQ_MODEL = 'openai/gpt-oss-120b';
+const OPENROUTER_MODEL = 'openrouter/free';
 
 // ============================================
 // 3. LAZY GROQ CLIENT
@@ -199,7 +199,9 @@ export async function POST(req: Request) {
           messages: messages,
           model: GROQ_MODEL,
           temperature: 0.7,
-          max_tokens: 500,
+          max_tokens: 1024,
+          reasoning_effort: 'low',
+          include_reasoning: false,
         });
         replyText = response.choices[0]?.message?.content?.trim() || '';
         if (replyText) {
