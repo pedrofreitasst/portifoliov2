@@ -94,7 +94,7 @@ export default function HeroChat() {
     <div className="mx-auto w-full max-w-2xl">
       <form onSubmit={onSubmit} className="relative">
         <label htmlFor="hero-chat-input" className="sr-only">
-          Ask me anything
+          Ask Ori anything
         </label>
         <div
           className={
@@ -119,7 +119,7 @@ export default function HeroChat() {
                 aria-hidden
               >
                 <span className="hero-mac-caret" />
-                <span className={focused ? 'opacity-0' : ''}>In a rush? Ask me anything</span>
+                <span className={focused ? 'opacity-0' : ''}>In a rush? Ask Ori Anything</span>
               </span>
             )}
             <input
@@ -176,7 +176,7 @@ export default function HeroChat() {
               className={'mb-3 last:mb-0 ' + (m.role === 'user' ? 'text-black' : 'text-black/75')}
             >
               <p className="mb-1 text-xs uppercase tracking-[0.18em] text-black/60">
-                {m.role === 'user' ? 'You' : 'Pedro'}
+                {m.role === 'user' ? 'You' : 'Ori'}
               </p>
               <p className="whitespace-pre-wrap font-body text-body font-normal">{m.content}</p>
             </div>
