@@ -8,16 +8,19 @@ const CHIPS = [
   'Where are you located?',
   'What is your availability?',
   'How does the chatbot work?',
+  'Who is Sani?',
 ] as const;
 
 /** Canned replies — Pedro owns the copy. */
 const MOCK_REPLIES: Record<(typeof CHIPS)[number], string> = {
   'Where are you located?':
-    "I'm currently based in Rio de Janeiro, Brazil. (Open to remote work and relocation)",
+    "Pedro is based in Rio de Janeiro, Brazil, and he's open to remote work and relocation.",
   'What is your availability?':
-    'Open to full-time roles, collaborations, and contract work. Happy to talk about timelines that fit both sides.',
+    "He's open to full-time roles, collaborations, and contract work, and happy to find a timeline that works for both sides.",
   'How does the chatbot work?':
-    "This chatbot was originally made with IBM's Watson API but after some issues and studying the better option I switched to a mixed version of GPT OSS' and Qwen's APIs while having OpenRouter as a backup if the first layer fails.",
+    "I started as an IBM Watson bot in a corner bubble. When IBM discontinued that version, Pedro rebuilt me here in the hero. Now I run on Groq as the main brain, with OpenRouter as a backup, and a pre-written fallback if both fail.",
+  'Who is Sani?':
+    "Sani is Pedro, the name he's gone by online since he first really started using the internet. It's short for Sanitaurus, and it's the name behind all of his art over the years. Since most of his work and life happen online, Sani sometimes feels more like him than Pedro does. Fun coincidence: it echoes names like the Hindu deity Shani Dev, but there's no specific origin. He picked it because it's easy for English speakers to say.",
 };
 
 const GENERIC_MOCK =
@@ -148,7 +151,7 @@ export default function HeroChat() {
         </div>
       </form>
 
-      <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-3 sm:gap-3">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2 sm:gap-3">
         {CHIPS.map((chip) => (
           <button
             key={chip}

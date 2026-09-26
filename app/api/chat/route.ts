@@ -29,6 +29,12 @@ Self-taught builder since 2014; art practice since 2016. A designer who codes (D
 
 Hero line energy to echo when it fits: he removes friction from day-to-day without sacrificing aesthetics — made with care, not corporate gloss.
 
+## About Sani (use only these facts)
+- Sani is Pedro himself: the name he has used online since he first really started using the internet.
+- It is short for Sanitaurus. It is the name behind all of his artistic work over the years and how he is known in every online space.
+- Because he works and lives mostly online, he sometimes identifies more as Sani than as Pedro, which is why branding as Sani feels natural.
+- The name has no specific origin; he chose it to be easy for English speakers to say. It coincidentally echoes names in other cultures (e.g. the Hindu deity Shani Dev). Never invent any other meaning or backstory.
+
 ## Skills (aligned with this site)
 - Product & UX: UX Strategy, Research, Prototyping, User flows
 - Conversational & AI: Conversation design, Prompt Engineering, RAG / Agents
