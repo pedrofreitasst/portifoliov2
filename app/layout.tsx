@@ -19,9 +19,10 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
-  title: 'Pedro de Freitas — UX/UI Designer who codes',
+  metadataBase: new URL('https://pedrodefreitas.vercel.app'),
+  title: 'Pedro de Freitas - UX/UI Designer who codes',
   description:
-    'Design Engineer portfolio. Conversational UX, interfaces, and front-end — removing friction without sacrificing aesthetics.',
+    'Design Engineer portfolio. Conversational UX, interfaces, and front-end - removing friction without sacrificing aesthetics.',
   keywords: [
     'UX/UI Designer',
     'Design Engineer',
@@ -32,13 +33,20 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Pedro Freitas' }],
   openGraph: {
-    title: 'Pedro de Freitas — UX/UI Designer who codes',
+    title: 'Pedro de Freitas - UX/UI Designer who codes',
     description:
       'Design Engineer portfolio. Conversational UX, interfaces, and front-end.',
     type: 'website',
     locale: 'en_US',
     url: 'https://pedrodefreitas.vercel.app/',
-    images: ['/og-image.png'],
+    images: [
+      {
+        url: '/og-image-v2.png',
+        width: 1200,
+        height: 630,
+        alt: 'Pedro de Freitas portfolio hero: You can call me Sani',
+      },
+    ],
   },
   robots: { index: true, follow: true },
 };
