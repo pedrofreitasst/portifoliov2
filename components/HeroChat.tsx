@@ -181,7 +181,9 @@ export default function HeroChat() {
               <p className="mb-1 text-xs uppercase tracking-[0.18em] text-black/60">
                 {m.role === 'user' ? 'You' : 'Ori'}
               </p>
-              <p className="whitespace-pre-wrap font-body text-body font-normal">{m.content}</p>
+              <p className="whitespace-pre-wrap font-body text-body font-normal [overflow-wrap:anywhere]">
+                {m.role === 'assistant' ? linkify(m.content) : m.content}
+              </p>
             </div>
           ))}
           {loading && (
@@ -195,6 +197,61 @@ export default function HeroChat() {
       )}
     </div>
   );
+}
+
+/**
+ * Turns links in Ori's replies into real, tappable links.
+ * Handles markdown links [label](url), bare https:// or www. URLs, and emails.
+ * Trailing punctuation (like the period ending a sentence) stays outside the link.
+ */
+const LINK_PATTERN =
+  /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|((?:https?:\/\/|www\.)[^\s<]+)|([\w.+-]+@[\w-]+\.[\w.-]+)/g;
+
+function linkify(text: string): React.ReactNode[] {
+  const out: React.ReactNode[] = [];
+  let last = 0;
+  let match: RegExpExecArray | null;
+  LINK_PATTERN.lastIndex = 0;
+
+  while ((match = LINK_PATTERN.exec(text)) !== null) {
+    const [whole, mdLabel, mdUrl, bareUrl, email] = match;
+    let label = whole;
+    let href = '';
+    let trailing = '';
+
+    if (mdUrl) {
+      label = mdLabel;
+      href = mdUrl;
+    } else if (bareUrl) {
+      const cleaned = bareUrl.replace(/[.,;:!?)\]'"]+$/, '');
+      trailing = bareUrl.slice(cleaned.length);
+      label = cleaned;
+      href = cleaned.startsWith('www.') ? 'https://' + cleaned : cleaned;
+    } else if (email) {
+      const cleaned = email.replace(/[.]+$/, '');
+      trailing = email.slice(cleaned.length);
+      label = cleaned;
+      href = 'mailto:' + cleaned;
+    }
+
+    if (match.index > last) out.push(text.slice(last, match.index));
+    const external = !href.startsWith('mailto:');
+    out.push(
+      <a
+        key={match.index}
+        href={href}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        className="text-[#B76203] underline underline-offset-2 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B76203]"
+      >
+        {label}
+      </a>,
+    );
+    if (trailing) out.push(trailing);
+    last = match.index + whole.length;
+  }
+
+  if (last < text.length) out.push(text.slice(last));
+  return out;
 }
 
 function ArrowIcon() {
