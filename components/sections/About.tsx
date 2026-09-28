@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Reveal from '@/components/Reveal';
 
 const SKILL_GROUPS = [
@@ -33,6 +34,63 @@ const footLink =
  */
 export default function About() {
   const [copied, setCopied] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+
+  // Subtle parallax on the background image only. Off for prefers-reduced-motion,
+  // and the scroll listener is attached only while the section is on screen.
+  useEffect(() => {
+    const section = sectionRef.current;
+    const bg = bgRef.current;
+    if (!section || !bg) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 when the section enters from below, 1 when it leaves at the top.
+      const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
+      const shift = (progress - 0.5) * 2 * rect.height * 0.1; // max 10% of section height
+      bg.style.transform = `translate3d(0, ${shift.toFixed(1)}px, 0)`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    const start = () => {
+      if (reduce.matches) return;
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      update();
+    };
+    const stop = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) start();
+      else stop();
+    });
+    observer.observe(section);
+
+    const onMotionChange = () => {
+      stop();
+      if (reduce.matches) bg.style.transform = '';
+      else start();
+    };
+    reduce.addEventListener('change', onMotionChange);
+
+    return () => {
+      observer.disconnect();
+      reduce.removeEventListener('change', onMotionChange);
+      stop();
+    };
+  }, []);
 
   const copyEmail = () => {
     const done = () => {
@@ -48,9 +106,25 @@ export default function About() {
 
   return (
     <section
+      ref={sectionRef}
       id="about"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#08080A] text-white"
     >
+      {/* Background: "life.exe" (2016), pre-blurred, faded behind a dark gradient so text keeps AA contrast. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        {/* Taller than the section (12% above and below) so the parallax never shows an edge. */}
+        <div ref={bgRef} className="absolute inset-x-0 -inset-y-[12%] will-change-transform">
+          <Image
+            src="/about-bg.webp"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-[center_60%] opacity-70"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08080A] via-[#08080A]/75 to-[#08080A]/20" />
+      </div>
+
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-6 pb-10 pt-24 md:pt-28 lg:px-12">
         <div className="w-full">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-14">
@@ -65,8 +139,8 @@ export default function About() {
                 <p>
                   Hey there! I&apos;m Pedro, also known as Sani online. I&apos;m a UX/UI Designer
                   with a Social Communications background and nearly 10 years working with
-                  international clients. That taught me to find a way through address any need.
-                  Whether technological or human.
+                  international clients. That taught me to find a way to address any need,
+                  whether technological or human.
                 </p>
                 <p>
                   I&apos;ve always been passionate about art, tech, and people. Discovering UX made me realize
