@@ -136,7 +136,9 @@ export default function OriCornerChat() {
     setResetAnimating(false);
     requestAnimationFrame(() => {
       setResetAnimating(true);
-      inputRef.current?.focus();
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        inputRef.current?.focus();
+      }
     });
   }, []);
 
