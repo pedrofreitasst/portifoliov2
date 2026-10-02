@@ -162,7 +162,8 @@ export default function OriCornerChat() {
       root.classList.add('ori-chat-open');
       // --ori-panel-width lives in globals.css (tied to trigger inset); do not override
       window.dispatchEvent(new CustomEvent('ori-state', { detail: { open: true } }));
-      // Autofocus message input so the user can type immediately (native caret, no blink overlay)
+      // Autofocus only for mouse/trackpad users; touch keyboards can resize the viewport.
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
       const t = window.setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
