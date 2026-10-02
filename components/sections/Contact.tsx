@@ -13,12 +13,12 @@ const CONTACT = {
 const linkClass =
   'link-underline bg-transparent p-0 font-display text-nav font-medium tracking-normal text-black appearance-none';
 
-/** Standalone footer for subpages only — home fuses contact into About. */
+/** Standalone footer for case pages — home and /about fuse contact into About. */
 export default function Contact() {
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
 
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/about') return null;
 
   const copyEmail = () => {
     const done = () => {
@@ -36,7 +36,7 @@ export default function Contact() {
     <footer id="contact" className="relative border-t border-black/10 bg-white text-black">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
         <p className="font-display text-nav font-medium tracking-normal">
-          © {new Date().getFullYear()} — Pedro de Freitas.
+          © {new Date().getFullYear()} - Pedro de Freitas.
         </p>
         <nav aria-label="Contact" className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
           <button type="button" onClick={copyEmail} className={linkClass} aria-live="polite">

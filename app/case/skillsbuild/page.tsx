@@ -1,13 +1,29 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import CaseChapterNav from '../../../components/CaseChapterNav';
+
 const CHAPTER = 'font-display text-meta font-medium uppercase tracking-[0.22em] text-[#0F62FE]';
 const BODY = 'mt-5 space-y-5 font-body text-body font-normal text-black/70';
+
+const CHAPTERS = [
+  { id: 'at-a-glance', label: 'At a glance' },
+  { id: 'context', label: 'Context' },
+  { id: 'the-problem', label: 'The problem' },
+  { id: 'responsible-disclosure', label: 'Responsible disclosure' },
+  { id: 'respect-the-system', label: 'Respect the system' },
+  { id: 'selection-submission', label: 'Selection & submission' },
+  { id: 'hard-selection-limit', label: 'Hard selection limit' },
+  { id: 'states-as-a-system', label: 'States as a system' },
+  { id: 'reflection', label: 'Reflection' },
+] as const;
 
 export default function CasePage() {
   return (
     <main id="main" className="min-h-[70vh] bg-white px-6 pb-24 pt-32 text-black lg:px-12">
-      <article className="mx-auto max-w-3xl">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[12rem_minmax(0,48rem)] lg:gap-16">
+        <CaseChapterNav chapters={CHAPTERS} />
+        <article className="max-w-3xl">
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
           Case study
         </p>
@@ -24,34 +40,38 @@ export default function CasePage() {
           <li>Tools: Figma, IBM Plex, Carbon</li>
         </ul>
 
-        <h2 className={`mt-10 ${CHAPTER}`}>At a glance</h2>
-        <dl className="mt-4 space-y-4 border-l-2 border-[#0F62FE] pl-5 font-body text-body font-normal text-black/70">
+        <section id="at-a-glance" className="mt-10 scroll-mt-28">
+          <h2 className={CHAPTER}>At a glance</h2>
+          <dl className="mt-4 space-y-4 border-l-2 border-[#0F62FE] pl-5 font-body text-body font-normal text-black/70">
           <div>
             <dt className="font-medium text-black">Problem</dt>
             <dd>
-              On mobile, the quiz hides its Submit button below the fold, and multi-answer questions
-              have no selection limit, which lets users probe for correct answers.
+              Learners could bypass the quiz, harvest correct answers, and earn a certificate
+              without doing the work. The cut-off Submit button made the gap visible; unlimited
+              multi-select made it structural.
             </dd>
           </div>
           <div>
             <dt className="font-medium text-black">Decisions</dt>
             <dd>
-              An inline &quot;proceed&quot; action on the selected option, a hard selection limit, and
-              a closed state system built on IBM&apos;s own design language.
+              Keep IBM&apos;s system rather than invent a new brand; put proceed on the selected
+              option; enforce a hard selection limit instead of a soft warning.
             </dd>
           </div>
           <div>
             <dt className="font-medium text-black">Disclosure</dt>
             <dd>I reported the integrity flaw to IBM before publishing.</dd>
           </div>
-        </dl>
+          </dl>
+        </section>
 
-        <section className="mt-14">
+        <section id="context" className="mt-14 scroll-mt-28">
           <h2 className={CHAPTER}>Context</h2>
           <p className="mt-5 font-body text-body font-normal text-black/70">
             I use IBM SkillsBuild on my phone (Android, Chrome) to earn certifications. Along the way
-            I ran into issues ranging from merely annoying to ones that undermine the certification
-            itself. This case documents what I found and how I redesigned the most critical screen.
+            I found that what looked like a clumsy mobile quiz was also a certification process that
+            failed its own integrity. This case documents what I found and how I redesigned the most
+            critical screen.
           </p>
           <figure className="mt-8">
             <div className="relative mx-auto aspect-[9/19] w-full max-w-sm overflow-hidden border border-black/10 bg-[#f4f4f4]">
@@ -67,21 +87,24 @@ export default function CasePage() {
           </figure>
         </section>
 
-        <section className="mt-16">
-          <h2 className={CHAPTER}>The Problem</h2>
+        <section id="the-problem" className="mt-16 scroll-mt-28">
+          <h2 className={CHAPTER}>The problem</h2>
           <div className={BODY}>
             <p>
-              The most visible flaw is simple: on the quiz screen, the SUBMIT button sits below the
-              mobile browser&apos;s visible area, even in the site&apos;s full-screen mode. There is no
-              convenient way to submit an answer. The rest of the experience follows the same
-              pattern, with desktop layouts shrunk for mobile without rethinking the hierarchy and
-              interactive content that stays illegible in portrait or landscape.
+              The deeper failure is not layout. On multi-answer questions, the platform does not
+              limit how many options you can select. A learner can keep tapping until the feedback
+              reveals every correct answer, then submit and move on. That path lets someone harvest
+              the quiz, skip the learning, and still walk away with a certificate used in hiring. On
+              a platform that teaches Responsible AI, a credential you can earn without doing the
+              work is a structural failure of the certification process, not a polish issue.
             </p>
             <p>
-              The more serious flaw sits in questions that ask for more than one answer: the platform
-              doesn&apos;t limit how many options you can select. That lets users extract feedback on
-              the correct answers, which compromises the quiz and, by extension, a credential people
-              use in hiring. On a platform that teaches Responsible AI, that gap stands out.
+              The most visible symptom is simpler: on the quiz screen, the SUBMIT button sits below
+              the mobile browser&apos;s visible area, even in the site&apos;s full-screen mode. There
+              is no convenient way to confirm an answer. Desktop layouts are shrunk for mobile without
+              rethinking hierarchy, and interactive content stays illegible in portrait or landscape.
+              That cut-off Submit is what first drew attention. Unlimited multi-select is what turns
+              a UX annoyance into an integrity exploit.
             </p>
           </div>
           <figure className="mt-8">
@@ -97,8 +120,8 @@ export default function CasePage() {
           </figure>
         </section>
 
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Responsible Disclosure</h2>
+        <section id="responsible-disclosure" className="mt-16 scroll-mt-28">
+          <h2 className={CHAPTER}>Responsible disclosure</h2>
           <div className={BODY}>
             <p>
               Before publishing, I reported the integrity flaw to IBM SkillsBuild by email. The
@@ -109,8 +132,8 @@ export default function CasePage() {
           </div>
         </section>
 
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Respecting the system rather than reinventing it</h2>
+        <section id="respect-the-system" className="mt-16 scroll-mt-28">
+          <h2 className={CHAPTER}>Decision: respect the system</h2>
           <div className={BODY}>
             <p>
               SkillsBuild&apos;s problem is responsive execution, not brand. So the redesign keeps
@@ -121,10 +144,10 @@ export default function CasePage() {
               I started from the most constrained viewport (390×844), where the lack of space forces
               the hierarchy decisions, and built the system to scale up to tablet and desktop without
               parallel variants. I considered a full cobalt background, a nod to Paul Rand&apos;s color
-              blocks, but dropped it: a saturated full-screen color locks the design into one use
-              case, while a light background with cobalt accents scales. Cobalt now marks function
-              only (selection, primary action, progress), and a monospaced face for the answer
-              options, borrowed from IBM&apos;s technical manuals, separates data from prose.
+              blocks, but chose a light field with cobalt accents instead: a saturated full-screen
+              color locks the design into one use case, while light plus accents scales. Cobalt now
+              marks function only (selection, primary action, progress), and a monospaced face for
+              the answer options, borrowed from IBM&apos;s technical manuals, separates data from prose.
             </p>
           </div>
           <figure className="mt-8">
@@ -140,8 +163,8 @@ export default function CasePage() {
           </figure>
         </section>
 
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Selection and submission</h2>
+        <section id="selection-submission" className="mt-16 scroll-mt-28">
+          <h2 className={CHAPTER}>Decision: selection &amp; submission</h2>
           <div className={BODY}>
             <p>
               The original splits choosing an answer and confirming it into two actions, with SUBMIT
@@ -150,9 +173,9 @@ export default function CasePage() {
               forward.
             </p>
             <p>
-              The redesign moves the proceed action into the selected option itself: an arrow
-              replaces the &quot;+&quot; symbol on the latest selection, while a counter (1 OF 2
-              CHOSEN) tracks progress. This applies Fitts&apos;s Law, which says the time to reach a
+              I chose an inline proceed affordance on the selected option over keeping a separate
+              footer Submit: an arrow replaces the &quot;+&quot; symbol on the latest selection, while a
+              counter (1 OF 2 CHOSEN) tracks progress. This applies Fitts&apos;s Law: the time to reach a
               target depends on its distance and size. The next action now sits where the eye and
               thumb already are, at the bottom-right corner of the option.
             </p>
@@ -170,8 +193,8 @@ export default function CasePage() {
           </figure>
         </section>
 
-        <section className="mt-16">
-          <h2 className={CHAPTER}>Selection limit as an integrity safeguard</h2>
+        <section id="hard-selection-limit" className="mt-16 scroll-mt-28">
+          <h2 className={CHAPTER}>Decision: hard selection limit</h2>
           <div className={BODY}>
             <p>
               For multi-answer questions, users can&apos;t select more options than requested. Tapping
@@ -180,9 +203,11 @@ export default function CasePage() {
               answer, you deselect one, and the arrow moves to the latest valid selection.
             </p>
             <p>
-              This is a forcing function: it prevents the error instead of flagging it afterward.
-              Quiz integrity is part of the implicit agreement between platform and learner, and
-              allowing the limit to be exceeded, even with a warning, reopens the exploit.
+              I chose a hard limit over a soft warning because a warning still lets the learner
+              over-select and read feedback on every option. That reopens the exploit. A forcing
+              function prevents the error instead of flagging it afterward. Quiz integrity is part of
+              the implicit agreement between platform and learner; allowing the limit to be exceeded,
+              even politely, fails that agreement.
             </p>
           </div>
           <figure className="mt-8">
@@ -198,37 +223,28 @@ export default function CasePage() {
           </figure>
         </section>
 
-        <section className="mt-16">
+        <section id="states-as-a-system" className="mt-16 scroll-mt-28">
           <h2 className={CHAPTER}>States as a system</h2>
           <div className={BODY}>
             <p>
               The screen has three states: no selection, partial selection, and full selection. Each
               option keeps two fixed anchors, a structural marker at the top left and a reserved slot
-              at the right that the arrow fills only when you can move forward. Users know where to
-              look for feedback without rescanning the screen.
-            </p>
-            <p>
-              Color works the same way at different scales. The counter pill (0 OF 2, 1 OF 2, 2 OF 2
-              CHOSEN) is a small cobalt block, and the selected option is the same blue over a larger
-              area. One color language carries meaning at every level, so every change of state is
-              predictable and every decision follows the same rules.
+              at the right that the arrow fills only when you can move forward. The counter pill
+              (0 OF 2, 1 OF 2, 2 OF 2 CHOSEN) and the selected option share the same cobalt language
+              at different scales, so every change of state is predictable.
             </p>
           </div>
         </section>
 
-        <section className="mt-16">
+        <section id="reflection" className="mt-16 scroll-mt-28">
           <h2 className={CHAPTER}>Reflection</h2>
           <div className={BODY}>
             <p>
-              Out of scope for this case: the tablet and desktop adaptation, an animated prototype of
-              the state transitions, and the error-state frame. Each one extends the same visual
-              vocabulary.
-            </p>
-            <p>
-              I spent over a decade in communication and graphic design before moving into UX.
-              Writing this case showed me the thinking was already there: identify the problem, weigh
-              alternatives, discard them for the right reasons, and defend the choice. UX gave me the
-              vocabulary to name what I was already doing.
+              Out of scope here: tablet and desktop adaptation, an animated prototype of the state
+              transitions, and the error-state frame. Each extends the same vocabulary. What the work
+              proves is narrower: a mobile UX failure can mask a certification process that no longer
+              verifies learning, and the fix has to close the exploit, not only move the Submit
+              button.
             </p>
           </div>
         </section>
@@ -238,7 +254,8 @@ export default function CasePage() {
             ← Back to Works
           </Link>
         </p>
-      </article>
+        </article>
+      </div>
     </main>
   );
 }

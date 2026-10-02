@@ -192,7 +192,7 @@ export default function About() {
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
           <p className="font-display text-nav font-medium tracking-normal text-white/90">
-            {'\u00A9'} {new Date().getFullYear()} {'\u2014'} Pedro de Freitas.
+            {'\u00A9'} {new Date().getFullYear()} - Pedro de Freitas.
           </p>
           <nav
             aria-label="Contact"

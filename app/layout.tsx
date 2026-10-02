@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Darker_Grotesque, Jost } from 'next/font/google';
 import Header from '@/components/Header';
 import Contact from '@/components/sections/Contact';
+import OriCornerChat from '@/components/OriCornerChat';
 import './globals.css';
 
 const darkerGrotesque = Darker_Grotesque({
@@ -76,6 +77,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Contact />
+        <OriCornerChat />
       </body>
     </html>
   );

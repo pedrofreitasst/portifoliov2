@@ -20,7 +20,8 @@ body {
   color: #111111;
   font-family: var(--font-body);
   font-size: 1.25rem; /* 20px base */
-  overflow-x: hidden;
+  /* clip avoids creating a scroll port that breaks position:sticky */
+  overflow-x: clip;
 }
 
 .font-display {
@@ -69,12 +70,6 @@ body {
   outline: 2px solid #B76203;
   outline-offset: 3px;
   border-radius: 4px;
-}
-
-/* Keep the field ring on the wrapper so the input stays visually integrated. */
-.hero-mac-field:focus-within {
-  outline: 2px solid #B76203;
-  outline-offset: 3px;
 }
 
 /* Hero Mac bar: focus lives on the whole field, not the inner input */
@@ -302,5 +297,305 @@ body {
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+
+/* Ori corner chat — header trigger + slide-in panel (Rachel Chen style)
+   Icon stays put (logo-mirror inset). Panel slides in from the right to meet
+   the icon; open only adds lit bookmark styles — no X/Y move on the trigger.
+
+   Geometry:
+   - Icon right edge at --ori-trigger-right (mirrors Logo: px-6 / lg:px-12, and
+     on ≥1280px tracks max-w-7xl mx-auto content edge so it stays by RESUME).
+   - Panel: right:0; width: --ori-panel-width. Left edge at --ori-panel-width
+     from the viewport right. We set width to at least the icon right-edge
+     offset (plus a hair of overlap) so the panel lands flush against / slightly
+     under the icon — bookmark limiar. Floor of min(380px, 90vw) keeps chat usable
+     when the header inset is smaller than that. */
+:root {
+  --ori-accent: #B76203;
+  /* Matches site-header py-2.5 + logo h-8 + border */
+  --site-header-height: 3.5rem;
+  /* Trigger mirrors logo: same size (h-8) + same horizontal padding as header */
+  --ori-trigger-size: 2rem; /* h-8 w-8 — match Logo [&_img]:h-8 */
+  --ori-trigger-top: 0.8125rem; /* 13px — midline with logo h-8 in py-2.5 header */
+  --ori-trigger-right: 1.5rem; /* px-6 — same inset as logo from viewport/header edge */
+  --ori-panel-overlap: 0.25rem; /* slight underlap so lit face reads as bookmark */
+  --ori-panel-width: max(
+    min(380px, 90vw),
+    calc(var(--ori-trigger-right) + var(--ori-panel-overlap))
+  );
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --ori-trigger-right: 3rem; /* lg:px-12 — match Logo side */
+  }
+}
+
+/* Track max-w-7xl + lg:px-12 content edge so Ori keeps its gap to RESUME
+   (symmetric with Logo → WORKS) on wide viewports; panel width follows. */
+@media (min-width: 1280px) {
+  :root {
+    --ori-trigger-right: max(3rem, calc((100vw - 80rem) / 2 + 3rem));
+  }
+}
+
+html.ori-chat-open {
+  /* Light reflow: shift main content left so panel doesn't cover it.
+     Header stays full-width; trigger is position:fixed and never moves. */
+  padding-right: var(--ori-panel-width);
+}
+
+.ori-fab {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0;
+  border: none;
+  background: #ff8700;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition: transform 200ms ease, opacity 200ms ease, box-shadow 200ms ease;
+}
+.ori-fab__face {
+  /* face.svg is #FF8700 on transparent → flip to white on the orange FAB */
+  filter: brightness(0) invert(1);
+}
+.ori-fab:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+.ori-fab:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 3px;
+}
+.ori-fab--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.85);
+}
+
+/* Header Ori trigger — fixed; same X/Y closed and open (panel comes to it) */
+.ori-header-trigger-slot {
+  display: block;
+  width: var(--ori-trigger-size);
+  height: var(--ori-trigger-size);
+  flex-shrink: 0;
+}
+.ori-header-trigger {
+  position: fixed;
+  top: var(--ori-trigger-top);
+  right: var(--ori-trigger-right);
+  z-index: 55; /* above panel so lit bookmark sits on the limiar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ori-trigger-size);
+  height: var(--ori-trigger-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease,
+    background-color 160ms ease;
+}
+.ori-header-trigger:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+.ori-header-trigger:focus-visible {
+  outline: 2px solid #B76203;
+  outline-offset: 3px;
+}
+.ori-header-trigger__face {
+  display: block;
+}
+/* Open / lit only — no top/right change; panel already meets this spot */
+.ori-header-trigger--open {
+  background: #ff8700;
+  opacity: 1;
+}
+.ori-header-trigger--open:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+.ori-header-trigger--open .ori-header-trigger__face {
+  /* face.svg is #FF8700 on transparent → flip to white on orange */
+  filter: brightness(0) invert(1);
+}
+
+.ori-scrim {
+  display: none;
+}
+@media (max-width: 639px) {
+  .ori-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 48;
+    background: rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+  .ori-scrim--open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* On narrow viewports the panel overlays; skip body reflow so content isn't crushed */
+  html.ori-chat-open {
+    padding-right: 0;
+  }
+}
+
+.ori-panel {
+  position: fixed;
+  top: 0; /* full viewport — covers under / beside header */
+  right: 0;
+  z-index: 52; /* above site-header (51); trigger (55) stays on top as bookmark */
+  display: flex;
+  flex-direction: column;
+  width: var(--ori-panel-width);
+  height: 100vh;
+  height: 100dvh;
+  background: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.14);
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+  transform: translateX(100%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  visibility: hidden;
+}
+.ori-panel--open {
+  transform: translateX(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.ori-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.ori-panel__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.ori-panel__close,
+.ori-panel__reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.ori-panel__close:hover,
+.ori-panel__reset:hover {
+  background: #111;
+  color: #fff;
+}
+.ori-panel__reset-icon {
+  display: block;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.ori-panel__reset-icon--spinning {
+  animation: ori-reset-spin 640ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes ori-reset-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.ori-panel__messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem;
+  text-align: left;
+}
+
+.ori-panel__suggestions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 1rem 0.75rem;
+}
+.ori-panel__suggestion {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.25rem 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 1.125rem; /* 18px — was 0.95rem (~15px); a11y bump for suggestion lines */
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.5);
+  transition: color 160ms ease;
+}
+.ori-panel__suggestion:hover:not(:disabled),
+.ori-panel__suggestion:focus-visible:not(:disabled) {
+  color: #FF8700;
+}
+.ori-panel__suggestion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ori-panel__suggestion-dot {
+  display: block;
+  flex-shrink: 0;
+  width: 0.4rem; /* was 0.35rem — scale with larger suggestion text */
+  height: 0.4rem;
+  margin-top: 0.45em;
+  background: currentColor;
+}
+
+.ori-panel__input {
+  flex-shrink: 0;
+  padding: 0 1rem 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ori-fab,
+  .ori-scrim,
+  .ori-panel {
+    transition: none !important;
+  }
+  .ori-panel__reset-icon--spinning {
+    animation: none;
   }
 }

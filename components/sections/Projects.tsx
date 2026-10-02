@@ -15,9 +15,9 @@ const PROJECTS = [
     slug: 'chatbot',
     title: 'Portfolio',
     description:
-      'Live hero chat with multi-provider fallback and data analytics. A product demo and case study in one.',
+      'Live corner chat with multi-provider fallback and data analytics. A product demo and case study in one.',
     image: '/projects/chatbot.png',
-    imageAlt: 'Portfolio live hero chat product demo',
+    imageAlt: 'Portfolio live corner chat product demo',
   },
   {
     slug: 'personal',
