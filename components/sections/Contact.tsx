@@ -11,7 +11,9 @@ const CONTACT = {
 };
 
 const linkClass =
-  'hover-lit bg-transparent p-0 font-display text-nav font-medium tracking-normal text-black appearance-none';
+  // Sora; 16px below md so all four links stay on one row at 360px and the copyright + links
+  // row fits at 640-767px (Sora is wide); 20px (text-nav) from md up.
+  'hover-lit bg-transparent p-0 font-body text-[1rem] font-medium leading-[1.4] tracking-normal text-black appearance-none md:text-nav';
 
 /** Standalone footer for case pages — home and /about fuse contact into About. */
 export default function Contact() {
@@ -35,10 +37,10 @@ export default function Contact() {
   return (
     <footer id="contact" className="relative border-t border-black/10 bg-white text-black">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
-        <p className="font-display text-nav font-medium tracking-normal">
+        <p className="font-body text-[1rem] font-medium leading-[1.4] tracking-normal md:text-nav">
           © {new Date().getFullYear()} - Pedro de Freitas.
         </p>
-        <nav aria-label="Contact" className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
+        <nav aria-label="Contact" className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6 md:gap-x-8">
           <button type="button" onClick={copyEmail} className={linkClass} aria-live="polite">
             {copied ? 'Copied!' : 'E-mail'}
           </button>

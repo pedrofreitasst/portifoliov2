@@ -23,41 +23,44 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Darker Grotesque', 'system-ui', 'sans-serif'],
-        body: ['var(--font-body)', 'Jost', 'system-ui', 'sans-serif'],
-        sans: ['var(--font-body)', 'Jost', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Fraunces', 'Georgia', 'serif'],
+        body: ['var(--font-body)', 'Sora', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-body)', 'Sora', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-display)', 'Fraunces', 'Georgia', 'serif'],
       },
       fontSize: {
         // step 0 — was 18; bumped to 20 for on-screen testing
-        body: ['1.25rem', { lineHeight: '1.65' }], // 20
+        // Body/base/sm 20 -> 19 for Sora (x-height 0.534 vs Jost 0.46, ~17% wider); nav stays 20.
+        body: ['1.1875rem', { lineHeight: '1.65' }], // 19 (was 20)
         nav: ['1.25rem', { lineHeight: '1.4' }], // 20
         // Tailwind defaults remapped so leftover text-base/text-sm don't sit at 16/14 on the live UI
-        base: ['1.25rem', { lineHeight: '1.65' }], // 20 (was 16)
-        sm: ['1.25rem', { lineHeight: '1.5' }], // 20 for UI leftovers (meta stays separate)
+        base: ['1.1875rem', { lineHeight: '1.65' }], // 19 (Tailwind default 16)
+        sm: ['1.1875rem', { lineHeight: '1.5' }], // 19 for UI leftovers (meta stays separate)
         // step ~1
         'ui-lg': ['1.375rem', { lineHeight: '1.45' }], // 22
         // step 2
-        title: ['1.75rem', { lineHeight: '1.2', letterSpacing: '-0.01em' }], // 28
+        // Display sizes scaled ~0.82x for Fraunces (cap height 0.70 vs Darker Grotesque 0.56),
+        // tracking relaxed and leading opened slightly for the taller serif.
+        title: ['1.5rem', { lineHeight: '1.25', letterSpacing: '0' }], // 24 (was 28)
         // step 3
         section: [
-          'clamp(2rem, 3.5vw, 2.25rem)',
-          { lineHeight: '1.15', letterSpacing: '-0.015em' },
-        ], // ~32–36
+          'clamp(1.625rem, 3vw, 1.875rem)',
+          { lineHeight: '1.2', letterSpacing: '-0.01em' },
+        ], // ~26-30 (was ~32-36)
         // step 4–5
         'section-lg': [
-          'clamp(2.25rem, 4.5vw, 2.75rem)',
-          { lineHeight: '1.1', letterSpacing: '-0.02em' },
-        ], // ~36–44
+          'clamp(1.875rem, 3.75vw, 2.25rem)',
+          { lineHeight: '1.15', letterSpacing: '-0.01em' },
+        ], // ~30-36 (was ~36-44)
         // step 6
         display: [
-          'clamp(2.75rem, 7vw, 4.25rem)',
-          { lineHeight: '1.05', letterSpacing: '-0.02em' },
-        ], // ~44–68
+          'clamp(2.25rem, 5.75vw, 3.5rem)',
+          { lineHeight: '1.1', letterSpacing: '-0.01em' },
+        ], // ~36-56 (was ~44-68)
         'display-sm': [
-          'clamp(2rem, 4vw, 2.75rem)',
-          { lineHeight: '1.1', letterSpacing: '-0.015em' },
-        ],
+          'clamp(1.75rem, 3.25vw, 2.25rem)',
+          { lineHeight: '1.15', letterSpacing: '-0.01em' },
+        ], // ~28-36 (was ~32-44)
         // meta only (copyright) — one step below body
         meta: ['0.875rem', { lineHeight: '1.5' }], // 14
       },

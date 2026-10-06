@@ -1,20 +1,24 @@
 import type { Metadata } from 'next';
-import { Darker_Grotesque, Jost } from 'next/font/google';
+import { Fraunces, Sora } from 'next/font/google';
 import Header from '@/components/Header';
 import Contact from '@/components/sections/Contact';
 import OriCornerChat from '@/components/OriCornerChat';
 import './globals.css';
 
-const darkerGrotesque = Darker_Grotesque({
+// Display font: Fraunces variable (wght 100-900 + optical size). The browser picks opsz from the
+// font size automatically (font-optical-sizing: auto), so big headings get the display cut.
+// SOFT/WONK axes are left out on purpose: unused, and they roughly double the file (~67KB -> ~121KB
+// latin woff2). Add 'SOFT', 'WONK' to axes if you want to play with them. Italic not loaded (unused).
+const fraunces = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  axes: ['opsz'],
   variable: '--font-display',
   display: 'swap',
 });
 
-const jost = Jost({
+// Body font: Sora variable (wght 100-800).
+const sora = Sora({
   subsets: ['latin'],
-  weight: ['400', '500'],
   variable: '--font-body',
   display: 'swap',
 });
@@ -60,17 +64,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${darkerGrotesque.variable} ${jost.variable} ${darkerGrotesque.className}`}
+      className={`${fraunces.variable} ${sora.variable} ${fraunces.className}`}
     >
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;700&family=Jost:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`${jost.className} bg-white text-black antialiased`}>
+      <body className={`${sora.className} bg-white text-black antialiased`}>
         <a href="#main" className="skip-link">
           Skip to content
         </a>

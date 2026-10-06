@@ -9,7 +9,7 @@ export default function Hero() {
       {/* Desktop: tighter so the first Works card peeks under the fold. Mobile paddings unchanged. */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-32 lg:px-12 lg:pb-14 lg:pt-28">
         <Reveal className="max-w-4xl text-left">
-          <h1 className="font-display text-display font-bold text-black">
+          <h1 className="font-display text-display font-semibold text-black">
             You can call me <NameRoller />
           </h1>
           <p className="mt-6 max-w-xl font-body text-body font-normal text-black/70">

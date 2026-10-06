@@ -688,7 +688,7 @@ export default function OriCornerChat() {
         }}
       >
         <div className="ori-panel__header">
-          <h2 id={titleId} className="font-display text-title font-bold text-black">
+          <h2 id={titleId} className="font-display text-title font-semibold text-black">
             Ori
           </h2>
           <div className="ori-panel__header-actions">
@@ -790,7 +790,7 @@ export default function OriCornerChat() {
                 placeholder="Ask Ori"
                 disabled={loading}
                 autoComplete="off"
-                className="h-10 w-full bg-transparent px-3 pr-2 font-display text-body font-normal text-black outline-none placeholder:text-black/50 focus:outline-none focus-visible:outline-none disabled:opacity-60"
+                className="h-10 w-full bg-transparent px-3 pr-2 font-body text-body font-normal text-black outline-none placeholder:text-black/50 focus:outline-none focus-visible:outline-none disabled:opacity-60"
               />
             </div>
 

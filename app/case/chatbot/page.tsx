@@ -28,7 +28,7 @@ export default function CasePage() {
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
           Case study
         </p>
-        <h1 className="mt-3 font-display text-display-sm font-bold tracking-normal text-black md:text-[clamp(2.25rem,4vw,3rem)]">
+        <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
           Personal Portfolio and Chatbot
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">

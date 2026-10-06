@@ -149,7 +149,9 @@ export default function Header() {
         <nav
           aria-label="Primary"
           className={
-            'absolute left-1/2 flex -translate-x-1/2 items-center gap-5 font-display text-nav font-medium uppercase tracking-[0.12em] transition-colors duration-300 sm:gap-7 ' +
+            // Sora (body font). Mobile 16px so the nav (~244px) clears the logo / Ori trigger on
+            // 360-390px phones; 20px (text-nav) from sm up.
+            'absolute left-1/2 flex -translate-x-1/2 items-center gap-5 font-body text-[1rem] font-medium uppercase leading-[1.4] tracking-[0.12em] transition-colors duration-300 sm:gap-7 sm:text-nav ' +
             linkTone
           }
         >

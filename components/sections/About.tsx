@@ -27,7 +27,9 @@ const CONTACT = {
 };
 
 const footLink =
-  'hover-lit bg-transparent p-0 font-display text-nav font-medium tracking-normal text-white appearance-none';
+  // Sora; 16px below md so all four links stay on one row at 360px and the copyright + links
+  // row fits at 640-767px (Sora is wide); 20px (text-nav) from md up.
+  'hover-lit bg-transparent p-0 font-body text-[1rem] font-medium leading-[1.4] tracking-normal text-white appearance-none md:text-nav';
 
 /**
  * Final full-viewport panel: About + Skills + contact/footer fused.
@@ -132,7 +134,7 @@ export default function About() {
               <p className="mb-4 font-display text-meta font-medium uppercase tracking-[0.22em] text-white/65">
                 About
               </p>
-              <h2 className="font-display text-display-sm font-bold text-white md:text-[clamp(2.5rem,4.5vw,3.25rem)]">
+              <h2 className="font-display text-display-sm font-semibold text-white md:text-[clamp(2rem,3.75vw,2.75rem)]">
                 The &apos;I&apos; of The Storm
               </h2>
               <div className="mt-6 space-y-5 font-body text-body font-normal text-white/70 md:mt-8">
@@ -191,12 +193,12 @@ export default function About() {
         className="relative z-10 mt-auto border-t border-white/10 bg-black/20 backdrop-blur-[6px]"
       >
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-5 lg:px-12">
-          <p className="font-display text-nav font-medium tracking-normal text-white/90">
+          <p className="font-body text-[1rem] font-medium leading-[1.4] tracking-normal text-white/90 md:text-nav">
             {'\u00A9'} {new Date().getFullYear()} - Pedro de Freitas.
           </p>
           <nav
             aria-label="Contact"
-            className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8"
+            className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6 md:gap-x-8"
           >
             <button type="button" onClick={copyEmail} className={footLink} aria-live="polite">
               {copied ? 'Copied!' : 'E-mail'}

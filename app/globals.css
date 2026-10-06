@@ -5,8 +5,9 @@
 :root {
   --page-white: #ffffff;
   --page-black: #000000;
-  --font-display: 'Darker Grotesque', system-ui, sans-serif;
-  --font-body: 'Jost', system-ui, sans-serif;
+  /* --font-display (Fraunces) and --font-body (Sora) are set by next/font on <html> in
+     app/layout.tsx. Don't redefine them here: an equal-specificity :root rule can win and point
+     at a non-loaded family name. */
 }
 
 html {
@@ -19,7 +20,7 @@ body {
   background-color: var(--page-white);
   color: #111111;
   font-family: var(--font-body);
-  font-size: 1.25rem; /* 20px base */
+  font-size: 1.1875rem; /* 19px base (was 20px; Sora reads larger than Jost) - matches text-body */
   /* clip avoids creating a scroll port that breaks position:sticky */
   overflow-x: clip;
 }
@@ -94,9 +95,10 @@ body {
   height: 1em;
   line-height: 1;
   overflow: hidden;
-  /* slight optical nudge: absolute tracks otherwise read high vs Latin baseline */
+  /* Baseline nudge: the box bottom sits on the baseline, so shift by (1 - ascent + descent) / 2.
+     Fraunces typo metrics 0.978 / 0.255 => 0.14em (was 0.12em for Darker Grotesque 1.06 / 0.296). */
   position: relative;
-  top: 0.12em;
+  top: 0.14em;
   width: 4.8ch;
 }
 
@@ -560,7 +562,7 @@ html.ori-chat-open {
   background: transparent;
   text-align: left;
   cursor: pointer;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 1.125rem; /* 18px — was 0.95rem (~15px); a11y bump for suggestion lines */
   font-weight: 400;
   line-height: 1.4;
