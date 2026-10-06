@@ -61,6 +61,7 @@ function Lightbox({
   return (
     <div
       ref={dialogRef}
+      data-no-swipe-open
       role="dialog"
       aria-modal="true"
       aria-label={item.alt}
@@ -146,6 +147,7 @@ function Track({
       <p className="max-w-2xl px-5 pb-4 font-body text-body text-black/70">{section.description}</p>
       <ul
         ref={trackRef}
+        data-no-swipe-open
         tabIndex={0}
         aria-label={`${section.title} pieces`}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-5 pb-5 pt-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black motion-reduce:scroll-auto"

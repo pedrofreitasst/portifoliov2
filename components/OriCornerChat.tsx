@@ -78,21 +78,35 @@ function wait(ms: number) {
 }
 
 /**
- * Swipe-to-close (touch only). Tuned for a ~380px / 90vw panel.
- * - LOCK_PX: movement before we decide horizontal vs vertical.
- * - CLOSE_RATIO: drag past this fraction of panel width closes on release.
- * - FLICK_VELOCITY: px/ms rightward over the last VELOCITY_WINDOW_MS also closes.
- * - CLOSE_FALLBACK_MS: safety net if transitionend never fires (> 280ms CSS transition).
+ * Swipe gestures (touch only — mouse/trackpad never fire touch events). Tuned for a ~380px / 90vw panel.
+ * - Swipe RIGHT on the open panel closes it.
+ * - Swipe LEFT anywhere on the page (outside the edge dead zones) while closed drags it open.
+ * Shared rules:
+ * - LOCK_PX: movement before we decide horizontal vs vertical (vertical => ignore whole touch).
+ * - COMMIT_RATIO: drag past this fraction of panel width commits on release.
+ * - FLICK_VELOCITY: px/ms in the gesture direction over the last VELOCITY_WINDOW_MS also commits.
+ * - SETTLE_FALLBACK_MS: safety net if transitionend never fires (> 280ms CSS transition).
+ * Open-only rules:
+ * - EDGE: touches starting within max(24px, 6% of viewport width) of either screen edge are left
+ *   to the OS/browser back/forward gestures.
+ * - PINCH_ZOOM_SCALE: page pinch-zoomed past this => leave horizontal panning to the browser.
  */
 const SWIPE_LOCK_PX = 10;
-const SWIPE_CLOSE_RATIO = 0.3;
+const SWIPE_COMMIT_RATIO = 0.3;
 const SWIPE_FLICK_VELOCITY = 0.5;
 const SWIPE_VELOCITY_WINDOW_MS = 100;
-const SWIPE_CLOSE_FALLBACK_MS = 400;
+const SWIPE_SETTLE_FALLBACK_MS = 400;
+const SWIPE_EDGE_MIN_PX = 24;
+const SWIPE_EDGE_RATIO = 0.06;
+const SWIPE_PINCH_ZOOM_SCALE = 1.01;
 /** Gestures starting on text fields are left alone (caret moves / text selection). */
 const SWIPE_IGNORE_SELECTOR =
   'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
+/** Swipe-to-open also skips dialogs/modals (e.g. the gallery lightbox) and explicit opt-outs. */
+const SWIPE_OPEN_IGNORE_SELECTOR = `${SWIPE_IGNORE_SELECTOR}, [data-no-swipe-open], [role="dialog"], [aria-modal="true"], dialog`;
 
+/** +1 = rightward (close gesture), -1 = leftward (open gesture). */
+type SwipeDir = 1 | -1;
 type SwipeSample = { x: number; t: number };
 type SwipeState = {
   mode: 'pending' | 'drag' | 'ignore';
@@ -101,9 +115,58 @@ type SwipeState = {
   /** clientX at the moment the horizontal lock engaged; offset is measured from here (no jump). */
   lockX: number;
   width: number;
+  /** Distance travelled in the gesture direction, clamped to [0, width]. */
   offset: number;
   samples: SwipeSample[];
 };
+
+function startSwipe(t: Touch): SwipeState {
+  return {
+    mode: 'pending',
+    startX: t.clientX,
+    startY: t.clientY,
+    lockX: 0,
+    width: 0,
+    offset: 0,
+    samples: [],
+  };
+}
+
+/**
+ * Feed one touchmove into a swipe. While undecided, applies the direction lock: only a clearly
+ * horizontal move in `dir` becomes a drag; anything else (vertical, wrong way, or the browser
+ * already scrolling so the event can't be cancelled) ignores the rest of the touch.
+ * Returns the current drag offset once dragging, otherwise null.
+ */
+function moveSwipe(
+  s: SwipeState,
+  t: Touch,
+  dir: SwipeDir,
+  cancelable: boolean,
+  measureWidth: () => number,
+): number | null {
+  if (s.mode === 'ignore') return null;
+  if (s.mode === 'pending') {
+    const dx = t.clientX - s.startX;
+    const dy = t.clientY - s.startY;
+    if (Math.abs(dx) < SWIPE_LOCK_PX && Math.abs(dy) < SWIPE_LOCK_PX) return null;
+    if (dx * dir > 0 && Math.abs(dx) > Math.abs(dy) && cancelable) {
+      s.mode = 'drag';
+      s.lockX = t.clientX;
+      s.width = measureWidth() || 1;
+    } else {
+      s.mode = 'ignore';
+      return null;
+    }
+  }
+  const now = performance.now();
+  s.offset = Math.min(s.width, Math.max(0, (t.clientX - s.lockX) * dir));
+  s.samples.push({ x: t.clientX, t: now });
+  while (s.samples.length > 2 && now - s.samples[0].t > SWIPE_VELOCITY_WINDOW_MS) {
+    s.samples.shift();
+  }
+  return s.offset;
+}
 
 function swipeVelocity(samples: SwipeSample[], now: number): number {
   const recent = samples.filter((p) => now - p.t <= SWIPE_VELOCITY_WINDOW_MS);
@@ -112,6 +175,51 @@ function swipeVelocity(samples: SwipeSample[], now: number): number {
   const b = recent[recent.length - 1];
   const dt = b.t - a.t;
   return dt > 0 ? (b.x - a.x) / dt : 0;
+}
+
+/** On release: far enough (30% of width) or a quick flick in the gesture direction. */
+function swipeCommits(s: SwipeState, dir: SwipeDir): boolean {
+  const velocity = swipeVelocity(s.samples, performance.now()) * dir;
+  return (
+    s.offset > s.width * SWIPE_COMMIT_RATIO || (velocity > SWIPE_FLICK_VELOCITY && s.offset > 0)
+  );
+}
+
+/** Don't fight selection-handle drags after a long-press text selection. */
+function hasTextSelection(): boolean {
+  const selection = window.getSelection();
+  return !!selection && !selection.isCollapsed;
+}
+
+/** True if the touch started inside something that scrolls sideways (e.g. gallery strips). */
+function inHorizontalScroller(start: Element): boolean {
+  for (
+    let el: Element | null = start;
+    el && el !== document.body && el !== document.documentElement;
+    el = el.parentElement
+  ) {
+    if (el.scrollWidth <= el.clientWidth + 1) continue;
+    const overflowX = window.getComputedStyle(el).overflowX;
+    if (overflowX === 'auto' || overflowX === 'scroll') return true;
+  }
+  return false;
+}
+
+/** Swipe-to-open guard: everything that should keep its own horizontal touch behaviour. */
+function canStartOpenSwipe(e: TouchEvent): boolean {
+  if (e.touches.length !== 1) return false;
+  const x = e.touches[0].clientX;
+  const vw = window.innerWidth;
+  const edge = Math.max(SWIPE_EDGE_MIN_PX, vw * SWIPE_EDGE_RATIO);
+  if (x < edge || x > vw - edge) return false;
+  if ((window.visualViewport?.scale ?? 1) > SWIPE_PINCH_ZOOM_SCALE) return false;
+  if (hasTextSelection()) return false;
+  // Any open modal anywhere (the Ori panel renders aria-modal="false" while closed).
+  if (document.querySelector('[aria-modal="true"], dialog[open]')) return false;
+  const target = e.target instanceof Element ? e.target : null;
+  if (!target) return false;
+  if (target.closest(SWIPE_OPEN_IGNORE_SELECTOR)) return false;
+  return !inHorizontalScroller(target);
 }
 
 function getFocusable(root: HTMLElement): HTMLElement[] {
@@ -139,9 +247,13 @@ export default function OriCornerChat() {
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
+  /** Close gesture (listeners on the open panel). */
   const swipeRef = useRef<SwipeState | null>(null);
-  const swipeClosingRef = useRef(false);
-  const swipeCloseTimer = useRef<number | null>(null);
+  /** Open gesture (listeners on document while closed). */
+  const swipeOpenRef = useRef<SwipeState | null>(null);
+  /** A slide-out is animating with inline styles; clear them when it ends. */
+  const swipeSettlingRef = useRef(false);
+  const swipeSettleTimer = useRef<number | null>(null);
   const titleId = useId();
 
   // Restore tab-session conversation after mount (avoid SSR mismatch)
@@ -168,13 +280,23 @@ export default function OriCornerChat() {
     setOpen(false);
   }, []);
 
-  /** Drop every inline style the swipe gesture set, handing control back to globals.css. */
-  const resetSwipeStyles = useCallback(() => {
-    if (swipeCloseTimer.current !== null) {
-      window.clearTimeout(swipeCloseTimer.current);
-      swipeCloseTimer.current = null;
+  /** Same state path as the header trigger / `ori-open` event. */
+  const openPanel = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  /** Forget a pending slide-out cleanup without touching styles (a new drag is taking over). */
+  const cancelSwipeSettle = useCallback(() => {
+    if (swipeSettleTimer.current !== null) {
+      window.clearTimeout(swipeSettleTimer.current);
+      swipeSettleTimer.current = null;
     }
-    swipeClosingRef.current = false;
+    swipeSettlingRef.current = false;
+  }, []);
+
+  /** Drop every inline style the swipe gestures set, handing control back to globals.css. */
+  const resetSwipeStyles = useCallback(() => {
+    cancelSwipeSettle();
     const panel = panelRef.current;
     if (panel) {
       panel.style.transition = '';
@@ -186,7 +308,33 @@ export default function OriCornerChat() {
       scrim.style.transition = '';
       scrim.style.opacity = '';
     }
-  }, []);
+  }, [cancelSwipeSettle]);
+
+  /**
+   * Slide the panel off to the right from wherever a drag left it, keeping it visible meanwhile
+   * (the closed class sets visibility:hidden immediately), then clear the inline styles.
+   * Used by swipe-to-close (followed by close()) and by a cancelled swipe-to-open.
+   * Under prefers-reduced-motion the CSS transition is none, so this is instant.
+   */
+  const slideOutPanel = useCallback(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    cancelSwipeSettle();
+    swipeSettlingRef.current = true;
+    panel.style.transition = '';
+    panel.style.visibility = 'visible';
+    panel.style.transform = 'translateX(100%)';
+    const scrim = scrimRef.current;
+    if (scrim) {
+      scrim.style.transition = '';
+      scrim.style.opacity = '0';
+    }
+    swipeSettleTimer.current = window.setTimeout(
+      resetSwipeStyles,
+      reduced ? 0 : SWIPE_SETTLE_FALLBACK_MS,
+    );
+  }, [cancelSwipeSettle, resetSwipeStyles]);
 
   const resetConversation = useCallback(() => {
     setMessages([]);
@@ -205,7 +353,7 @@ export default function OriCornerChat() {
 
   // Header (and anything else) can open/close via custom events
   useEffect(() => {
-    const onOpen = () => setOpen(true);
+    const onOpen = () => openPanel();
     const onClose = () => setOpen(false);
     const onToggle = () => setOpen((o) => !o);
     window.addEventListener('ori-open', onOpen);
@@ -216,7 +364,7 @@ export default function OriCornerChat() {
       window.removeEventListener('ori-close', onClose);
       window.removeEventListener('ori-toggle', onToggle);
     };
-  }, []);
+  }, [openPanel]);
 
   // Body reflow + Escape + focus management + header lit sync
   useEffect(() => {
@@ -292,7 +440,8 @@ export default function OriCornerChat() {
     if (!open) return;
     const panel = panelRef.current;
     if (!panel) return;
-    // Re-opened mid swipe-close animation: start clean.
+    // Opened (by any path, incl. swipe-to-open) or re-opened mid slide-out: start clean.
+    // After a swipe-open the inline values equal the --open class values, so no jump.
     resetSwipeStyles();
     const scrim = scrimRef.current;
 
@@ -307,25 +456,6 @@ export default function OriCornerChat() {
       }
     };
 
-    const swipeClose = () => {
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      swipeClosingRef.current = true;
-      panel.style.transition = '';
-      // Keep it visible while it slides out; the closed class sets visibility:hidden immediately.
-      panel.style.visibility = 'visible';
-      panel.style.transform = 'translateX(100%)';
-      if (scrim) {
-        scrim.style.transition = '';
-        scrim.style.opacity = '0';
-      }
-      swipeCloseTimer.current = window.setTimeout(
-        resetSwipeStyles,
-        reduced ? 0 : SWIPE_CLOSE_FALLBACK_MS,
-      );
-      // Same path as the X button: ori-state event, header lit sync, focus return.
-      close();
-    };
-
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) {
         // Second finger (pinch etc.) cancels any drag in progress.
@@ -334,61 +464,26 @@ export default function OriCornerChat() {
         return;
       }
       const target = e.target instanceof Element ? e.target : null;
-      if (target?.closest(SWIPE_IGNORE_SELECTOR)) {
+      if (target?.closest(SWIPE_IGNORE_SELECTOR) || hasTextSelection()) {
         swipeRef.current = null;
         return;
       }
-      // Don't fight selection-handle drags after a long-press text selection.
-      const selection = window.getSelection();
-      if (selection && !selection.isCollapsed) {
-        swipeRef.current = null;
-        return;
-      }
-      const t = e.touches[0];
-      swipeRef.current = {
-        mode: 'pending',
-        startX: t.clientX,
-        startY: t.clientY,
-        lockX: 0,
-        width: 0,
-        offset: 0,
-        samples: [],
-      };
+      swipeRef.current = startSwipe(e.touches[0]);
     };
 
     const onTouchMove = (e: TouchEvent) => {
       const s = swipeRef.current;
-      if (!s || s.mode === 'ignore') return;
       const t = e.touches[0];
-      if (!t) return;
-
-      if (s.mode === 'pending') {
-        const dx = t.clientX - s.startX;
-        const dy = t.clientY - s.startY;
-        if (Math.abs(dx) < SWIPE_LOCK_PX && Math.abs(dy) < SWIPE_LOCK_PX) return;
-        // Only a clearly horizontal, rightward gesture becomes a drag. Anything else
-        // (vertical, leftward, or the browser already scrolling) is ignored for this touch.
-        if (dx > 0 && Math.abs(dx) > Math.abs(dy) && e.cancelable) {
-          s.mode = 'drag';
-          s.lockX = t.clientX;
-          s.width = panel.getBoundingClientRect().width || 1;
-          panel.style.transition = 'none';
-          if (scrim) scrim.style.transition = 'none';
-        } else {
-          s.mode = 'ignore';
-          return;
-        }
+      if (!s || !t) return;
+      const wasPending = s.mode === 'pending';
+      const offset = moveSwipe(s, t, 1, e.cancelable, () => panel.offsetWidth);
+      if (offset === null) return;
+      if (wasPending) {
+        panel.style.transition = 'none';
+        if (scrim) scrim.style.transition = 'none';
       }
-
       if (e.cancelable) e.preventDefault();
-      const now = performance.now();
-      // Clamp at 0: can't be dragged left past its open position.
-      const offset = Math.max(0, t.clientX - s.lockX);
-      s.offset = offset;
-      s.samples.push({ x: t.clientX, t: now });
-      while (s.samples.length > 2 && now - s.samples[0].t > SWIPE_VELOCITY_WINDOW_MS) {
-        s.samples.shift();
-      }
+      // Offset is clamped at 0: can't be dragged left past its open position.
       panel.style.transform = `translateX(${offset}px)`;
       if (scrim) scrim.style.opacity = String(Math.max(0, 1 - offset / s.width));
     };
@@ -398,11 +493,13 @@ export default function OriCornerChat() {
       const s = swipeRef.current;
       swipeRef.current = null;
       if (!s || s.mode !== 'drag') return;
-      const velocity = swipeVelocity(s.samples, performance.now());
-      const farEnough = s.offset > s.width * SWIPE_CLOSE_RATIO;
-      const flicked = velocity > SWIPE_FLICK_VELOCITY && s.offset > 0;
-      if (farEnough || flicked) swipeClose();
-      else snapBack();
+      if (swipeCommits(s, 1)) {
+        slideOutPanel();
+        // Same path as the X button: ori-state event, header lit sync, focus return.
+        close();
+      } else {
+        snapBack();
+      }
     };
 
     const onTouchCancel = () => {
@@ -425,7 +522,91 @@ export default function OriCornerChat() {
       if (swipeRef.current?.mode === 'drag') resetSwipeStyles();
       swipeRef.current = null;
     };
-  }, [open, close, resetSwipeStyles]);
+  }, [open, close, resetSwipeStyles, slideOutPanel]);
+
+  // Swipe LEFT to open (touch only), mirroring swipe-to-close. Listens on document while closed.
+  // Edge dead zones, modals, text fields, horizontal scrollers, selections, multi-touch and
+  // pinch-zoom are all left alone (see canStartOpenSwipe). No swipe-to-open from the screen edge.
+  useEffect(() => {
+    if (open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const scrim = scrimRef.current;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) {
+        // Second finger cancels a drag in progress.
+        if (swipeOpenRef.current?.mode === 'drag') slideOutPanel();
+        swipeOpenRef.current = null;
+        return;
+      }
+      swipeOpenRef.current = canStartOpenSwipe(e) ? startSwipe(e.touches[0]) : null;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const s = swipeOpenRef.current;
+      const t = e.touches[0];
+      if (!s || !t) return;
+      const wasPending = s.mode === 'pending';
+      const offset = moveSwipe(s, t, -1, e.cancelable, () => panel.offsetWidth);
+      if (offset === null) return;
+      if (wasPending) {
+        // Engage: show the logically-closed panel (inline styles, like the slide-out) so it
+        // can follow the finger in from the right. Stop any slide-out cleanup still pending.
+        cancelSwipeSettle();
+        panel.style.transition = 'none';
+        panel.style.visibility = 'visible';
+        if (scrim) scrim.style.transition = 'none';
+      }
+      if (e.cancelable) e.preventDefault();
+      // translateX goes from the panel width (fully off) toward 0 (fully open).
+      panel.style.transform = `translateX(${s.width - offset}px)`;
+      if (scrim) scrim.style.opacity = String(Math.min(1, offset / s.width));
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length > 0) return;
+      const s = swipeOpenRef.current;
+      swipeOpenRef.current = null;
+      if (!s || s.mode !== 'drag') return;
+      if (swipeCommits(s, -1)) {
+        // Finish the slide in (instant under reduced motion), then open through the normal
+        // state path: ori-state event, lit header icon, aria-expanded, no touch autofocus.
+        // The open effect clears these inline styles; they equal the --open class values.
+        panel.style.transition = '';
+        panel.style.transform = 'translateX(0)';
+        if (scrim) {
+          scrim.style.transition = '';
+          scrim.style.opacity = '1';
+        }
+        openPanel();
+      } else {
+        slideOutPanel();
+      }
+    };
+
+    const onTouchCancel = () => {
+      const s = swipeOpenRef.current;
+      swipeOpenRef.current = null;
+      if (s?.mode === 'drag') slideOutPanel();
+    };
+
+    document.addEventListener('touchstart', onTouchStart, { passive: true });
+    // Non-passive only so a locked horizontal drag can stop vertical page scroll; returns
+    // immediately for touches that never qualified.
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd, { passive: true });
+    document.addEventListener('touchcancel', onTouchCancel, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', onTouchStart);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onTouchEnd);
+      document.removeEventListener('touchcancel', onTouchCancel);
+      // Opened another way (header) or unmounted mid-drag: drop the inline drag styles.
+      if (swipeOpenRef.current?.mode === 'drag') resetSwipeStyles();
+      swipeOpenRef.current = null;
+    };
+  }, [open, openPanel, cancelSwipeSettle, resetSwipeStyles, slideOutPanel]);
 
   // React 18: set inert via DOM (not typed on JSX yet)
   useEffect(() => {
@@ -496,9 +677,9 @@ export default function OriCornerChat() {
         aria-hidden={!open}
         aria-labelledby={titleId}
         onTransitionEnd={(e) => {
-          // Swipe-close slide finished: hand styling back to globals.css.
+          // Swipe slide-out finished: hand styling back to globals.css.
           if (
-            swipeClosingRef.current &&
+            swipeSettlingRef.current &&
             e.target === e.currentTarget &&
             e.propertyName === 'transform'
           ) {
