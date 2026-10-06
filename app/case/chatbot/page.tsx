@@ -344,7 +344,7 @@ export default function CasePage() {
         </section>
 
         <p className="mt-16 font-body text-body text-black/65">
-          <Link href="/#works" className="link-underline bg-transparent text-black/70">
+          <Link href="/#works" className="hover-lit bg-transparent text-black/70">
             ← Back to Works
           </Link>
         </p>

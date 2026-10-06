@@ -45,7 +45,7 @@ export default function Projects() {
                 alt={project.imageAlt}
                 priority={i === 0}
               />
-              <h3 className="link-underline-group mt-5 font-display text-title font-bold md:text-section">
+              <h3 className="hover-lit-group mt-5 font-display text-title font-bold md:text-section">
                 {project.title}
               </h3>
               <p className="mt-2 max-w-2xl font-body text-body font-normal text-black/60">

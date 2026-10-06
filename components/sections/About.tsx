@@ -27,7 +27,7 @@ const CONTACT = {
 };
 
 const footLink =
-  'link-underline bg-transparent p-0 font-display text-nav font-medium tracking-normal text-white appearance-none';
+  'hover-lit bg-transparent p-0 font-display text-nav font-medium tracking-normal text-white appearance-none';
 
 /**
  * Final full-viewport panel: About + Skills + contact/footer fused.

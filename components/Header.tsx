@@ -127,7 +127,8 @@ export default function Header() {
   const navLinkClass = (section: NavSection | null) => {
     const isActive = section !== null && activeNav === section;
     return (
-      'bg-transparent transition-colors duration-200 hover:text-[#FF8700] focus-visible:text-[#FF8700] ' +
+      // .hover-lit (globals.css) = color 200ms + #FF8700 on hover/focus-visible; shared site-wide
+      'hover-lit bg-transparent ' +
       (isActive ? 'text-[#FF8700]' : '')
     );
   };

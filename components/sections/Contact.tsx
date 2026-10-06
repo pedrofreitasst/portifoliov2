@@ -11,7 +11,7 @@ const CONTACT = {
 };
 
 const linkClass =
-  'link-underline bg-transparent p-0 font-display text-nav font-medium tracking-normal text-black appearance-none';
+  'hover-lit bg-transparent p-0 font-display text-nav font-medium tracking-normal text-black appearance-none';
 
 /** Standalone footer for case pages — home and /about fuse contact into About. */
 export default function Contact() {
