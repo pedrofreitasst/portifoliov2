@@ -4,12 +4,12 @@ import ProjectThumb from '@/components/ProjectThumb';
 
 const PROJECTS = [
   {
-    slug: 'skillsbuild',
-    title: 'IBM SkillsBuild',
+    slug: 'apollo',
+    title: 'Apollo',
     description:
-      'A mobile-first redesign that uncovered a flaw in the certification process.',
-    image: '/projects/skillsbuild.png',
-    imageAlt: 'IBM SkillsBuild quiz redesign mockup',
+      'An adaptive screen guide for low-literacy and cognitive-load users. It dims, spotlights and speaks, but never taps for you.',
+    image: '/projects/apollo.png',
+    imageAlt: 'Apollo screen guide: product page with the docked sun, spoken summary and purchase confirmation',
   },
   {
     slug: 'chatbot',
@@ -18,6 +18,14 @@ const PROJECTS = [
       'Live corner chat with multi-provider fallback and data analytics. A product demo and case study in one.',
     image: '/projects/chatbot.png',
     imageAlt: 'Portfolio live corner chat product demo',
+  },
+  {
+    slug: 'skillsbuild',
+    title: 'IBM SkillsBuild',
+    description:
+      'A mobile-first redesign that uncovered a flaw in the certification process.',
+    image: '/projects/skillsbuild.png',
+    imageAlt: 'IBM SkillsBuild quiz redesign mockup',
   },
   {
     slug: 'personal',
