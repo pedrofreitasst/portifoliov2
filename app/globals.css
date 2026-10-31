@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --page-white: #ffffff;
+  --page-white: #d12e2e;
   --page-black: #000000;
   /* --font-display (Fraunces) and --font-body (Sora) are set by next/font on <html> in
      app/layout.tsx. Don't redefine them here: an equal-specificity :root rule can win and point

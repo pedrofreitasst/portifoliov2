@@ -16,6 +16,7 @@ const config: Config = {
         page: {
           white: '#FFFFFF',
           black: '#000000',
+          paper: '#00e700',
         },
         accent: {
           DEFAULT: '#F5A623',
