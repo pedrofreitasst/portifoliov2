@@ -81,7 +81,7 @@ export default function CasePage() {
           Apollo, a Adaptive Screen Guide
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          An universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.
+          A universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.
         </p>
 
         <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
