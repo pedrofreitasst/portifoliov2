@@ -78,7 +78,7 @@ export default function CasePage() {
           Case study
         </p>
         <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
-          Apollo, a Adaptive Screen Guide
+          Apollo, an Adaptive Screen Guide
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
           A universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.
@@ -138,7 +138,7 @@ export default function CasePage() {
             <p>
               Recently, in an interview for the position of UX Analyst, I was asked what structure I would use
               today, and how it would work for users aged 35-50. This case is a from-scratch
-              redesign with a decade more experience. This is an adaptation of that idea to a modern digital
+              redesign with a decade more experience, adapting that idea to a modern digital
               landscape where developers need to use their creativity to work within the constraints of each operating system.
             </p>
           </div>
@@ -163,8 +163,7 @@ export default function CasePage() {
               option shown only as faded, sizes in text, and a price that changes with size.
             </p>
             <p className="border-l-2 border-[#1D5FA6] pl-5 text-black">
-              The job is not &quot;simplify the interface.&quot; It is: what does someone who
-              cannot read need to know to decide safely?
+              The job: find out what someone who cannot read needs to know to decide safely.
             </p>
             <p>Existing screen readers read everything. That adds load; it does not remove it.</p>
           </div>
@@ -186,24 +185,22 @@ export default function CasePage() {
               <li>Both learned through practice and first-hand experience.</li>
               <li>
                 F wants to learn to do things herself. S says doing things feels heavy and prefers
-                others do it due to cognitive load.
+                others do it which reads as cognitive load.
               </li>
               <li>
                 S feels insecure beyond simple tasks and has caught adware several times, and
-                complained about repetitive actions like typing a password on every unlock.
+                complains about repetitive actions like typing a password on every unlock.
               </li>
               <li>Neither resisted a simpler-looking phone: &quot;if they can do what they use, it is fine.&quot;</li>
               <li>F usually pays by Pix and asks someone to do it; sometimes by credit card.</li>
             </ul>
             <p>
               <span className={STEP}>Insight:</span> Pix dependency is a seatbelt, friction that
-              protects. F&apos;s problem is not the home screen; it is getting lost inside tasks. And for S safety
-              matters as much as ease, specifically the fear is paying for something different than
-              expected.
+              protects. F is comfortable on the home screen and gets lost inside tasks. 
+              For S, safety matters as much as ease: the fear is paying for something different from what was expected.
             </p>
             <p>
-              <span className={STEP}>Limitations:</span> two participants, both close to me, and one leading question. Most modern operating systems don&apos;t allow developers to
-              manipulate the structure of app screens, and Apple has even stricter rules.
+              <span className={STEP}>Limitations:</span> two participants, both close to me(desire to help), and one leading question. Treat this as an early signal from a small sample.
             </p>
           </div>
         </section>
@@ -288,9 +285,9 @@ export default function CasePage() {
               <span className={STEP}>Labels stay for those who read; F never needs them.</span>{' '}
               Apollo speaks the question and the options, and F can answer with her voice.
               &quot;Yes&quot; carries a check icon and &quot;Not yet&quot; a clock, each always in
-              the same position, so the meaning comes from icon, voice and place, not from the
-              word. I avoided an X for &quot;Not yet&quot; because it reads as cancel or error in
-              the middle of a purchase and for some userbases, designing for &quot;feeling&quot; is the right way to approach the solution.
+              the same position, so the meaning comes from icon, voice and place, avoiding reliance on text. 
+              I avoided an X for &quot;Not yet&quot; because it reads as cancel or error in the middle of a purchase. 
+              For some user groups, designing for feeling is the right approach.
             </p>
             <p>
               <span className={STEP}>Adaptive input.</span> When onboarding flags reading as a
@@ -348,9 +345,7 @@ export default function CasePage() {
               is no separate payment screen. So the spoken item and final price, followed by one
               question, are the only safeguard before money moves, and they stay at every level:
               &quot;Green Santa tablecloth, 4 seats. The final price is R$29,90. Ready for
-              checkout?&quot; The order card is the only lit thing. &quot;Ready for checkout?&quot;
-              replaced &quot;Want to buy it?&quot;: the real question is readiness, not desire, and
-              it sounds less like a sales prompt.
+              checkout?&quot; The order card is the only lit thing. &quot;Ready for checkout?&quot; asks about readiness and sounds less like a sales prompt.
             </p>
             <p>
               <span className={STEP}>Tap.</span> &quot;Yes&quot; moves the light onto the
@@ -456,10 +451,9 @@ export default function CasePage() {
               itself.
             </p>
             <p>
-              <span className={STEP}>Typeface and panels:</span> the first typeface chosen was a bold
-              yellow face, and it read amateur, closer to a game UI than a helper someone trusts
-              with a purchase. I switched to Atkinson Hyperlegible, designed by the Braille
-              Institute so similar letters (I, l, 1; O, 0) stay distinct for low-vision readers.
+              <span className={STEP}>Type and panels:</span> Type and panels: my first text style was mustard-yellow lettering,
+              and it looked amateur, closer to a Roblox text box than to a helper someone trusts with a purchase. I switched to Atkinson Hyperlegible,
+              designed by the Braille Institute so similar letters (I, l, 1; O, 0) stay distinct for low-vision readers.
               Buttons went from yellow to black with white text, which also unified answer and
               guide windows. Contrast targets follow WCAG: 4.5:1 for text, 3:1 for icons.
             </p>
@@ -502,7 +496,7 @@ export default function CasePage() {
           <div className={BODY}>
             <p>
               <span className={STEP}>Tested so far:</span> the two identity tests above, both with
-              static icons, and an informal legibility check on an earlier version of the
+              static icons, and legibility check on the final version of the
               confirmation buttons (three people, unanimous for black text on yellow over white on
               amber).
             </p>
@@ -521,7 +515,7 @@ export default function CasePage() {
               <li>Help requests per purchase</li>
               <li>Wrong-variant and return rate</li>
               <li>Self-reported confidence</li>
-              <li>Level thresholds treated as hypotheses, not fixed rules</li>
+              <li>Level thresholds treated as hypotheses instead of fixed states</li>
             </ul>
             <p>No outcome metrics are claimed at this point in time.</p>
           </div>
@@ -532,9 +526,8 @@ export default function CasePage() {
           <div className={BODY}>
             <p>
               What changed in ten years: from simplifying screens to supporting decisions. Friction
-              can protect; the Pix seatbelt became a design principle. And design for dignity: a
-              calm voice, the user in control of help, never tapping for them, never treating age
-              or literacy as a cute problem to solve.
+              can protect; the Pix seatbelt became a design principle. And designing for dignity means a calm voice,
+             the user in control of help, and never treating age or literacy as a cute problem to solve.
             </p>
           </div>
         </section>
