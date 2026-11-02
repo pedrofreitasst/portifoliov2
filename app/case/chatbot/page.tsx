@@ -21,7 +21,7 @@ const CHAPTERS = [
 
 export default function CasePage() {
   return (
-    <main id="main" className="min-h-[70vh] bg-white px-6 pb-24 pt-32 text-black lg:px-12">
+    <main id="main" className="min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[12rem_minmax(0,48rem)] lg:gap-16">
         <CaseChapterNav chapters={CHAPTERS} accent="#B76203" />
         <article className="max-w-3xl">

@@ -39,7 +39,7 @@ const PROJECTS = [
 
 export default function Projects() {
   return (
-    <section id="works" className="bg-white pb-20 pt-10 text-black md:pb-28 md:pt-8">
+    <section id="works" className="bg-page-paper pb-20 pt-10 text-black md:pb-28 md:pt-8">
       <div className="mx-auto flex max-w-5xl flex-col gap-16 px-6 md:gap-24 lg:px-12">
         {PROJECTS.map((project, i) => (
           <Reveal

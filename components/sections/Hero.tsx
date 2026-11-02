@@ -5,7 +5,7 @@ import Reveal from '@/components/Reveal';
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative bg-white text-black">
+    <section id="hero" className="relative bg-page-paper text-black">
       {/* Desktop: tighter so the first Works card peeks under the fold. Mobile paddings unchanged. */}
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-32 lg:px-12 lg:pb-14 lg:pt-28">
         <Reveal className="max-w-4xl text-left">

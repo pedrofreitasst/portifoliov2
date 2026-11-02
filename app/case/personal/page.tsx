@@ -125,7 +125,7 @@ export default function CasePage() {
   const visibleSections = SECTIONS.filter((s) => !HIDDEN_SECTIONS.includes(s.title));
 
   return (
-    <main id="main" className="min-h-[70vh] bg-white px-6 pb-24 pt-32 text-black lg:px-12">
+    <main id="main" className="min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
       <div className="mx-auto max-w-5xl">
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
           Personal work
