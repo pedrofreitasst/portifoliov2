@@ -78,10 +78,10 @@ export default function CasePage() {
           Case study
         </p>
         <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
-          Apollo, an Adaptive Screen Guide
+          Apollo, a Adaptive Screen Guide
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          An universal onboarding system disguised as a personal assistant. Through dims and spotlits, it teaches you any proccess.
+          An universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.
         </p>
 
         <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
@@ -139,7 +139,7 @@ export default function CasePage() {
               Recently, in an interview for the position of UX Analyst, I was asked what structure I would use
               today, and how it would work for users aged 35-50. This case is a from-scratch
               redesign with a decade more experience. This is an adaptation of that idea to a modern digital
-              landscape where developers need to use their creativity to go around some Operating System&apos;s safety features.
+              landscape where developers need to use their creativity to work within the constraints of each operating system.
             </p>
           </div>
         </section>
@@ -183,10 +183,10 @@ export default function CasePage() {
                 exits apps easily but does not recognize the Home button, so when lost she presses
                 Back repeatedly.
               </li>
-              <li>Both learned by practice, not by instruction.</li>
+              <li>Both learned through practice and first-hand experience.</li>
               <li>
                 F wants to learn to do things herself. S says doing things feels heavy and prefers
-                others do it: cognitive load, not stubbornness.
+                others do it due to cognitive load.
               </li>
               <li>
                 S feels insecure beyond simple tasks and has caught adware several times, and
@@ -202,9 +202,8 @@ export default function CasePage() {
               expected.
             </p>
             <p>
-              <span className={STEP}>Limitations:</span> two participants, both close to me (desire
-              to please), and one leading question. Most modern operating systems don&apos;t allow developers to
-              manipulate the structure of a app screens, and Apple has even stricter rules.
+              <span className={STEP}>Limitations:</span> two participants, both close to me, and one leading question. Most modern operating systems don&apos;t allow developers to
+              manipulate the structure of app screens, and Apple has even stricter rules.
             </p>
           </div>
         </section>
@@ -311,7 +310,7 @@ export default function CasePage() {
             </p>
             <p>
               <span className={STEP}>Docked.</span> At rest, the sun sits at the right edge. Its
-              size and position inspired by HyperOS&apos; floating toolbox, a pattern Android users
+              size and position are inspired by HyperOS&apos; floating toolbox, a pattern Android users
               already know. It is static to save battery and avoid overstimulation. Motion returns
               only when Apollo offers help, because a static icon went unnoticed in testing.
             </p>
