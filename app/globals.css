@@ -58,17 +58,17 @@ body {
 }
 
 ::selection {
-  background-color: #B76203;
+  background-color: #EB8E35;
   color: #ffffff;
 }
 
 ::-moz-selection {
-  background-color: #B76203;
+  background-color: #EB8E35;
   color: #ffffff;
 }
 
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 2px solid #B76203;
+  outline: 2px solid #EB8E35;
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -198,7 +198,7 @@ body {
   background: #ffffff;
   color: #111111;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #B76203;
+  border: 1px solid #EB8E35;
   font-family: var(--font-body);
   font-size: 1rem;
   transition: transform 160ms ease;
@@ -259,7 +259,7 @@ body {
   display: inline-block;
   width: 0.55em;
   height: 1.05em;
-  background: #B76203;
+  background: #EB8E35;
   animation: hero-mac-blink 1.05s steps(1, end) infinite;
 }
 @keyframes hero-mac-blink {
@@ -318,7 +318,7 @@ body {
      under the icon — bookmark limiar. Floor of min(380px, 90vw) keeps chat usable
      when the header inset is smaller than that. */
 :root {
-  --ori-accent: #B76203;
+  --ori-accent: #EB8E35;
   /* Matches site-header py-2.5 + logo h-8 + border */
   --site-header-height: 3.5rem;
   /* Trigger mirrors logo: same size (h-8) + same horizontal padding as header */
@@ -419,7 +419,7 @@ html.ori-chat-open {
   transform: translateY(-1px);
 }
 .ori-header-trigger:focus-visible {
-  outline: 2px solid #B76203;
+  outline: 2px solid #EB8E35;
   outline-offset: 3px;
 }
 .ori-header-trigger__face {
