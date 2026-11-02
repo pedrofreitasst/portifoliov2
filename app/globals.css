@@ -473,7 +473,7 @@ html.ori-chat-open {
   width: var(--ori-panel-width);
   height: 100vh;
   height: 100dvh;
-  background: #ffffff;
+  background: #F4F2EC;
   border-left: 1px solid rgba(0, 0, 0, 0.14);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
   transform: translateX(100%);

@@ -774,7 +774,7 @@ export default function OriCornerChat() {
           </label>
           <div
             className={
-              'hero-mac-field flex items-center bg-white transition-shadow ' +
+              'hero-mac-field flex items-center bg-white transition-shadow ' + //Textbox
               (focused ? 'hero-mac-field--focus' : '')
             }
           >
@@ -798,7 +798,7 @@ export default function OriCornerChat() {
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send question"
-              className="m-1 flex h-8 w-8 shrink-0 items-center justify-center border border-black/25 bg-black text-white transition hover:bg-[#B76203] disabled:border-black/10 disabled:bg-black/15 disabled:text-black/35"
+              className="m-1 flex h-8 w-8 shrink-0 items-center justify-center border border-black/25 bg-black text-white transition hover:bg-[#EB8E35] hover:border-[#EB8E35] disabled:border-black/10 disabled:bg-black/15 disabled:text-black/35"
             >
               <ArrowIcon />
             </button>
