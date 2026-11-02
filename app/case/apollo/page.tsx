@@ -81,14 +81,13 @@ export default function CasePage() {
           Apollo, an Adaptive Screen Guide
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          An Android accessibility layer for low-literacy and cognitive-load users. It dims,
-          spotlights and speaks. It never taps for you.
+          An universal onboarding system disguised as a personal assistant. Through dims and spotlits, it teaches you any proccess.
         </p>
 
         <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
           <li>Role: Solo, research to interaction design</li>
-          <li>Timeline: About 2 weeks</li>
-          <li>Tools: Figma, Atkinson Hyperlegible</li>
+          <li>Timeline: Roughly 2 weeks</li>
+          <li>Tools: Figma, Good Ol' Pen & Paper</li>
         </ul>
 
         <section id="at-a-glance" className="mt-10 scroll-mt-28">
@@ -130,17 +129,17 @@ export default function CasePage() {
               About ten years ago, as a college team project, we designed an accessibility mode for
               people with low digital literacy. The idea was simple: start with a simplified
               interface and gradually transition toward the standard UI, teaching it by use rather
-              than by manual.
+              than by tutorial.
             </p>
             <p>
               The rest of the team presented it to Google. I could not
-              attend. The files, decks and contacts from that period are gone.
+              attend due to a family issue. The files, decks and contacts from that period are gone.
             </p>
             <p>
-              Years later, in a Thermo Fisher interview, I was asked what structure I would use
+              Recently, in an interview for the position of UX Analyst, I was asked what structure I would use
               today, and how it would work for users aged 35-50. This case is a from-scratch
-              redesign with a decade more experience. It is an origin story, not proof that the
-              old project was right.
+              redesign with a decade more experience. This is an adaptation of that idea to a modern digital
+              landscape where developers need to use their creativity to go around some Operating System&apos;s safety features.
             </p>
           </div>
         </section>
@@ -154,7 +153,7 @@ export default function CasePage() {
             </p>
             <p>
               F shops through TikTok Shop, &quot;TV shopping, new generation.&quot; On the product
-              page she freezes on open: roughly fifteen tappable elements and ten-plus text blocks
+              page she freezes on open: roughly fifteen interactive elements and ten-plus text blocks
               with equal visual weight. Strikethrough price, a percent-off badge, &quot;Starting
               at,&quot; installments, a flash-offer timer, free delivery with strikethrough,
               delivery dates, rating, sold count, nine variants, Store, Chat, cart, Buy now.
@@ -193,18 +192,19 @@ export default function CasePage() {
                 S feels insecure beyond simple tasks and has caught adware several times, and
                 complained about repetitive actions like typing a password on every unlock.
               </li>
-              <li>Neither resisted a simpler-looking phone: if they can do what they use, it is fine.</li>
+              <li>Neither resisted a simpler-looking phone: &quot;if they can do what they use, it is fine.&quot;</li>
               <li>F usually pays by Pix and asks someone to do it; sometimes by credit card.</li>
             </ul>
             <p>
               <span className={STEP}>Insight:</span> Pix dependency is a seatbelt, friction that
-              protects. The problem is not the home screen; it is getting lost inside tasks. Safety
-              matters as much as ease, and for S the fear is paying for something different than
+              protects. F&apos;s problem is not the home screen; it is getting lost inside tasks. And for S safety
+              matters as much as ease, specifically the fear is paying for something different than
               expected.
             </p>
             <p>
               <span className={STEP}>Limitations:</span> two participants, both close to me (desire
-              to please), and one leading question. Early signal, not evidence.
+              to please), and one leading question. Most modern operating systems don&apos;t allow developers to
+              manipulate the structure of a app screens, and Apple has even stricter rules.
             </p>
           </div>
         </section>
@@ -221,7 +221,7 @@ export default function CasePage() {
             </p>
             <p>
               <span className={STEP}>Decision:</span> a guide layer over any app. It never modifies
-              the screen and never taps for the user. It only dims, spotlights and speaks. Anything
+              the screen and never taps for the user. It only dims, spotlights and speaks without forcing the user on a path. Anything
               the app shows stays visible; Apollo simply does not talk about it.
             </p>
             <p>
@@ -274,7 +274,7 @@ export default function CasePage() {
                 &quot;Ok.&quot;
               </li>
               <li>
-                <span className={STEP}>No Ok where the app is the target.</span> When the next step
+                <span className={STEP}>No &quot;Ok&quot; where the app is the target.</span> When the next step
                 is the app&apos;s own button (&quot;Tap the lit button to proceed,&quot; &quot;Pick
                 one you like,&quot; &quot;Tap here to buy&quot;), the window has no button at all.
                 An Ok there would create a second target and could make F think it moves her
@@ -291,7 +291,7 @@ export default function CasePage() {
               &quot;Yes&quot; carries a check icon and &quot;Not yet&quot; a clock, each always in
               the same position, so the meaning comes from icon, voice and place, not from the
               word. I avoided an X for &quot;Not yet&quot; because it reads as cancel or error in
-              the middle of a purchase.
+              the middle of a purchase and for some userbases, designing for &quot;feeling&quot; is the right way to approach the solution.
             </p>
             <p>
               <span className={STEP}>Adaptive input.</span> When onboarding flags reading as a
@@ -311,7 +311,7 @@ export default function CasePage() {
             </p>
             <p>
               <span className={STEP}>Docked.</span> At rest, the sun sits at the right edge. Its
-              size and position follow the HyperOS floating toolbox, a pattern Android users
+              size and position inspired by HyperOS&apos; floating toolbox, a pattern Android users
               already know. It is static to save battery and avoid overstimulation. Motion returns
               only when Apollo offers help, because a static icon went unnoticed in testing.
             </p>
@@ -340,7 +340,7 @@ export default function CasePage() {
               { src: '/cases/apollo/03-summary.webp', alt: 'Apollo summary window describing the tablecloth, price starting at R$16,90, free delivery and 3-5 days arrival, with the Buy now button lit' },
               { src: '/cases/apollo/04-pick-one.webp', alt: 'Variant sheet with pattern photos lit and an Apollo window saying Pick one you like, without a button' },
             ]}
-            caption="Guide windows with no Ok: the app's own button or options are the only target."
+            caption="Guide windows with no 'Ok': the app's own button or options are the only target."
           />
           <div className={BODY}>
             <p>
@@ -457,7 +457,7 @@ export default function CasePage() {
               itself.
             </p>
             <p>
-              <span className={STEP}>Type and panels:</span> the first interface type was a bold
+              <span className={STEP}>Typeface and panels:</span> the first typeface chosen was a bold
               yellow face, and it read amateur, closer to a game UI than a helper someone trusts
               with a purchase. I switched to Atkinson Hyperlegible, designed by the Braille
               Institute so similar letters (I, l, 1; O, 0) stay distinct for low-vision readers.
@@ -514,7 +514,7 @@ export default function CasePage() {
             <p>
               <span className={STEP}>Hypothesis for a future test:</span> repeated pairing of word,
               icon, voice and position may help F recognize a few key words, like &quot;Yes&quot;
-              and &quot;Not yet,&quot; over time. Not a result.
+              and &quot;Not yet,&quot; over time.
             </p>
             <p className={STEP}>How I would measure it</p>
             <ul className={LIST}>
@@ -524,7 +524,7 @@ export default function CasePage() {
               <li>Self-reported confidence</li>
               <li>Level thresholds treated as hypotheses, not fixed rules</li>
             </ul>
-            <p>No outcome metrics are claimed yet.</p>
+            <p>No outcome metrics are claimed at this point in time.</p>
           </div>
         </section>
 
