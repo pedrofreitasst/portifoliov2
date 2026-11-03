@@ -452,7 +452,7 @@ export default function CasePage() {
             </p>
             <p>
               <span className={STEP}>Type and panels:</span> Type and panels: my first text style was mustard-yellow lettering,
-              and it looked amateur, closer to a Roblox text box than to a helper someone trusts with a purchase. I switched to Atkinson Hyperlegible,
+              and it looked amateur, closer to a Roblox text box than to a helper someone trusts with a purchase. I switched to Atkinson Hyperlegible Next,
               designed by the Braille Institute so similar letters (I, l, 1; O, 0) stay distinct for low-vision readers.
               Buttons went from yellow to black with white text, which also unified answer and
               guide windows. Contrast targets follow WCAG: 4.5:1 for text, 3:1 for icons.
