@@ -13,11 +13,11 @@ export default function Hero() {
             You can call me <NameRoller />
           </h1>
           <p className="mt-6 max-w-xl font-body text-body font-normal text-black/70">
-            I&apos;m a UX/UI Designer who codes. With 10 years of communications experience, I
+            I&apos;m a UX/UI Designer who codes. With 7 years of communications experience, I
             remove friction from your day-to-day without sacrificing aesthetics.
           </p>
           <p className="mt-4 max-w-xl font-body text-body font-normal text-black/70">
-            Made for you, with love.
+            Currently based in Rio de Janeiro, Brazil.
           </p>
         </Reveal>
       </div>
