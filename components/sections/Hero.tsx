@@ -24,7 +24,7 @@ export default function Hero() {
           <p className="mt-4 max-w-xl font-body text-body font-normal text-black/70">
             Portfolio currently being redesigned and planned in Figma, you can see me work{' '}
             <a 
-              href="https://www.figma.com/design/kHdISGpNIHLIU4PAACtfdG/Portfolio-V5?m=auto&t=QEDlBz7D2ENhwkPU-6" 
+              href="https://www.figma.com/design/GRPep0RpU9ViLB3udO4BaV/Portfolio-v5?node-id=0-1&p=f" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ color: '#FF8700' }}
