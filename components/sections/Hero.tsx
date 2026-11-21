@@ -20,19 +20,7 @@ export default function Hero() {
             Currently based in Rio de Janeiro, Brazil.
           </p>
 
-          {/* Nova frase com o link do Figma estilizado */}
-          <p className="mt-4 max-w-xl font-body text-body font-normal text-black/70">
-            Portfolio currently being redesigned and planned in Figma, you can see me work{' '}
-            <a 
-              href="https://www.figma.com/design/GRPep0RpU9ViLB3udO4BaV/Portfolio-v5?node-id=0-1&p=f" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ color: '#FF8700' }}
-              className="underline underline-offset-4 font-medium hover:opacity-80 transition-opacity"
-            >
-              here
-            </a>.
-          </p>
+          
         </Reveal>
       </div>
     </section>
