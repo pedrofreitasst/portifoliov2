@@ -11,17 +11,6 @@ const BODY = 'mt-5 space-y-5 font-body text-body font-normal text-black/70';
 const LIST = 'list-disc space-y-3 pl-5 marker:text-[#B76203]';
 const CAPTION = 'mt-3 font-body text-meta text-black/60';
 
-const CHAPTERS = [
-  { id: 'at-a-glance', label: 'At a glance' },
-  { id: 'the-problem', label: 'The problem' },
-  { id: 'v1-watson', label: "v1.0, Watson's Corner" },
-  { id: 'what-broke', label: 'What broke' },
-  { id: 'v2-hero', label: 'v2.0, the Hero Chat' },
-  { id: 'what-broke-2', label: 'What Broke II' },
-  { id: 'v3-sidebar', label: 'v3.0, Sidebar' },
-  { id: 'reflection', label: 'Reflection' },
-] as const;
-
 export default function CasePage() {
   const { locale, t } = useI18n();
   return (

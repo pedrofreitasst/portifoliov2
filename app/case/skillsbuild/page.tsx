@@ -9,18 +9,6 @@ import { translateCaseLabel, useI18n } from '@/lib/i18n';
 const CHAPTER = 'font-display text-meta font-medium uppercase tracking-[0.22em] text-[#0F62FE]';
 const BODY = 'mt-5 space-y-5 font-body text-body font-normal text-black/70';
 
-const CHAPTERS = [
-  { id: 'at-a-glance', label: 'At a glance' },
-  { id: 'context', label: 'Context' },
-  { id: 'the-problem', label: 'The problem' },
-  { id: 'responsible-disclosure', label: 'Responsible disclosure' },
-  { id: 'respect-the-system', label: 'Respect the system' },
-  { id: 'selection-submission', label: 'Selection & submission' },
-  { id: 'hard-selection-limit', label: 'Hard selection limit' },
-  { id: 'states-as-a-system', label: 'States as a system' },
-  { id: 'reflection', label: 'Reflection' },
-] as const;
-
 export default function CasePage() {
   const { locale, t } = useI18n();
   return (

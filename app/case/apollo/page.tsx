@@ -13,23 +13,6 @@ const LIST = 'list-disc space-y-3 pl-5 marker:text-[#1D5FA6]';
 const CAPTION = 'mt-3 font-body text-meta text-black/60';
 const STEP = 'font-medium text-black';
 
-const CHAPTERS = [
-  { id: 'at-a-glance', label: 'At a glance' },
-  { id: 'origin', label: 'Origin' },
-  { id: 'the-problem', label: 'The problem' },
-  { id: 'research', label: 'Research' },
-  { id: 'direction', label: 'Constraints & direction' },
-  { id: 'the-core-decision', label: 'Core decision' },
-  { id: 'window-system', label: 'Window system' },
-  { id: 'the-flow', label: 'The flow' },
-  { id: 'onboarding', label: 'Onboarding' },
-  { id: 'assistant-identity', label: 'Assistant identity' },
-  { id: 'risks', label: 'What could go wrong' },
-  { id: 'own-the-app', label: 'If you own the app' },
-  { id: 'validation', label: 'Validation' },
-  { id: 'reflection', label: 'Reflection' },
-] as const;
-
 type Shot = { src: string; alt: string; ratio?: string };
 
 function Phone({ src, alt, ratio = 'aspect-[9/20]', priority = false }: Shot & { priority?: boolean }) {

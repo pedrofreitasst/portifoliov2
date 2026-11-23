@@ -129,11 +129,9 @@ function Lightbox({
 
 function Track({
   section,
-  sectionIndex,
   onOpen,
 }: {
   section: GallerySection;
-  sectionIndex: number;
   onOpen: (itemIndex: number) => void;
 }) {
   const { t } = useI18n();
@@ -212,7 +210,6 @@ function Track({
 }
 
 export default function PersonalGallery({ sections }: { sections: GallerySection[] }) {
-  const { t } = useI18n();
   const baseId = useId();
   // First section starts open.
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]));
@@ -289,7 +286,6 @@ export default function PersonalGallery({ sections }: { sections: GallerySection
               >
                 <Track
                   section={section}
-                  sectionIndex={i}
                   onOpen={(itemIndex) => setLightbox({ section: i, item: itemIndex })}
                 />
               </div>

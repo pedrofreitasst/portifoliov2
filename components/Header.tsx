@@ -6,8 +6,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { CASE_CHAPTERS, useI18n } from '@/lib/i18n';
 import FaceMark from './FaceMark';
 
-const languages = ['pt', 'en', 'es', 'zh'] as const;
-
 type NavSwipe = { startX: number; startY: number; lastX: number; lastY: number; startedAt: number; lastAt: number; offset: number; dragging: boolean; opening: boolean };
 
 export default function Header() {
