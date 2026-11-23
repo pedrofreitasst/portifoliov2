@@ -18,6 +18,7 @@ export default function CustomCursor() {
     const root = document.documentElement;
     let lastMode = '';
     let lastLabel = '';
+    let lastArrow = '';
 
     const move = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
@@ -48,13 +49,15 @@ export default function CustomCursor() {
       }
 
       const nextLabel = target.dataset.cursorLabel ?? '';
+      const nextArrow = target.dataset.cursorArrow ?? '→';
       const nextMode = nextLabel ? 'link' : 'interactive';
       cursor.dataset.mode = nextMode;
 
-      if (nextMode !== lastMode || nextLabel !== lastLabel) {
+      if (nextMode !== lastMode || nextLabel !== lastLabel || nextArrow !== lastArrow) {
         lastMode = nextMode;
         lastLabel = nextLabel;
-        if (label) label.textContent = nextLabel;
+        lastArrow = nextArrow;
+        if (label) label.textContent = nextLabel ? `${nextLabel} ${nextArrow}` : '';
         const measuredWidth = label && nextLabel ? Math.min(label.scrollWidth + 36, 208) : 28;
         cursor.style.setProperty('--cursor-width', `${measuredWidth}px`);
       }
