@@ -1,7 +1,10 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import LocalizedCaseContent from '@/components/LocalizedCaseContent';
+import { translateCaseLabel, useI18n } from '@/lib/i18n';
 
-import CaseChapterNav from '../../../components/CaseChapterNav';
 
 const ACCENT = 'text-[#1D5FA6]';
 const CHAPTER = `font-display text-meta font-medium uppercase tracking-[0.22em] ${ACCENT}`;
@@ -69,29 +72,30 @@ function Single({ shot, caption, priority = false }: { shot: Shot; caption: stri
 const OB = 'aspect-[804/1748]';
 
 export default function CasePage() {
+  const { locale, t } = useI18n();
   return (
-    <main id="main" className="min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[12rem_minmax(0,48rem)] lg:gap-16">
-        <CaseChapterNav chapters={CHAPTERS} />
+    <main id="main" tabIndex={-1} className="case-main min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
+      <div className="mx-auto max-w-4xl">
         <article className="max-w-3xl">
+        <LocalizedCaseContent locale={locale}>
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
-          Case study
+          {t('caseStudy')}
         </p>
         <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
-          Apollo, an Adaptive Screen Guide
+          {translateCaseLabel(locale, 'Apollo, an Adaptive Screen Guide')}
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          A universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.
+          {translateCaseLabel(locale, 'A universal onboarding system disguised as a personal assistant. Through dims and spotlights, it teaches you any process.')}
         </p>
 
         <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
-          <li>Role: Solo, research to interaction design</li>
-          <li>Timeline: Roughly 2 weeks</li>
-          <li>Tools: Figma, Good Ol' Pen & Paper</li>
+          <li>{translateCaseLabel(locale, 'Role: Solo, research to interaction design')}</li>
+          <li>{translateCaseLabel(locale, 'Timeline: Roughly 2 weeks')}</li>
+          <li>{translateCaseLabel(locale, "Tools: Figma, Good Ol' Pen & Paper")}</li>
         </ul>
 
         <section id="at-a-glance" className="mt-10 scroll-mt-28">
-          <h2 className={CHAPTER}>At a glance</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'At a glance')}</h2>
           <dl className="mt-4 space-y-4 border-l-2 border-[#1D5FA6] pl-5 font-body text-body font-normal text-black/70">
             <div>
               <dt className="font-medium text-black">Problem</dt>
@@ -123,7 +127,7 @@ export default function CasePage() {
         </section>
 
         <section id="origin" className="mt-14 scroll-mt-28">
-          <h2 className={CHAPTER}>Origin</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Origin')}</h2>
           <div className={BODY}>
             <p>
               About ten years ago, as a college team project, we designed an accessibility mode for
@@ -145,7 +149,7 @@ export default function CasePage() {
         </section>
 
         <section id="the-problem" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>The problem</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'The problem')}</h2>
           <div className={BODY}>
             <p>
               F cannot read. S has early-stage Alzheimer&apos;s. Both spend most of the day on
@@ -170,7 +174,7 @@ export default function CasePage() {
         </section>
 
         <section id="research" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Research</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Research')}</h2>
           <div className={BODY}>
             <p>
               Contextual inquiry at home with a notepad. Consent obtained. Screens photographed
@@ -206,7 +210,7 @@ export default function CasePage() {
         </section>
 
         <section id="direction" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Constraints &amp; direction</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Constraints & direction')}</h2>
           <div className={BODY}>
             <p>
               Android accessibility services can read screen structure, capture the screen for an
@@ -233,7 +237,7 @@ export default function CasePage() {
         </section>
 
         <section id="the-core-decision" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Core decision: adaptive scaffolding</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Core decision: adaptive scaffolding')}</h2>
           <div className={BODY}>
             <ul className={LIST}>
               <li><span className={STEP}>L3 Guided:</span> explains each step and spotlights the next tap.</li>
@@ -255,7 +259,7 @@ export default function CasePage() {
         </section>
 
         <section id="window-system" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>A unified window system</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'A unified window system')}</h2>
           <div className={BODY}>
             <p>Every message from Apollo uses one of two windows, so F only has to learn two shapes.</p>
             <ul className={LIST}>
@@ -298,7 +302,7 @@ export default function CasePage() {
         </section>
 
         <section id="the-flow" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>The flow</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'The flow')}</h2>
           <div className={BODY}>
             <p>
               Screens are recreated from real screenshots as a generic storefront, keeping BRL and
@@ -385,7 +389,7 @@ export default function CasePage() {
         </section>
 
         <section id="onboarding" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Onboarding</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Onboarding')}</h2>
           <div className={BODY}>
             <p>
               The first screen shows the sun rising with &quot;Need help? Call Apollo.&quot; Then
@@ -430,7 +434,7 @@ export default function CasePage() {
         </section>
 
         <section id="assistant-identity" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Assistant identity &amp; testing</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Assistant identity & testing')}</h2>
           <div className={BODY}>
             <p>
               Concept: light the way. Friendly over clinical; the user is a person, not a problem.
@@ -465,7 +469,7 @@ export default function CasePage() {
         </section>
 
         <section id="risks" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>What could go wrong</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'What could go wrong')}</h2>
           <div className={BODY}>
             <ul className={LIST}>
               <li><span className={STEP}>Regression or forgetting:</span> levels step both ways; confirmation stays mandatory.</li>
@@ -480,7 +484,7 @@ export default function CasePage() {
         </section>
 
         <section id="own-the-app" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>What if you own the app?</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'What if you own the app?')}</h2>
           <div className={BODY}>
             <p>
               The same principles become a design system: component visibility per level,
@@ -492,7 +496,7 @@ export default function CasePage() {
         </section>
 
         <section id="validation" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Validation</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Validation')}</h2>
           <div className={BODY}>
             <p>
               <span className={STEP}>Tested so far:</span> the two identity tests above, both with
@@ -522,7 +526,7 @@ export default function CasePage() {
         </section>
 
         <section id="reflection" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Reflection</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Reflection')}</h2>
           <div className={BODY}>
             <p>
               What changed in ten years: from simplifying screens to supporting decisions. Friction
@@ -537,6 +541,7 @@ export default function CasePage() {
             ← Back to Works
           </Link>
         </p>
+        </LocalizedCaseContent>
         </article>
       </div>
     </main>

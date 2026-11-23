@@ -9,13 +9,8 @@ import {
   useState,
 } from 'react';
 import { sendChat, type ChatMessage } from '@/lib/sendChat';
-
-const CHIPS = [
-  'Where are you located?',
-  'What is your availability?',
-  'How does the chatbot work?',
-  'Who is Sani?',
-] as const;
+import { getSuggestions, useI18n, type Locale } from '@/lib/i18n';
+import FaceMark from '@/components/FaceMark';
 
 /** Tab-session key: survives client navigations; clears on tab close. */
 const SESSION_STORAGE_KEY = 'ori-chat-messages';
@@ -54,23 +49,23 @@ function clearStoredChat() {
   }
 }
 
-/** Canned replies — Pedro owns the copy. */
-const MOCK_REPLIES: Record<(typeof CHIPS)[number], string> = {
-  'Where are you located?':
-    "Pedro is based in Rio de Janeiro, Brazil, and he's open to remote work and relocation.",
-  'What is your availability?':
-    "He's open to full-time roles, collaborations, and contract work, and happy to find a timeline that works for both sides.",
-  'How does the chatbot work?':
-    "I started as an IBM Watson bot in a corner bubble. Now I live in the sidebar - open me from the Ori face opposite the logo; I peek like a bookmark when the panel is open. I run on Groq as the main brain, with OpenRouter as a backup, and a pre-written fallback if both fail.",
-  'Who is Sani?':
-    "Sani is Pedro, the name he's gone by online since he first really started using the internet. It's short for Sanitaurus, and it's the name behind all of his art over the years. Since most of his work and life happen online, Sani sometimes feels more like him than Pedro does. Fun coincidence: it echoes names like the Hindu deity Shani Dev, but there's no specific origin. He picked it because it's easy for English speakers to say.",
+const MOCK_REPLIES: Record<Locale, string[]> = {
+  en: ["Pedro is based in Rio de Janeiro, Brazil, and is open to remote work and relocation.", 'He is open to full-time roles, collaborations, and contract work.', 'Ori answers questions about Pedro’s work, skills, and contact details. The chat uses Groq, falls back to OpenRouter, then to a built-in response.', 'Sani is Pedro’s online name. It is short for Sanitaurus and has no specific origin.'],
+  pt: ['Pedro mora no Rio de Janeiro, Brasil, e considera oportunidades remotas e mudança de cidade.', 'Pedro está aberto a vagas em tempo integral, colaborações e contratos.', 'Ori responde sobre o trabalho, as habilidades e os contatos do Pedro. O chat tenta usar Groq, depois OpenRouter e, por fim, uma resposta local.', 'Sani é o nome que Pedro usa na internet. É uma abreviação de Sanitaurus e não tem uma origem específica.'],
+  es: ['Pedro vive en Río de Janeiro, Brasil, y considera oportunidades remotas y mudarse de ciudad.', 'Pedro está abierto a puestos de tiempo completo, colaboraciones y contratos.', 'Ori responde preguntas sobre el trabajo, las habilidades y el contacto de Pedro. El chat intenta usar Groq, luego OpenRouter y, por último, una respuesta local.', 'Sani es el nombre que Pedro usa en internet. Es una forma abreviada de Sanitaurus y no tiene un origen específico.'],
+  zh: ['Pedro 常住巴西里约热内卢，也考虑远程工作和搬迁机会。', 'Pedro 正在考虑全职职位、合作项目和合同工作。', 'Ori 可以回答有关 Pedro 的作品、技能和联系方式的问题。聊天会依次尝试 Groq、OpenRouter，最后使用本地回复。', 'Sani 是 Pedro 在网上使用的名字，是 Sanitaurus 的简称，没有特定来源。'],
 };
 
-const GENERIC_MOCK =
-  "Thanks for asking! If you're seeing this it means something API related failed. Try a suggestion below, or check back soon while I untangle these wires.";
+const GENERIC_MOCK: Record<Locale, string> = {
+  en: 'Something went wrong while reaching Ori. Try a suggestion, or try again in a moment.',
+  pt: 'Algo deu errado ao falar com o Ori. Escolha uma sugestão ou tente de novo em instantes.',
+  es: 'Hubo un problema al contactar a Ori. Prueba una sugerencia o inténtalo de nuevo en un momento.',
+  zh: '连接 Ori 时出现问题。请尝试下方建议，或稍后重试。',
+};
 
-function mockFor(question: string): string | undefined {
-  return MOCK_REPLIES[question as (typeof CHIPS)[number]];
+function mockFor(question: string, chips: readonly string[], locale: Locale): string | undefined {
+  const index = chips.indexOf(question);
+  return index < 0 ? undefined : MOCK_REPLIES[locale][index];
 }
 
 function wait(ms: number) {
@@ -207,6 +202,8 @@ function inHorizontalScroller(start: Element): boolean {
 
 /** Swipe-to-open guard: everything that should keep its own horizontal touch behaviour. */
 function canStartOpenSwipe(e: TouchEvent): boolean {
+  // On narrow screens Ori is a bottom sheet, so horizontal gestures remain page gestures.
+  if (window.matchMedia('(max-width: 1023px)').matches) return false;
   if (e.touches.length !== 1) return false;
   const x = e.touches[0].clientX;
   const vw = window.innerWidth;
@@ -235,6 +232,8 @@ function getFocusable(root: HTMLElement): HTMLElement[] {
  * Opens from the header Ori icon (no bottom-right FAB).
  */
 export default function OriCornerChat() {
+  const { locale, t } = useI18n();
+  const chips = getSuggestions(locale);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -457,6 +456,10 @@ export default function OriCornerChat() {
     };
 
     const onTouchStart = (e: TouchEvent) => {
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        swipeRef.current = null;
+        return;
+      }
       if (e.touches.length !== 1) {
         // Second finger (pinch etc.) cancels any drag in progress.
         if (swipeRef.current?.mode === 'drag') snapBack();
@@ -523,6 +526,111 @@ export default function OriCornerChat() {
       swipeRef.current = null;
     };
   }, [open, close, resetSwipeStyles, slideOutPanel]);
+
+  // Mobile bottom sheet: make the top grab area a real, touch-safe drag target.
+  useEffect(() => {
+    if (!open || window.matchMedia('(min-width: 1024px)').matches) return;
+    const panel = panelRef.current;
+    const handle = panel?.querySelector<HTMLButtonElement>('[data-ori-drag-handle]');
+    const scrim = scrimRef.current;
+    if (!panel || !handle) return;
+
+    let startY = 0;
+    let lastY = 0;
+    let startedAt = 0;
+    let lastAt = 0;
+    let dragging = false;
+
+    const onStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+      startY = lastY = event.touches[0].clientY;
+      startedAt = lastAt = performance.now();
+      dragging = false;
+    };
+    const onMove = (event: TouchEvent) => {
+      const touch = event.touches[0];
+      if (event.touches.length !== 1) {
+        if (dragging) {
+          dragging = false;
+          panel.style.transition = 'transform 220ms ease';
+          panel.style.transform = 'translateY(0)';
+          if (scrim) {
+            scrim.style.transition = 'opacity 180ms ease';
+            scrim.style.opacity = '1';
+          }
+          window.setTimeout(reset, 280);
+        }
+        return;
+      }
+      if (!touch) return;
+      const deltaY = touch.clientY - startY;
+      if (!dragging) {
+        if (deltaY < 10) return;
+        dragging = true;
+        panel.style.transition = 'none';
+        if (scrim) scrim.style.transition = 'none';
+      }
+      if (event.cancelable) event.preventDefault();
+      lastY = touch.clientY;
+      lastAt = performance.now();
+      panel.style.transform = `translateY(${Math.max(0, deltaY)}px)`;
+      if (scrim) scrim.style.opacity = String(Math.max(0, 1 - deltaY / panel.offsetHeight));
+    };
+    const reset = () => {
+      panel.style.transition = '';
+      panel.style.transform = '';
+      if (scrim) {
+        scrim.style.transition = '';
+        scrim.style.opacity = '';
+      }
+    };
+    const onEnd = (event: TouchEvent) => {
+      if (event.touches.length > 0 || !dragging) return;
+      const deltaY = Math.max(0, lastY - startY);
+      const elapsed = Math.max(1, lastAt - startedAt);
+      const velocity = deltaY / elapsed;
+      dragging = false;
+      panel.style.transition = 'transform 240ms cubic-bezier(.16, 1, .3, 1)';
+      if (deltaY > panel.offsetHeight * 0.2 || (deltaY > 48 && velocity > 0.45)) {
+        panel.style.transform = 'translateY(100%)';
+        if (scrim) {
+          scrim.style.transition = 'opacity 180ms ease';
+          scrim.style.opacity = '0';
+        }
+        close();
+      } else {
+        panel.style.transform = 'translateY(0)';
+        if (scrim) {
+          scrim.style.transition = 'opacity 180ms ease';
+          scrim.style.opacity = '1';
+        }
+      }
+      window.setTimeout(reset, 300);
+    };
+    const onCancel = () => {
+      if (!dragging) return;
+      dragging = false;
+      panel.style.transition = 'transform 220ms ease';
+      panel.style.transform = 'translateY(0)';
+      if (scrim) {
+        scrim.style.transition = 'opacity 180ms ease';
+        scrim.style.opacity = '1';
+      }
+      window.setTimeout(reset, 280);
+    };
+
+    handle.addEventListener('touchstart', onStart, { passive: true });
+    handle.addEventListener('touchmove', onMove, { passive: false });
+    handle.addEventListener('touchend', onEnd, { passive: true });
+    handle.addEventListener('touchcancel', onCancel, { passive: true });
+    return () => {
+      handle.removeEventListener('touchstart', onStart);
+      handle.removeEventListener('touchmove', onMove);
+      handle.removeEventListener('touchend', onEnd);
+      handle.removeEventListener('touchcancel', onCancel);
+      if (dragging) reset();
+    };
+  }, [open, close]);
 
   // Swipe LEFT to open (touch only), mirroring swipe-to-close. Listens on document while closed.
   // Edge dead zones, modals, text fields, horizontal scrollers, selections, multi-touch and
@@ -626,7 +734,7 @@ export default function OriCornerChat() {
     setLoading(true);
 
     try {
-      const canned = mockFor(trimmed);
+      const canned = mockFor(trimmed, chips, locale);
       if (canned) {
         await wait(380);
         setMessages((m) => [...m, { role: 'assistant', content: canned }]);
@@ -636,14 +744,14 @@ export default function OriCornerChat() {
       try {
         const data = await sendChat({
           messages: next,
-          locale: 'en',
+          locale,
           sessionId,
         });
         if (data.sessionId) setSessionId(data.sessionId);
         setMessages((m) => [...m, { role: 'assistant', content: data.text }]);
       } catch {
         await wait(280);
-        setMessages((m) => [...m, { role: 'assistant', content: GENERIC_MOCK }]);
+        setMessages((m) => [...m, { role: 'assistant', content: GENERIC_MOCK[locale] }]);
       }
     } finally {
       setLoading(false);
@@ -688,16 +796,19 @@ export default function OriCornerChat() {
         }}
       >
         <div className="ori-panel__header">
+          <button type="button" data-ori-drag-handle className="ori-panel__handle" aria-label={t('close')} onClick={close}>
+            <span aria-hidden="true" />
+          </button>
           <h2 id={titleId} className="font-display text-title font-semibold text-black">
-            Ori
+            <FaceMark src="/ori-eyes.svg" className="ori-panel__face" /> Ori
           </h2>
           <div className="ori-panel__header-actions">
             <button
               type="button"
               data-ori-reset
               onClick={resetConversation}
-              aria-label="Reset conversation"
-              title="Reset conversation"
+              aria-label={t('reset')}
+              title={t('reset')}
               className="ori-panel__reset"
             >
               <ResetIcon
@@ -711,7 +822,7 @@ export default function OriCornerChat() {
               type="button"
               data-ori-close
               onClick={close}
-              aria-label="Close Ori chat"
+              aria-label={t('close')}
               className="ori-panel__close"
             >
               <CloseIcon />
@@ -724,20 +835,20 @@ export default function OriCornerChat() {
           className="ori-panel__messages"
           role="log"
           aria-live="polite"
-          aria-label="Chat answers"
+          aria-label={t('chatAnswers')}
         >
           {messages.length === 0 && !loading && (
             <p className="font-body text-body text-black/60">
-              In a rush? Ask Ori anything.
+              {t('greeting')}
             </p>
           )}
           {messages.map((m, i) => (
             <div
               key={m.role + '-' + i}
-              className={'mb-3 last:mb-0 ' + (m.role === 'user' ? 'text-black' : 'text-black/75')}
+              className={'ori-message mb-3 last:mb-0 ' + (m.role === 'user' ? 'ori-message--user text-black' : 'ori-message--assistant text-black/75')}
             >
               <p className="mb-1 text-xs uppercase tracking-[0.18em] text-black/60">
-                {m.role === 'user' ? 'You' : 'Ori'}
+                {m.role === 'user' ? t('you') : 'Ori'}
               </p>
               <p className="whitespace-pre-wrap font-body text-body font-normal [overflow-wrap:anywhere]">
                 {m.role === 'assistant' ? linkify(m.content) : m.content}
@@ -745,7 +856,7 @@ export default function OriCornerChat() {
             </div>
           ))}
           {loading && (
-            <p className="flex items-center gap-1 font-body text-body text-black/60" aria-label="Thinking">
+            <p className="flex items-center gap-1 font-body text-body text-black/60" aria-label={t('thinking')}>
               <span className="hero-mac-dot" />
               <span className="hero-mac-dot hero-mac-dot--2" />
               <span className="hero-mac-dot hero-mac-dot--3" />
@@ -754,7 +865,7 @@ export default function OriCornerChat() {
         </div>
 
         <div className="ori-panel__suggestions">
-          {CHIPS.map((chip) => (
+          {chips.map((chip) => (
             <button
               key={chip}
               type="button"
@@ -770,7 +881,7 @@ export default function OriCornerChat() {
 
         <form onSubmit={onSubmit} className="ori-panel__input">
           <label htmlFor="ori-corner-input" className="sr-only">
-            Ask Ori anything
+            {t('askOri')}
           </label>
           <div
             className={
@@ -787,7 +898,7 @@ export default function OriCornerChat() {
                 onChange={(e) => setInput(e.target.value)}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
-                placeholder="Ask Ori"
+                placeholder={t('askOri')}
                 disabled={loading}
                 autoComplete="off"
                 className="h-10 w-full bg-transparent px-3 pr-2 font-body text-body font-normal text-black outline-none placeholder:text-black/50 focus:outline-none focus-visible:outline-none disabled:opacity-60"
@@ -797,12 +908,13 @@ export default function OriCornerChat() {
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              aria-label="Send question"
+              aria-label={t('send')}
               className="m-1 flex h-8 w-8 shrink-0 items-center justify-center border border-black/25 bg-black text-white transition hover:bg-[#EB8E35] hover:border-[#EB8E35] disabled:border-black/10 disabled:bg-black/15 disabled:text-black/35"
             >
               <ArrowIcon />
             </button>
           </div>
+          <p className="ori-panel__disclaimer">{t('disclaimer')}</p>
         </form>
       </div>
     </>

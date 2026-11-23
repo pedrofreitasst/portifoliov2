@@ -1,13 +1,13 @@
 import Hero from '@/components/sections/Hero';
 import Projects from '@/components/sections/Projects';
-import About from '@/components/sections/About';
+import HomeExtras from '@/components/sections/HomeExtras';
 
 export default function HomePage() {
   return (
-    <main id="main">
+    <main id="main" tabIndex={-1}>
       <Hero />
       <Projects />
-      <About />
+      <HomeExtras />
     </main>
   );
 }

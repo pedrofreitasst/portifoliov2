@@ -16,18 +16,19 @@ const config: Config = {
         page: {
           white: '#FFFFFF',
           black: '#000000',
-          paper: '#F4F2EC',
+          paper: '#F4EEDB',
         },
         accent: {
-          DEFAULT: '#F5A623',
-          deep: '#B76203',
+          DEFAULT: '#FFD23F',
+          deep: '#EB8E35',
         },
       },
       fontFamily: {
-        display: ['var(--font-display)', 'Fraunces', 'Georgia', 'serif'],
-        body: ['var(--font-body)', 'Sora', 'system-ui', 'sans-serif'],
-        sans: ['var(--font-body)', 'Sora', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-display)', 'Fraunces', 'Georgia', 'serif'],
+        display: ['var(--font-bricolage)', 'sans-serif'],
+        body: ['var(--font-bricolage)', 'sans-serif'],
+        serif: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+        sans: ['var(--font-bricolage)', 'sans-serif'],
       },
       fontSize: {
         // step 0 — was 18; bumped to 20 for on-screen testing

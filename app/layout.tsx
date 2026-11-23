@@ -1,25 +1,29 @@
 import type { Metadata } from 'next';
-import { Fraunces, Sora } from 'next/font/google';
+import { Bricolage_Grotesque, Fraunces, Space_Mono } from 'next/font/google';
 import Header from '@/components/Header';
+import SkipLink from '@/components/SkipLink';
 import Contact from '@/components/sections/Contact';
+import CustomCursor from '@/components/CustomCursor';
 import OriCornerChat from '@/components/OriCornerChat';
+import { I18nProvider } from '@/lib/i18n';
 import './globals.css';
 
-// Display font: Fraunces variable (wght 100-900 + optical size). The browser picks opsz from the
-// font size automatically (font-optical-sizing: auto), so big headings get the display cut.
-// SOFT/WONK axes are left out on purpose: unused, and they roughly double the file (~67KB -> ~121KB
-// latin woff2). Add 'SOFT', 'WONK' to axes if you want to play with them. Italic not loaded (unused).
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-bricolage',
+  display: 'swap',
+});
 const fraunces = Fraunces({
   subsets: ['latin'],
   axes: ['opsz'],
-  variable: '--font-display',
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
   display: 'swap',
 });
-
-// Body font: Sora variable (wght 100-800).
-const sora = Sora({
+const spaceMono = Space_Mono({
   subsets: ['latin'],
-  variable: '--font-body',
+  weight: ['400', '700'],
+  variable: '--font-mono',
   display: 'swap',
 });
 
@@ -62,18 +66,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${sora.variable} ${fraunces.className}`}
-    >
-      <body className={`${sora.className} bg-white text-black antialiased`}>
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <Header />
-        {children}
-        <Contact />
-        <OriCornerChat />
+    <html lang="en" className={`${bricolage.variable} ${fraunces.variable} ${spaceMono.variable}`}>
+      <body className="antialiased">
+        <I18nProvider>
+          <SkipLink />
+          <Header />
+          <div className="portfolio-content">
+            {children}
+            <Contact />
+          </div>
+          <OriCornerChat />
+          <CustomCursor />
+        </I18nProvider>
       </body>
     </html>
   );

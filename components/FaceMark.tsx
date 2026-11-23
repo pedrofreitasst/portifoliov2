@@ -1,7 +1,7 @@
-/** Footer face mark from public/face.svg */
-export default function FaceMark({ className = '' }: { className?: string }) {
+/** Renders the supplied inline brand mark. */
+export default function FaceMark({ className = '', src }: { className?: string; src: string }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src="/face.svg" alt="" className={className} aria-hidden />
+    <img src={src} alt="" className={className} aria-hidden />
   );
 }

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useI18n } from '@/lib/i18n';
 
 export type GalleryItem = {
   /** Path under /public. Leave empty to show a placeholder box. */
@@ -33,6 +34,7 @@ function Lightbox({
   onClose: () => void;
   onGo: (delta: number) => void;
 }) {
+  const { t } = useI18n();
   const item = sections[state.section].items[state.item];
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -72,7 +74,7 @@ function Lightbox({
         ref={closeRef}
         type="button"
         onClick={onClose}
-        aria-label="Close"
+        aria-label={t('close')}
         className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
       >
         <span aria-hidden="true">×</span>
@@ -104,7 +106,7 @@ function Lightbox({
             e.stopPropagation();
             onGo(-1);
           }}
-          aria-label="Previous image"
+          aria-label={t('previous')}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         >
           <span aria-hidden="true">←</span>
@@ -115,7 +117,7 @@ function Lightbox({
             e.stopPropagation();
             onGo(1);
           }}
-          aria-label="Next image"
+          aria-label={t('next')}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         >
           <span aria-hidden="true">→</span>
@@ -134,6 +136,7 @@ function Track({
   sectionIndex: number;
   onOpen: (itemIndex: number) => void;
 }) {
+  const { t } = useI18n();
   const trackRef = useRef<HTMLUListElement>(null);
 
   const scrollBy = (dir: 1 | -1) => {
@@ -149,7 +152,7 @@ function Track({
         ref={trackRef}
         data-no-swipe-open
         tabIndex={0}
-        aria-label={`${section.title} pieces`}
+        aria-label={`${section.title} ${t('gallery')}`}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-5 pb-5 pt-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-black motion-reduce:scroll-auto"
       >
         {section.items.map((item, i) => (
@@ -190,7 +193,7 @@ function Track({
         <button
           type="button"
           onClick={() => scrollBy(-1)}
-          aria-label="Scroll left"
+          aria-label={t('previous')}
           className="flex h-9 w-9 items-center justify-center border border-black/20 text-black/70 hover:border-black hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"
         >
           <span aria-hidden="true">←</span>
@@ -198,7 +201,7 @@ function Track({
         <button
           type="button"
           onClick={() => scrollBy(1)}
-          aria-label="Scroll right"
+          aria-label={t('next')}
           className="flex h-9 w-9 items-center justify-center border border-black/20 text-black/70 hover:border-black hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"
         >
           <span aria-hidden="true">→</span>
@@ -209,6 +212,7 @@ function Track({
 }
 
 export default function PersonalGallery({ sections }: { sections: GallerySection[] }) {
+  const { t } = useI18n();
   const baseId = useId();
   // First section starts open.
   const [open, setOpen] = useState<Set<number>>(() => new Set([0]));

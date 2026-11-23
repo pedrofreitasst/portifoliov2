@@ -1,4 +1,7 @@
+'use client';
+
 import PersonalGallery, { type GallerySection } from '@/components/PersonalGallery';
+import { translateCaseLabel, useI18n } from '@/lib/i18n';
 
 // Swap in real captions and descriptions. Images live in /public/cases/personal.
 const PLACEHOLDER = 'Short description of this group goes here.';
@@ -122,19 +125,20 @@ const SECTIONS: GallerySection[] = [
 const HIDDEN_SECTIONS = ["DailyUI Challenges", "Creative Coding and Projects"];
 
 export default function CasePage() {
+  const { locale, t } = useI18n();
   const visibleSections = SECTIONS.filter((s) => !HIDDEN_SECTIONS.includes(s.title));
 
   return (
-    <main id="main" className="min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
+    <main id="main" tabIndex={-1} className="case-main min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
       <div className="mx-auto max-w-5xl">
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
-          Personal work
+          {t('personalWork')}
         </p>
         <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
-          Personal Works and Explorations
+          {translateCaseLabel(locale, 'Personal Works and Explorations')}
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          Self-initiated pieces, challenges, and experiments.
+          {t('personalDescription')}
         </p>
 
         <PersonalGallery sections={visibleSections} />

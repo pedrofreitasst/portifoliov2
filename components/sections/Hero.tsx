@@ -1,27 +1,47 @@
 'use client';
 
-import NameRoller from '@/components/NameRoller';
 import Reveal from '@/components/Reveal';
+import { useI18n } from '@/lib/i18n';
+import { useEffect, useState } from 'react';
 
 export default function Hero() {
-  return (
-    <section id="hero" className="relative bg-page-paper text-black">
-      {/* Desktop: tighter so the first Works card peeks under the fold. Mobile paddings unchanged. */}
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-32 lg:px-12 lg:pb-14 lg:pt-28">
-        <Reveal className="max-w-4xl text-left">
-          <h1 className="font-display text-display font-semibold text-black">
-            You can call me <NameRoller />
-          </h1>
-          <p className="mt-6 max-w-xl font-body text-body font-normal text-black/70">
-            I&apos;m a UX/UI Designer who codes. With 7 years of communications experience, I
-            remove friction from your day-to-day without sacrificing aesthetics.
-          </p>
-          <p className="mt-4 max-w-xl font-body text-body font-normal text-black/70">
-            Currently based in Rio de Janeiro, Brazil.
-          </p>
+  const { locale, t } = useI18n();
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
-          
+  useEffect(() => {
+    const update = () => setCurrentTime(new Date());
+    update();
+    const interval = window.setInterval(update, 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const clockLocale = { en: 'en-GB', pt: 'pt-BR', es: 'es-ES', zh: 'zh-CN' }[locale];
+  const localTime = currentTime
+    ? new Intl.DateTimeFormat(clockLocale, { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(currentTime)
+    : null;
+  return (
+    <section id="hero" className="hero-section">
+      <div className="hero-inner">
+        <Reveal className="hero-copy">
+          <p className="hero-location">
+            <span>{t('location')}</span>
+            {localTime && <><span aria-hidden="true"> • </span><time dateTime={currentTime?.toISOString()} aria-label={`${t('localTime')}: ${localTime} BRT`}>{localTime} BRT</time></>}
+          </p>
+          <h1 className="hero-title">
+            <span className="hero-title__main">{t('headline')}</span>
+            <span className="hero-title__aside">{t('heroAside')}</span>
+          </h1>
+          <p className="hero-description">{t('heroCopy')}</p>
         </Reveal>
+      </div>
+      <div className="ticker" aria-label="UX design, conversational AI, chatbots, web">
+        <div className="ticker__track" aria-hidden="true">
+          {Array.from({ length: 10 }, (_, copy) => (
+            <span className="ticker__set" key={copy}>
+              <span>UX DESIGN</span><i /><span>CONVERSATIONAL AI</span><i /><span>CHATBOTS</span><i /><span>WEB</span><i />
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   );

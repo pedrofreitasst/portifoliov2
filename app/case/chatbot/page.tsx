@@ -1,7 +1,10 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import LocalizedCaseContent from '@/components/LocalizedCaseContent';
+import { translateCaseLabel, useI18n } from '@/lib/i18n';
 
-import CaseChapterNav from '../../../components/CaseChapterNav';
 
 const CHAPTER = 'font-display text-meta font-medium uppercase tracking-[0.22em] text-[#B76203]';
 const BODY = 'mt-5 space-y-5 font-body text-body font-normal text-black/70';
@@ -20,19 +23,20 @@ const CHAPTERS = [
 ] as const;
 
 export default function CasePage() {
+  const { locale, t } = useI18n();
   return (
-    <main id="main" className="min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[12rem_minmax(0,48rem)] lg:gap-16">
-        <CaseChapterNav chapters={CHAPTERS} accent="#B76203" />
+    <main id="main" tabIndex={-1} className="case-main min-h-[70vh] bg-page-paper px-6 pb-24 pt-32 text-black lg:px-12">
+      <div className="mx-auto max-w-4xl">
         <article className="max-w-3xl">
+        <LocalizedCaseContent locale={locale}>
         <p className="font-display text-meta font-medium uppercase tracking-[0.22em] text-black/65">
-          Case study
+          {t('caseStudy')}
         </p>
         <h1 className="mt-3 font-display text-display-sm font-semibold tracking-normal text-black md:text-[clamp(1.875rem,3.25vw,2.5rem)]">
-          Personal Portfolio and Chatbot
+          {translateCaseLabel(locale, 'Personal Portfolio and Chatbot')}
         </h1>
         <p className="mt-4 max-w-2xl font-body text-body font-normal text-black/60">
-          From a corner bubble to a sidebar that stays out of the way.
+          {translateCaseLabel(locale, 'From a corner bubble to a sidebar that stays out of the way.')}
         </p>
 
         <ul className="mt-8 flex flex-wrap gap-x-8 gap-y-2 font-display text-meta font-medium uppercase tracking-[0.18em] text-black/65">
@@ -42,7 +46,7 @@ export default function CasePage() {
         </ul>
 
         <section id="at-a-glance" className="mt-10 scroll-mt-28">
-          <h2 className={CHAPTER}>At a glance</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'At a glance')}</h2>
           <dl className="mt-4 space-y-4 border-l-2 border-[#B76203] pl-5 font-body text-body font-normal text-black/70">
             <div>
               <dt className="font-medium text-black">Problem</dt>
@@ -72,7 +76,7 @@ export default function CasePage() {
         </section>
 
         <section id="the-problem" className="mt-14 scroll-mt-28">
-          <h2 className={CHAPTER}>The Problem</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'The problem')}</h2>
           <div className={BODY}>
             <p>
               As I was working on my first portfolio in years, one thought kept creeping up on me:
@@ -84,7 +88,7 @@ export default function CasePage() {
         </section>
 
         <section id="v1-watson" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>v1.0, Watson&apos;s Corner</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, "v1.0, Watson's Corner")}</h2>
           <div className={BODY}>
             <p>
               During my career transition, I was studying AI applications on IBM SkillsBuild. There I
@@ -125,7 +129,7 @@ export default function CasePage() {
         </section>
 
         <section id="what-broke" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>What broke</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'What broke')}</h2>
           <div className={BODY}>
             <p>
               After some time, I realized the chatbot was going straight to its fallback replies.
@@ -167,7 +171,7 @@ export default function CasePage() {
         </section>
 
         <section id="v2-hero" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>v2.0, the Hero Chat</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'v2.0, the Hero Chat')}</h2>
           <div className={BODY}>
             <p>
               &ldquo;Sometimes when you&apos;re too close to something, you can&apos;t see the bigger
@@ -218,7 +222,7 @@ export default function CasePage() {
         </section>
 
         <section id="what-broke-2" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>What Broke II</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'What Broke II')}</h2>
           <div className={BODY}>
             <p>
               Differently from the first failure, this one was a perspective issue - and it only
@@ -258,7 +262,7 @@ export default function CasePage() {
         </section>
 
         <section id="v3-sidebar" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>v3.0, Sidebar</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'v3.0, Sidebar')}</h2>
           <div className={BODY}>
             <p>
               I looked for better case writing and less intrusion: give people agency, and do not
@@ -330,7 +334,7 @@ export default function CasePage() {
         </section>
 
         <section id="reflection" className="mt-16 scroll-mt-28">
-          <h2 className={CHAPTER}>Reflection</h2>
+          <h2 className={CHAPTER}>{translateCaseLabel(locale, 'Reflection')}</h2>
           <div className={BODY}>
             <p>
               Even after all this work, things sometimes break, which is exactly why there are now
@@ -348,6 +352,7 @@ export default function CasePage() {
             ← Back to Works
           </Link>
         </p>
+        </LocalizedCaseContent>
         </article>
       </div>
     </main>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main id="main">
+    <main id="main" tabIndex={-1}>
       <About />
     </main>
   );
