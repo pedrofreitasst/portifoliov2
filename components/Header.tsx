@@ -161,6 +161,7 @@ export default function Header() {
       if (gesture?.dragging) settle(!gesture.opening, false);
     };
     const onDrawerStart = (event: TouchEvent) => onStart(event, false);
+    const onScrimStart = (event: TouchEvent) => onStart(event, false);
     const onDocumentStart = (event: TouchEvent) => onStart(event, true);
 
     if (open) {
@@ -168,6 +169,10 @@ export default function Header() {
       drawer.addEventListener('touchmove', onMove, { passive: false });
       drawer.addEventListener('touchend', onEnd, { passive: true });
       drawer.addEventListener('touchcancel', onCancel, { passive: true });
+      scrim.addEventListener('touchstart', onScrimStart, { passive: true });
+      scrim.addEventListener('touchmove', onMove, { passive: false });
+      scrim.addEventListener('touchend', onEnd, { passive: true });
+      scrim.addEventListener('touchcancel', onCancel, { passive: true });
     } else {
       document.addEventListener('touchstart', onDocumentStart, { passive: true });
       document.addEventListener('touchmove', onMove, { passive: false });
@@ -180,6 +185,10 @@ export default function Header() {
       drawer.removeEventListener('touchmove', onMove);
       drawer.removeEventListener('touchend', onEnd);
       drawer.removeEventListener('touchcancel', onCancel);
+      scrim.removeEventListener('touchstart', onScrimStart);
+      scrim.removeEventListener('touchmove', onMove);
+      scrim.removeEventListener('touchend', onEnd);
+      scrim.removeEventListener('touchcancel', onCancel);
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('touchend', onEnd);
       document.removeEventListener('touchcancel', onCancel);
