@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Bricolage_Grotesque, Fraunces, Space_Mono } from 'next/font/google';
 import Header from '@/components/Header';
 import SkipLink from '@/components/SkipLink';
@@ -68,6 +69,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${bricolage.variable} ${fraunces.variable} ${spaceMono.variable}`}>
       <body className="antialiased">
+        <Script id="google-tag-manager-data-layer" strategy="beforeInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());`}
+        </Script>
+        <Script
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-W4LPLP9W"
+          strategy="afterInteractive"
+        />
         <I18nProvider>
           <SkipLink />
           <Header />
