@@ -69,6 +69,13 @@ export default function Contact() {
           </a>
         </nav>
       </div>
+      <button
+        type="button"
+        className="privacy-settings-link"
+        onClick={() => window.dispatchEvent(new Event('open-cookie-settings'))}
+      >
+        {t('privacySettings')}
+      </button>
       <p className="site-footer__headline">{t('footerHeadline')}</p>
       <p className="site-footer__together">{t('footerTogether')}</p>
     </footer>

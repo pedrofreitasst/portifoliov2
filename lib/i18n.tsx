@@ -6,6 +6,7 @@ export type Locale = 'pt' | 'en' | 'es' | 'zh';
 const messages = {
   en: {
     menu: 'Menu', closeMenu: 'Close menu', openOri: 'Open Ori chat', closeOri: 'Close Ori chat', skip: 'Skip to content', home: 'Pedro de Freitas', work: 'Work', fun: 'Fun', about: 'About', resume: 'Resume',
+    consentPrompt: 'UX is data, too! Can I collect some for analytics only?', consentDetails: 'Optional analytics help me understand how the site is used. You can change your choice anytime in the footer.', consentAccept: 'Allow analytics', consentReject: 'Reject analytics', consentClose: 'Keep my choice', privacySettings: 'Privacy settings',
     backToWorks: 'Back to works', chapters: 'Case chapters', language: 'Language',
     location: 'Rio de Janeiro, Brazil', localTime: 'Brasília time', headline: 'Here to help people', heroAside: 'And make it look good while doing it.',
     heroCopy: 'Pedro is a UX Designer who builds from a user-first standpoint, where data, heart, and design converge.',
@@ -26,6 +27,7 @@ const messages = {
   },
   pt: {
     menu: 'Menu', closeMenu: 'Fechar menu', openOri: 'Abrir conversa com Ori', closeOri: 'Fechar conversa com Ori', skip: 'Pular para o conteúdo', home: 'Pedro de Freitas', work: 'Trabalhos', fun: 'Pessoal', about: 'Sobre', resume: 'Currículo',
+    consentPrompt: 'UX também é dado! Posso coletar alguns para análise de uso?', consentDetails: 'A análise é opcional e me ajuda a entender como o site é usado. Você pode mudar sua escolha a qualquer momento no rodapé.', consentAccept: 'Permitir análise', consentReject: 'Rejeitar análise', consentClose: 'Manter escolha', privacySettings: 'Privacidade',
     backToWorks: 'Voltar aos trabalhos', chapters: 'Capítulos do case', language: 'Idioma',
     location: 'Rio de Janeiro, Brasil', localTime: 'Horário de Brasília', headline: 'Aqui para ajudar pessoas', heroAside: 'E fazer bonito.',
     heroCopy: 'Pedro é designer de UX e cria com as pessoas em primeiro lugar, no encontro entre dados, coração e design.',
@@ -46,6 +48,7 @@ const messages = {
   },
   es: {
     menu: 'Menú', closeMenu: 'Cerrar menú', openOri: 'Abrir chat de Ori', closeOri: 'Cerrar chat de Ori', skip: 'Saltar al contenido', home: 'Pedro de Freitas', work: 'Proyectos', fun: 'Personal', about: 'Sobre mí', resume: 'Currículum',
+    consentPrompt: '¡La UX también son datos! ¿Puedo recopilar algunos solo para análisis?', consentDetails: 'El análisis es opcional y me ayuda a entender cómo se usa el sitio. Puedes cambiar tu elección cuando quieras en el pie de página.', consentAccept: 'Permitir análisis', consentReject: 'Rechazar análisis', consentClose: 'Mantener elección', privacySettings: 'Privacidad',
     backToWorks: 'Volver a proyectos', chapters: 'Capítulos del caso', language: 'Idioma',
     location: 'Río de Janeiro, Brasil', localTime: 'Hora de Brasilia', headline: 'Aquí para ayudar a las personas', heroAside: 'Y hacer que todo se vea bien.',
     heroCopy: 'Pedro es diseñador UX y crea pensando primero en las personas, donde convergen los datos, el corazón y el diseño.',
@@ -66,6 +69,7 @@ const messages = {
   },
   zh: {
     menu: '菜单', closeMenu: '关闭菜单', openOri: '打开 Ori 聊天', closeOri: '关闭 Ori 聊天', skip: '跳转到正文', home: 'Pedro de Freitas', work: '作品', fun: '个人创作', about: '关于', resume: '简历',
+    consentPrompt: '用户体验也会产生数据！我可以收集一些数据，仅用于分析吗？', consentDetails: '分析功能为可选项，帮助我了解网站的使用情况。你可以随时在页脚更改选择。', consentAccept: '允许分析', consentReject: '拒绝分析', consentClose: '保留当前选择', privacySettings: '隐私设置',
     backToWorks: '返回作品', chapters: '案例章节', language: '语言',
     location: '巴西里约热内卢', localTime: '巴西利亚时间', headline: '在这里帮助人们', heroAside: '也让这一切更美好。',
     heroCopy: 'Pedro 是一位以用户为先的 UX 设计师，让数据、同理心与设计在此交汇。',

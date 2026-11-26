@@ -807,3 +807,60 @@ html.ori-chat-open { padding-right: 0 !important; }
   .ori-panel__suggestion { font-size: .89rem; }
   .ori-panel__input { padding-inline: 16px; }
 }
+
+.consent-banner {
+  position: fixed;
+  z-index: 100;
+  inset: auto 20px 20px;
+  display: flex;
+  max-width: 880px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-inline: auto;
+  padding: 20px 22px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 7px 7px 0 var(--ink);
+  color: var(--ink);
+}
+.consent-banner__copy { min-width: 0; }
+.consent-banner__title { margin: 0; font: 800 1.18rem/1.2 var(--font-bricolage); }
+.consent-banner__details { margin: 7px 0 0; color: #51483c; font: 500 .92rem/1.4 var(--font-bricolage); }
+.consent-banner__actions { display: grid; flex: 0 0 auto; grid-template-columns: repeat(2, minmax(148px, 1fr)); gap: 10px; }
+.consent-banner__button {
+  min-height: 44px;
+  min-width: 148px;
+  padding: 9px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  font: 700 .92rem/1 var(--font-bricolage);
+  cursor: pointer;
+  transition: transform 140ms ease, background-color 140ms ease;
+}
+.consent-banner__button:hover { transform: translate(-1px, -1px); }
+.consent-banner__button:focus-visible, .consent-banner__keep:focus-visible, .privacy-settings-link:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.consent-banner__button--reject { background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
+.consent-banner__button--reject:hover { background: var(--yellow); }
+.consent-banner__button--accept { background: var(--yellow); }
+.consent-banner__button--accept:hover { background: var(--orange); }
+.consent-banner__keep { padding: 4px 6px; border: 0; background: transparent; color: var(--ink); font: 600 .82rem/1.2 var(--font-bricolage); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.privacy-settings-link {
+  margin: 10px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--paper);
+  font: 600 .88rem/1.4 var(--font-bricolage);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .consent-banner { inset: auto 12px 12px; display: grid; gap: 14px; padding: 17px; box-shadow: 5px 5px 0 var(--ink); }
+  .consent-banner__title { font-size: 1.08rem; }
+  .consent-banner__details { font-size: .88rem; }
+  .consent-banner__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .consent-banner__button { min-width: 0; padding-inline: 8px; font-size: .82rem; }
+}

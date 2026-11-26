@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { Bricolage_Grotesque, Fraunces, Space_Mono } from 'next/font/google';
 import Header from '@/components/Header';
 import SkipLink from '@/components/SkipLink';
 import Contact from '@/components/sections/Contact';
 import CustomCursor from '@/components/CustomCursor';
 import OriCornerChat from '@/components/OriCornerChat';
+import CookieConsent from '@/components/CookieConsent';
 import { I18nProvider } from '@/lib/i18n';
 import './globals.css';
 
@@ -69,15 +69,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${bricolage.variable} ${fraunces.variable} ${spaceMono.variable}`}>
       <body className="antialiased">
-        <Script id="google-tag-manager-data-layer" strategy="beforeInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());`}
-        </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtm.js?id=GTM-W4LPLP9W"
-          strategy="afterInteractive"
-        />
         <I18nProvider>
           <SkipLink />
           <Header />
@@ -87,6 +78,7 @@ gtag('js', new Date());`}
           </div>
           <OriCornerChat />
           <CustomCursor />
+          <CookieConsent />
         </I18nProvider>
       </body>
     </html>
