@@ -796,7 +796,16 @@ export default function OriCornerChat() {
         }}
       >
         <div className="ori-panel__header">
-          <button type="button" data-ori-drag-handle className="ori-panel__handle" aria-label={t('close')} onClick={close}>
+          <button
+            type="button"
+            data-ori-drag-handle
+            className="ori-panel__handle"
+            aria-label={t('close')}
+            onClick={(event) => {
+              const clickedGrip = event.target === event.currentTarget.querySelector('span');
+              if (event.detail === 0 || clickedGrip) close();
+            }}
+          >
             <span aria-hidden="true" />
           </button>
           <h2 id={titleId} className="font-display text-title font-semibold text-black">

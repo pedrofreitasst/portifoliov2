@@ -57,6 +57,7 @@ export default function CookieConsent() {
 
   useEffect(() => {
     let storedChoice: string | null = null;
+    let showBannerTimer: number | undefined;
     try {
       storedChoice = window.localStorage.getItem(CONSENT_KEY);
     } catch {
@@ -67,13 +68,16 @@ export default function CookieConsent() {
       setChoice(storedChoice);
       if (storedChoice === 'accepted') setGoogleConsent('accepted');
     } else {
-      setOpen(true);
+      showBannerTimer = window.setTimeout(() => setOpen(true), 1000);
     }
     setReady(true);
 
     const openSettings = () => setOpen(true);
     window.addEventListener('open-cookie-settings', openSettings);
-    return () => window.removeEventListener('open-cookie-settings', openSettings);
+    return () => {
+      if (showBannerTimer !== undefined) window.clearTimeout(showBannerTimer);
+      window.removeEventListener('open-cookie-settings', openSettings);
+    };
   }, []);
 
   const saveChoice = useCallback((nextChoice: ConsentChoice) => {
